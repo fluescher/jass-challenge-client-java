@@ -7,6 +7,7 @@ import static com.zuehlke.jasschallenge.client.game.cards.CardValue.ACE;
 import static com.zuehlke.jasschallenge.client.game.cards.Color.DIAMONDS;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class RoundTest {
 
@@ -18,12 +19,12 @@ public class RoundTest {
         assertEquals(DIAMONDS, round.getRoundColor());
     }
 
-    @Test(expected = RuntimeException.class)
-    public void getRoundColor_throwsException_ifNoCardHasBeenPlayed() {
+    @Test
+    public void getRoundColor_returnsNull_ifNoCardHasBeenPlayed() {
 
         final Round round = new Round(0, asList());
 
-        assertEquals(DIAMONDS, round.getRoundColor());
+        assertNull(round.getRoundColor());
     }
 
 }

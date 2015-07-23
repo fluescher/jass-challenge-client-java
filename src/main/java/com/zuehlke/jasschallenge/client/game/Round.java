@@ -9,6 +9,7 @@ import java.util.List;
 public class Round {
     private final int roundNumber;
     private final List<Card> playedCards;
+    private Color roundColor;
 
     public Round(int roundNumber) {
         this(roundNumber, new ArrayList<>());
@@ -16,7 +17,15 @@ public class Round {
 
     Round(int roundNumber, List<Card> playedCards) {
         this.roundNumber = roundNumber;
-        this.playedCards = playedCards;
+        this.playedCards = new ArrayList<>();
+        playedCards.forEach(this::playCard);
+    }
+
+    private void playCard(Card card) {
+        if(playedCards.isEmpty()) {
+            roundColor = card.getColor();
+        }
+        playedCards.add(card);
     }
 
     public int getRoundNumber() {
@@ -28,6 +37,6 @@ public class Round {
     }
 
     public Color getRoundColor() {
-        return playedCards.get(0).getColor();
+        return this.roundColor;
     }
 }
