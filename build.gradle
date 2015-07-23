@@ -1,0 +1,19 @@
+apply plugin: 'java'
+
+compileJava {
+  sourceCompatibility = '1.8'
+  targetCompatibility = '1.8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+    testCompile 'com.pholser:junit-quickcheck-core:0.5-alpha-3'
+}
+
+wrapper {
+  gradleVersion = '2.5'
+}
