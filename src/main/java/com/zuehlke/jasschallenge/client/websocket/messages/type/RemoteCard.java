@@ -5,6 +5,14 @@ public class RemoteCard {
     private int number;
     private RemoteColor color;
 
+    public RemoteCard() {
+    }
+
+    public RemoteCard(int number, RemoteColor color) {
+        this.number = number;
+        this.color = color;
+    }
+
     public int getNumber() {
         return number;
     }

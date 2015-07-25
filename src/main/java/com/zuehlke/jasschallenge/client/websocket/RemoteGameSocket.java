@@ -2,10 +2,13 @@ package com.zuehlke.jasschallenge.client.websocket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zuehlke.jasschallenge.client.game.Game;
 import com.zuehlke.jasschallenge.client.game.Player;
+import com.zuehlke.jasschallenge.client.game.Round;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.websocket.messages.*;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteCard;
+import com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -16,10 +19,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static com.zuehlke.jasschallenge.client.websocket.messages.ChooseSession.SessionType.AUTOJOIN;
 import static java.util.stream.Collectors.toSet;
@@ -31,8 +34,9 @@ public class RemoteGameSocket {
     private final CountDownLatch closeLatch = new CountDownLatch(1);
     private final Player localPlayer;
     private Session session;
+    private Round currentRound = Round.createRound(0);
 
-    public RemoteGameSocket(Player player) {
+    public RemoteGameSocket(Game game, Player player) {
         this.localPlayer = player;
     }
 
@@ -60,14 +64,27 @@ public class RemoteGameSocket {
                 break;
             case DEAL_CARDS:
                 final DealCard dealCard = read(msg, DealCard.class);
-                final Set<Card> cards = dealCard.getData().stream().map(RemoteGameSocket::mapCard).collect(toSet());
-                System.out.println("cards = " + cards);
-                localPlayer.setCards(cards);
+                localPlayer.setCards(mapAllToCards(dealCard.getData()));
                 break;
             case REQUEST_TRUMPF:
                 send(new ChooseTrumpf(ChooseTrumpf.Trumpf.OBEABE));
                 break;
+            case REQUEST_CARD:
+                send(new ChooseCard(mapToRemoteCard(localPlayer.getNextCard(currentRound))));
+                break;
+            case PLAYED_CARDS:
+                final PlayedCards playedCards = read(msg, PlayedCards.class);
+                currentRound = createRound(playedCards.getData());
+                break;
+            default:
+                logger.warn("Recevice unkown message: {}", msg);
         }
+    }
+
+    private static Round createRound(List<RemoteCard> remoteCards) {
+        final Round r = Round.createRound(0);
+        remoteCards.forEach(remoteCard -> r.playCard(null, mapToCard(remoteCard)));
+        return r;
     }
 
     @OnWebSocketClose
@@ -76,7 +93,19 @@ public class RemoteGameSocket {
         closeLatch.countDown();
     }
 
-    private static Card mapCard(RemoteCard remoteCard) {
+    private static Set<Card> mapAllToCards(List<RemoteCard> remoteCards) {
+        return remoteCards.stream().map(RemoteGameSocket::mapToCard).collect(toSet());
+    }
+
+    private static RemoteCard mapToRemoteCard(Card card) {
+        final RemoteColor remoteColor = Arrays.stream(RemoteColor.values())
+                .filter(color -> color.getMappedColor() == card.getColor())
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Could not map color"));
+        return new RemoteCard(card.getRank()+5, remoteColor);
+    }
+
+    private static Card mapToCard(RemoteCard remoteCard) {
         return Arrays.stream(Card.values())
                 .filter(card -> card.getColor() == remoteCard.getColor().getMappedColor())
                 .filter(card -> card.getRank() == remoteCard.getNumber() - 5)

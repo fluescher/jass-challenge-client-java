@@ -17,7 +17,7 @@ public class Round {
         return new Round(roundNumber);
     }
 
-    static Round createRoundWithCardsPlayed(int roundNumber, Set<Card> playedCards) {
+    public static Round createRoundWithCardsPlayed(int roundNumber, Set<Card> playedCards) {
         return new Round(roundNumber, playedCards);
     }
 
@@ -81,5 +81,26 @@ public class Round {
 
     public Player getWinner() {
         return winner;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Round round = (Round) o;
+
+        if (roundNumber != round.roundNumber) return false;
+        if (playedCards != null ? !playedCards.equals(round.playedCards) : round.playedCards != null) return false;
+        return roundColor == round.roundColor;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = roundNumber;
+        result = 31 * result + (playedCards != null ? playedCards.hashCode() : 0);
+        result = 31 * result + (roundColor != null ? roundColor.hashCode() : 0);
+        return result;
     }
 }

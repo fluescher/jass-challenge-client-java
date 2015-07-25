@@ -1,16 +1,18 @@
 package com.zuehlke.jasschallenge.client.websocket;
 
+import com.zuehlke.jasschallenge.client.game.Game;
 import com.zuehlke.jasschallenge.client.game.Player;
+import com.zuehlke.jasschallenge.client.game.Round;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 public class RemoteGameSocketTest {
@@ -22,7 +24,7 @@ public class RemoteGameSocketTest {
         final RemoteEndpoint endpoint = mock(RemoteEndpoint.class);
         when(session.getRemote()).thenReturn(endpoint);
 
-        RemoteGameSocket remoteGameSocket = new RemoteGameSocket(new Player("name"));
+        RemoteGameSocket remoteGameSocket = new RemoteGameSocket(new Game(),new Player("name"));
         remoteGameSocket.onConnect(session);
 
         remoteGameSocket.onMessage("{\"type\":\"REQUEST_PLAYER_NAME\"}");
@@ -38,7 +40,7 @@ public class RemoteGameSocketTest {
         when(session.getRemote()).thenReturn(endpoint);
 
         final Player player = new Player("name");
-        RemoteGameSocket remoteGameSocket = new RemoteGameSocket(player);
+        RemoteGameSocket remoteGameSocket = new RemoteGameSocket(new Game(),player);
         remoteGameSocket.onConnect(session);
 
         remoteGameSocket.onMessage("{\"type\":\"DEAL_CARDS\",\"data\":[{\"number\":14,\"color\":\"DIAMONDS\"}," +
@@ -55,7 +57,7 @@ public class RemoteGameSocketTest {
         final RemoteEndpoint endpoint = mock(RemoteEndpoint.class);
         when(session.getRemote()).thenReturn(endpoint);
 
-        RemoteGameSocket remoteGameSocket = new RemoteGameSocket(new Player("name"));
+        RemoteGameSocket remoteGameSocket = new RemoteGameSocket(new Game(), new Player("name"));
         remoteGameSocket.onConnect(session);
 
         remoteGameSocket.onMessage("{\"type\":\"REQUEST_SESSION_CHOICE\"}");
@@ -71,13 +73,52 @@ public class RemoteGameSocketTest {
         final RemoteEndpoint endpoint = mock(RemoteEndpoint.class);
         when(session.getRemote()).thenReturn(endpoint);
 
-        RemoteGameSocket remoteGameSocket = new RemoteGameSocket(new Player("name"));
+        RemoteGameSocket remoteGameSocket = new RemoteGameSocket(new Game(),new Player("name"));
         remoteGameSocket.onConnect(session);
 
         remoteGameSocket.onMessage("{\"type\":\"REQUEST_TRUMPF\"}");
 
-        verify(endpoint).sendString("{\"type\":\"CHOOSE_TRUMPF\"," +
-                "\"data\":{\"mode\":\"OBEABE\",\"trumpfColor\":null}}");
+        verify(endpoint).sendString("{\"type\":\"CHOOSE_TRUMPF\",\"data\":{\"mode\":\"OBEABE\",\"trumpfColor\":null}}");
+    }
+
+    @Test
+    public void onMessage_sendsCardToPlay() throws IOException {
+
+        final Session session = mock(Session.class);
+        final RemoteEndpoint endpoint = mock(RemoteEndpoint.class);
+        when(session.getRemote()).thenReturn(endpoint);
+        final Player player = mock(Player.class);
+        when(player.getNextCard(any(Round.class))).thenReturn(Card.DIAMOND_ACE);
+
+        RemoteGameSocket remoteGameSocket = new RemoteGameSocket(new Game(), player);
+        remoteGameSocket.onConnect(session);
+
+        remoteGameSocket.onMessage("{\"type\":\"PLAYED_CARDS\",\"data\":[{\"number\":13,\"color\":\"CLUBS\"}," +
+                "{\"number\":10,\"color\":\"DIAMONDS\"}]}");
+        remoteGameSocket.onMessage("{\"type\":\"REQUEST_CARD\"}");
+
+
+        Round expected = Round.createRound(0);
+        expected.playCard(null, Card.CLUB_KING);
+        expected.playCard(null, Card.DIAMOND_TEN);
+        verify(player).getNextCard(eq(expected));
+    }
+
+    @Test
+    public void onMessage_updatesRound() throws IOException {
+
+        final Session session = mock(Session.class);
+        final RemoteEndpoint endpoint = mock(RemoteEndpoint.class);
+        when(session.getRemote()).thenReturn(endpoint);
+        final Player player = mock(Player.class);
+        when(player.getNextCard(any(Round.class))).thenReturn(Card.DIAMOND_ACE);
+
+        RemoteGameSocket remoteGameSocket = new RemoteGameSocket(new Game(),player);
+        remoteGameSocket.onConnect(session);
+
+        remoteGameSocket.onMessage("{\"type\":\"REQUEST_CARD\"}");
+
+        verify(endpoint).sendString("{\"type\":\"CHOOSE_CARD\",\"data\":{\"number\":14,\"color\":\"DIAMONDS\"}}");
     }
 
 }

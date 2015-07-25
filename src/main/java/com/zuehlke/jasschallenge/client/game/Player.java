@@ -41,4 +41,15 @@ public class Player {
         this.cards.clear();
         this.cards.addAll(cards);
     }
+
+    public Card getNextCard(Round round) {
+        if(cards.size() == 0) throw new RuntimeException("Cannot play a card without cards in deck");
+
+        final Card cardToPlay = cards.stream()
+                .filter(card -> canPlayCard(card, round))
+                .findAny()
+                .orElse(cards.stream().findAny().get());
+        cards.remove(cardToPlay);
+        return cardToPlay;
+    }
 }

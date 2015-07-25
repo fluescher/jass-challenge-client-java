@@ -9,15 +9,8 @@ import static org.junit.Assert.assertEquals;
 public class GameTest {
 
     @Test
-    public void test() {
-        Game game = new Game(Collections.<Player>emptyList());
-        Round round = game.startRound();
-
-    }
-
-    @Test
     public void startRound_startsWithFirstRound() {
-        Game game = new Game(Collections.<Player>emptyList());
+        Game game = new Game();
 
         Round round = game.startRound();
 

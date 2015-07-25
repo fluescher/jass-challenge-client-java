@@ -6,9 +6,8 @@ import java.util.List;
 public class Game {
     private final List<Player> players;
 
-    public Game(List<Player> player) {
+    public Game() {
         this.players = new ArrayList<>();
-        player.forEach(this::joinPlayer);
     }
 
     public void joinPlayer(Player player) {

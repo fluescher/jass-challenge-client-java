@@ -31,6 +31,14 @@ public class Message {
         REQUEST_TRUMPF,
         CHOOSE_PLAYER_NAME,
         CHOOSE_SESSION,
-        CHOOSE_TRUMPF, BROADCAST_WINNER_TEAM
+        CHOOSE_TRUMPF,
+        BROADCAST_WINNER_TEAM,
+        BROADCAST_TRUMPF,
+        BROADCAST_STICH,
+        BROADCAST_GAME_FINISHED,
+        CHOOSE_CARD,
+        REQUEST_CARD,
+        REJECT_CARD,
+        PLAYED_CARDS
     }
 }

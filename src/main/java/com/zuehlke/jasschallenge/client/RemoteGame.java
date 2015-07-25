@@ -1,5 +1,6 @@
 package com.zuehlke.jasschallenge.client;
 
+import com.zuehlke.jasschallenge.client.game.Game;
 import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.websocket.RemoteGameSocket;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
@@ -13,18 +14,20 @@ import java.util.concurrent.TimeUnit;
 public class RemoteGame {
 
     private final static Logger logger = LoggerFactory.getLogger(RemoteGame.class);
+    private final Game game;
     private final Player player;
     private final String targetUrl;
 
     public RemoteGame(String targetUrl, Player player) {
         this.targetUrl = targetUrl;
         this.player = player;
+        this.game = new Game();
     }
 
     public void start() throws Exception {
-        WebSocketClient client = new WebSocketClient();
+                WebSocketClient client = new WebSocketClient();
         try {
-            RemoteGameSocket socket = new RemoteGameSocket(player);
+            RemoteGameSocket socket = new RemoteGameSocket(game, player);
             client.start();
 
             URI uri = new URI(targetUrl);
