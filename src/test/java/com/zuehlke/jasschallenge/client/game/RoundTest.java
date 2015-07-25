@@ -35,7 +35,7 @@ public class RoundTest {
 
         final Round round = Round.createRoundWithCardsPlayed(0, EnumSet.noneOf(Card.class));
 
-        assertThat(round.getValue(), equalTo(0));
+        assertThat(round.getScore(), equalTo(0));
     }
 
     @Test
@@ -43,7 +43,7 @@ public class RoundTest {
 
         final Round round = Round.createRoundWithCardsPlayed(0, EnumSet.of(DIAMOND_ACE, HEART_SIX, HEART_TEN));
 
-        assertThat(round.getValue(), equalTo(21));
+        assertThat(round.getScore(), equalTo(21));
     }
 
     @Test(expected = RuntimeException.class)

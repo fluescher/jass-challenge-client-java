@@ -73,7 +73,7 @@ public class Round {
         return roundColor;
     }
 
-    public int getValue() {
+    public int getScore() {
         return playedCards.stream()
                           .mapToInt(Card::getScore)
                           .sum();
