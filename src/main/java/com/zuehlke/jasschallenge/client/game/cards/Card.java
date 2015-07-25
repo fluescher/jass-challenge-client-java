@@ -47,13 +47,17 @@ public enum Card {
     private final CardValue value;
     private final Color color;
 
-    private Card(Color color, CardValue value) {
+    Card(Color color, CardValue value) {
         this.value = value;
         this.color = color;
     }
 
     public Color getColor() {
         return color;
+    }
+
+    public int getValue() {
+        return value.getValue();
     }
 
     @Override

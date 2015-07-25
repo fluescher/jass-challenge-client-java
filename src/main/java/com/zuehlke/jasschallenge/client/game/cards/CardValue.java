@@ -18,4 +18,8 @@ public enum CardValue {
         this.rank = rank;
         this.value = value;
     }
+
+    public int getValue() {
+        return value;
+    }
 }

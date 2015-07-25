@@ -24,7 +24,7 @@ public class PlayerTest {
     public void canPlayCard_allowsEveryCard_whenNoCardIsPlayed(
             @ForAll @From(CardGenerator.class) Card card) {
 
-        final Round round = new Round(0);
+        final Round round = Round.createRound(0);
         final Player player = new Player();
 
         final boolean canCardBePlayed = player.canPlayCard(card, round);
@@ -39,7 +39,7 @@ public class PlayerTest {
 
         assumeThat(card.getColor(), equalTo(cardToPlay.getColor()));
 
-        final Round round = new Round(0, EnumSet.of(card));
+        final Round round = Round.createRoundWithCardsPlayed(0, EnumSet.of(card));
         final Player player = new Player();
 
         final boolean canCardBePlayed = player.canPlayCard(cardToPlay, round);
@@ -55,7 +55,7 @@ public class PlayerTest {
         assumeThat(card.getColor(), equalTo(HEARTS));
         assumeThat(cardToPlay.getColor(), not(equalTo(HEARTS)));
 
-        final Round round = new Round(0, EnumSet.of(card));
+        final Round round = Round.createRoundWithCardsPlayed(0, EnumSet.of(card));
         final Player player = new Player();
 
         final boolean canCardBePlayed = player.canPlayCard(cardToPlay, round);
