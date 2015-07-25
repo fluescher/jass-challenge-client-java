@@ -60,6 +60,8 @@ public enum Card {
         return value.getScore();
     }
 
+    public int getRank() { return value.getRank(); }
+
     public boolean isHigherThan(Card other) {
         return color == other.color && value.getRank() > other.value.getRank();
     }

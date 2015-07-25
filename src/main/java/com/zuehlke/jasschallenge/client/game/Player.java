@@ -7,17 +7,38 @@ import java.util.Set;
 
 public class Player {
 
+    private final String name;
     private final Set<Card> cards;
 
-    public Player() {
-        this(EnumSet.noneOf(Card.class));
+    public Player(String name) {
+        this(name, EnumSet.noneOf(Card.class));
     }
 
-    public Player(Set<Card> cards) {
-        this.cards = cards;
+    Player(String name, Set<Card> cards) {
+        this.name = name;
+        this.cards = EnumSet.copyOf(cards);
+    }
+
+    Player() {
+        this("unnamed");
     }
 
     public boolean canPlayCard(Card card, Round round) {
-        return round.getPlayedCards().isEmpty() || card.getColor() == round.getRoundColor() || !cards.stream().anyMatch(playersCard -> playersCard.getColor() == round.getRoundColor());
+        return round.getPlayedCards().isEmpty()
+                || card.getColor() == round.getRoundColor()
+                || !cards.stream().anyMatch(playersCard -> playersCard.getColor() == round.getRoundColor());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Set<Card> getCards() {
+        return cards;
+    }
+
+    public void setCards(Set<Card> cards) {
+        this.cards.clear();
+        this.cards.addAll(cards);
     }
 }

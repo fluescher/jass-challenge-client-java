@@ -57,7 +57,7 @@ public class PlayerTest {
         assumeThat(cardToPlay.getColor(), not(equalTo(HEARTS)));
 
         final Round round = Round.createRoundWithCardsPlayed(0, EnumSet.of(playedCard));
-        final Player player = new Player(EnumSet.of(HEART_JACK));
+        final Player player = new Player("unnamed", EnumSet.of(HEART_JACK));
 
         final boolean canCardBePlayed = player.canPlayCard(cardToPlay, round);
 
@@ -68,7 +68,7 @@ public class PlayerTest {
     public void canPlayCard_allowsCardOfOtherColor_ifPlayerHasNoCardOfSameColorInDeck() {
 
         final Round round = Round.createRoundWithCardsPlayed(0, EnumSet.of(CLUB_SIX));
-        final Player player = new Player(EnumSet.of(HEART_EIGHT, HEART_NINE));
+        final Player player = new Player("unnamed", EnumSet.of(HEART_EIGHT, HEART_NINE));
 
         final boolean canCardBePlayed = player.canPlayCard(HEART_EIGHT, round);
 

@@ -28,7 +28,7 @@ public class Round {
     private Round(int roundNumber, Set<Card> playedCards) {
         this.roundNumber = roundNumber;
         this.playedCards = EnumSet.noneOf(Card.class);
-        playedCards.forEach(card -> playCard(new Player(), card));
+        playedCards.forEach(card -> playCard(new Player("unnamed"), card));
     }
 
     public void playCard(Player player, Card card) {
