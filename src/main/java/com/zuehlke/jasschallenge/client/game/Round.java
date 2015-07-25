@@ -50,7 +50,7 @@ public class Round {
         final Optional<Card> highestCardPlayed = getHighestCardSoFar();
 
         return highestCardPlayed
-                .map(currentHighest -> currentHighest.getValue() < card.getValue())
+                .map(currentHighest -> card.isHigherThan(currentHighest))
                 .orElse(true);
     }
 
@@ -58,7 +58,7 @@ public class Round {
         return playedCards
                         .stream()
                         .filter(playedCard -> playedCard.getColor() == roundColor)
-                        .max((card1, card2) -> card1.getValue() - card2.getValue());
+                        .max((card1, card2) -> card1.isHigherThan(card2) ? 1 : -1);
     }
 
     public int getRoundNumber() {
@@ -75,7 +75,7 @@ public class Round {
 
     public int getValue() {
         return playedCards.stream()
-                          .mapToInt(Card::getValue)
+                          .mapToInt(Card::getScore)
                           .sum();
     }
 

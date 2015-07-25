@@ -12,14 +12,18 @@ public enum CardValue {
     ACE(9,11);
 
     private final int rank;
-    private final int value;
+    private final int score;
 
-    CardValue(int rank, int value) {
+    CardValue(int rank, int score) {
         this.rank = rank;
-        this.value = value;
+        this.score = score;
     }
 
-    public int getValue() {
-        return value;
+    public int getScore() {
+        return score;
+    }
+
+    public int getRank() {
+        return rank;
     }
 }

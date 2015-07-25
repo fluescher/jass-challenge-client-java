@@ -71,7 +71,7 @@ public class RoundTest {
         final Player playerD = new Player();
 
         final Round round = Round.createRound(0);
-        round.playCard(playerA, HEART_SIX);
+        round.playCard(playerA, HEART_TEN);
         round.playCard(playerB, HEART_QUEEN);
         round.playCard(playerC, HEART_SEVEN);
         round.playCard(playerD, HEART_JACK);

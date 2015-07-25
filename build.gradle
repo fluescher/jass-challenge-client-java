@@ -12,6 +12,7 @@ repositories {
 dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'com.pholser:junit-quickcheck-core:0.5-alpha-3'
+    testCompile 'com.pholser:junit-quickcheck-generators:0.5-alpha-3'
 }
 
 wrapper {
