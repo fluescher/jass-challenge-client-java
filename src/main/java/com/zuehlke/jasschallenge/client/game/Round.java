@@ -3,21 +3,21 @@ package com.zuehlke.jasschallenge.client.game;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.cards.Color;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.EnumSet;
+import java.util.Set;
 
 public class Round {
     private final int roundNumber;
-    private final List<Card> playedCards;
+    private final Set<Card> playedCards;
     private Color roundColor;
 
     public Round(int roundNumber) {
-        this(roundNumber, new ArrayList<>());
+        this(roundNumber, EnumSet.noneOf(Card.class));
     }
 
-    Round(int roundNumber, List<Card> playedCards) {
+    Round(int roundNumber, Set<Card> playedCards) {
         this.roundNumber = roundNumber;
-        this.playedCards = new ArrayList<>();
+        this.playedCards = EnumSet.noneOf(Card.class);
         playedCards.forEach(this::playCard);
     }
 
@@ -32,7 +32,7 @@ public class Round {
         return roundNumber;
     }
 
-    public List<Card> getPlayedCards() {
+    public Set<Card> getPlayedCards() {
         return playedCards;
     }
 

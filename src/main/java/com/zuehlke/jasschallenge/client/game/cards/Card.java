@@ -1,26 +1,53 @@
 package com.zuehlke.jasschallenge.client.game.cards;
 
-import java.util.Arrays;
-import java.util.List;
+import static com.zuehlke.jasschallenge.client.game.cards.CardValue.*;
+import static com.zuehlke.jasschallenge.client.game.cards.Color.*;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.stream.Collectors.toList;
+public enum Card {
+    HEART_SIX(HEARTS, SIX),
+    HEART_SEVEN(HEARTS, SEVEN),
+    HEART_EIGHT(HEARTS, EIGHT),
+    HEART_NINE(HEARTS, NINE),
+    HEART_TEN(HEARTS, TEN),
+    HEART_JACK(HEARTS, JACK),
+    HEART_QUEEN(HEARTS, QUEEN),
+    HEART_KING(HEARTS, KING),
+    HEART_ACE(HEARTS, ACE),
 
-public class Card {
+    DIAMOND_SIX(DIAMONDS, SIX),
+    DIAMOND_SEVEN(DIAMONDS, SEVEN),
+    DIAMOND_EIGHT(DIAMONDS, EIGHT),
+    DIAMOND_NINE(DIAMONDS, NINE),
+    DIAMOND_TEN(DIAMONDS, TEN),
+    DIAMOND_JACK(DIAMONDS, JACK),
+    DIAMOND_QUEEN(DIAMONDS, QUEEN),
+    DIAMOND_KING(DIAMONDS, KING),
+    DIAMOND_ACE(DIAMONDS, ACE),
 
-    public static final List<Card> ALL_CARDS = unmodifiableList(generateAllCards());
+    CLUB_SIX(CLUBS, SIX),
+    CLUB_SEVEN(CLUBS, SEVEN),
+    CLUB_EIGHT(CLUBS, EIGHT),
+    CLUB_NINE(CLUBS, NINE),
+    CLUB_TEN(CLUBS, TEN),
+    CLUB_JACK(CLUBS, JACK),
+    CLUB_QUEEN(CLUBS, QUEEN),
+    CLUB_KING(CLUBS, KING),
+    CLUB_ACE(CLUBS, ACE),
 
-    private static List<Card> generateAllCards() {
-        return Arrays
-                .stream(Color.values())
-                .flatMap(color -> Arrays.stream(CardValue.values()).map(value -> new Card(value, color)))
-                        .collect(toList());
-    }
+    SPADE_SIX(SPADES, SIX),
+    SPADE_SEVEN(SPADES, SEVEN),
+    SPADE_EIGHT(SPADES, EIGHT),
+    SPADE_NINE(SPADES, NINE),
+    SPADE_TEN(SPADES, TEN),
+    SPADE_JACK(SPADES, JACK),
+    SPADE_QUEEN(SPADES, QUEEN),
+    SPADE_KING(SPADES, KING),
+    SPADE_ACE(SPADES, ACE);
 
     private final CardValue value;
     private final Color color;
 
-    public Card(CardValue value, Color color) {
+    private Card(Color color, CardValue value) {
         this.value = value;
         this.color = color;
     }

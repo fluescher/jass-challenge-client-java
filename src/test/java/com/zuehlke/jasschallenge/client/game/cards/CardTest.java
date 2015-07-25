@@ -8,7 +8,7 @@ public class CardTest {
 
     @Test
     public void allCards_containsEveryCard() {
-        assertEquals(36, Card.ALL_CARDS.size());
+        assertEquals(36, Card.values().length);
     }
 
 }
