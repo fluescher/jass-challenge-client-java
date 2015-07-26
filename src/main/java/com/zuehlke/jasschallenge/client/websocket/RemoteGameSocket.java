@@ -49,14 +49,26 @@ public class RemoteGameSocket {
             case REQUEST_SESSION_CHOICE:
                 send(handler.onRequestSessionChoice());
                 break;
+            case BROADCAST_SESSION_JOINED:
+                handler.onPlayerJoined(read(msg, PlayerJoined.class));
+                break;
+            case BROADCAST_TEAMS:
+                handler.onBroadCastTeams(read(msg, BroadCastTeams.class));
+                break;
             case DEAL_CARDS:
                 handler.onDealCards(read(msg, DealCard.class));
                 break;
             case REQUEST_TRUMPF:
                 send(handler.onRequestTrumpf());
                 break;
+            case BROADCAST_TRUMPF:
+                handler.onBroadCastTrumpf(read(msg, BroadCastTrumpf.class));
+                break;
             case REQUEST_CARD:
                 send(handler.onRequestCard());
+                break;
+            case REJECT_CARD:
+                handler.onRejectCard(read(msg, RejectCard.class));
                 break;
             case PLAYED_CARDS:
                 handler.onPlayedCards(read(msg, PlayedCards.class));
@@ -64,8 +76,14 @@ public class RemoteGameSocket {
             case BROADCAST_STICH:
                 handler.onBroadCastStich(read(msg, BroadCastStich.class));
                 break;
+            case BROADCAST_GAME_FINISHED:
+                handler.onBroadGameFinished(read(msg, BroadCastGameFinished.class));
+                break;
+            case BROADCAST_WINNER_TEAM:
+                handler.onBroadCastWinnerTeam(read(msg, BroadCastWinnerTeam.class));
+                break;
             default:
-                logger.warn("Recevice unkown message: {}", msg);
+                logger.error("Received unknown message: {}", msg);
         }
     }
 

@@ -6,6 +6,7 @@ import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.websocket.messages.*;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteCard;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor;
+import com.zuehlke.jasschallenge.client.websocket.messages.type.TrumpfChoice;
 
 import java.util.Arrays;
 import java.util.List;
@@ -56,6 +57,30 @@ public class RemoteGameHandler {
     }
 
     public void onBroadCastStich(BroadCastStich stich) {
+
+    }
+
+    public void onPlayerJoined(PlayerJoined joinedPlayer) {
+
+    }
+
+    public void onBroadCastTeams(BroadCastTeams teams) {
+
+    }
+
+    public void onBroadCastTrumpf(BroadCastTrumpf trumpfChoice) {
+
+    }
+
+    public void onBroadGameFinished(BroadCastGameFinished gameFinished) {
+
+    }
+
+    public void onBroadCastWinnerTeam(BroadCastWinnerTeam winnerTeam) {
+
+    }
+
+    public void onRejectCard(RejectCard rejectCard) {
 
     }
 

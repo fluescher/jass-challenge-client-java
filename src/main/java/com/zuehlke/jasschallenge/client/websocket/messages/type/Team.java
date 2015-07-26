@@ -1,11 +1,22 @@
 package com.zuehlke.jasschallenge.client.websocket.messages.type;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.util.List;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Team {
     private String name;
     private int points;
     private int currentRoundPoints;
+    private List<RemotePlayer> players;
 
     public Team() {
+    }
+
+    public Team(String name, List<RemotePlayer> players) {
+        this.players = players;
+        this.name = name;
     }
 
     public Team(String name, int points, int currentRoundPoints) {
@@ -38,6 +49,14 @@ public class Team {
         this.currentRoundPoints = currentRoundPoints;
     }
 
+    public List<RemotePlayer> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(List<RemotePlayer> players) {
+        this.players = players;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -47,7 +66,8 @@ public class Team {
 
         if (points != team.points) return false;
         if (currentRoundPoints != team.currentRoundPoints) return false;
-        return !(name != null ? !name.equals(team.name) : team.name != null);
+        if (name != null ? !name.equals(team.name) : team.name != null) return false;
+        return !(players != null ? !players.equals(team.players) : team.players != null);
 
     }
 
@@ -56,6 +76,7 @@ public class Team {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + points;
         result = 31 * result + currentRoundPoints;
+        result = 31 * result + (players != null ? players.hashCode() : 0);
         return result;
     }
 }

@@ -1,11 +1,22 @@
 package com.zuehlke.jasschallenge.client.websocket.messages.type;
 
 public class TrumpfChoice {
-    private final Trumpf mode;
-    private final RemoteColor trumpfColor;
+    private Trumpf mode;
+    private RemoteColor trumpfColor;
+
+    public TrumpfChoice() {
+    }
 
     public TrumpfChoice(Trumpf trumpf, RemoteColor trumpfColor) {
         this.mode = trumpf;
+        this.trumpfColor = trumpfColor;
+    }
+
+    public void setMode(Trumpf mode) {
+        this.mode = mode;
+    }
+
+    public void setTrumpfColor(RemoteColor trumpfColor) {
         this.trumpfColor = trumpfColor;
     }
 
