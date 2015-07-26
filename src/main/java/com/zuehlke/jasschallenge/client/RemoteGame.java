@@ -2,6 +2,7 @@ package com.zuehlke.jasschallenge.client;
 
 import com.zuehlke.jasschallenge.client.game.Game;
 import com.zuehlke.jasschallenge.client.game.Player;
+import com.zuehlke.jasschallenge.client.websocket.RemoteGameHandler;
 import com.zuehlke.jasschallenge.client.websocket.RemoteGameSocket;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
@@ -27,7 +28,7 @@ public class RemoteGame {
     public void start() throws Exception {
                 WebSocketClient client = new WebSocketClient();
         try {
-            RemoteGameSocket socket = new RemoteGameSocket(game, player);
+            RemoteGameSocket socket = new RemoteGameSocket(new RemoteGameHandler(player));
             client.start();
 
             URI uri = new URI(targetUrl);

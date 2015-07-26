@@ -52,4 +52,8 @@ public class Player {
         cards.remove(cardToPlay);
         return cardToPlay;
     }
+
+    public Mode decideTrumpfColor() {
+        return Mode.OBEABE;
+    }
 }

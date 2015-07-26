@@ -1,19 +1,24 @@
 package com.zuehlke.jasschallenge.client.websocket.messages;
 
-import com.zuehlke.jasschallenge.client.websocket.messages.type.Trumpf;
-import com.zuehlke.jasschallenge.client.websocket.messages.type.TrumpfChoice;
+import com.zuehlke.jasschallenge.client.websocket.messages.type.Stich;
 
-public class ChooseTrumpf extends Message {
+public class BroadCastStich extends Message {
 
-    private final TrumpfChoice data;
+    private Stich data;
 
-    public ChooseTrumpf(Trumpf trumpf) {
-        super(Type.CHOOSE_TRUMPF);
-        data = new TrumpfChoice(trumpf, null);
+    public BroadCastStich() {
     }
 
-    public TrumpfChoice getData() {
+    public BroadCastStich(Stich data) {
+        this.data = data;
+    }
+
+    public Stich getData() {
         return data;
+    }
+
+    public void setData(Stich data) {
+        this.data = data;
     }
 
     @Override
@@ -21,7 +26,7 @@ public class ChooseTrumpf extends Message {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ChooseTrumpf that = (ChooseTrumpf) o;
+        BroadCastStich that = (BroadCastStich) o;
 
         return !(data != null ? !data.equals(that.data) : that.data != null);
 

@@ -1,5 +1,8 @@
 package com.zuehlke.jasschallenge.client.websocket.messages;
 
+import com.zuehlke.jasschallenge.client.websocket.messages.type.SessionChoice;
+import com.zuehlke.jasschallenge.client.websocket.messages.type.SessionType;
+
 public class ChooseSession extends Message {
     private final SessionChoice data;
 
@@ -12,24 +15,19 @@ public class ChooseSession extends Message {
         return data;
     }
 
-    private class SessionChoice {
-        private final SessionType sessionChoice;
-        private final String sessionName = "a session";
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        public SessionChoice(SessionType sessionChoice) {
-            this.sessionChoice = sessionChoice;
-        }
+        ChooseSession that = (ChooseSession) o;
 
-        public SessionType getSessionChoice() {
-            return sessionChoice;
-        }
+        return !(data != null ? !data.equals(that.data) : that.data != null);
 
-        public String getSessionName() {
-            return sessionName;
-        }
     }
 
-    public enum SessionType {
-        AUTOJOIN
+    @Override
+    public int hashCode() {
+        return data != null ? data.hashCode() : 0;
     }
 }
