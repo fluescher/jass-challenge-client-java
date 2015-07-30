@@ -8,9 +8,12 @@ import org.junit.contrib.theories.Theory;
 import org.junit.runner.RunWith;
 
 import java.util.EnumSet;
+import java.util.List;
 
 import static com.zuehlke.jasschallenge.client.game.cards.Card.*;
 import static com.zuehlke.jasschallenge.client.game.cards.Color.HEARTS;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertFalse;
@@ -39,7 +42,7 @@ public class PlayerTest {
 
         assumeThat(playedCard.getColor(), equalTo(cardToPlay.getColor()));
 
-        final Round round = Round.createRoundWithCardsPlayed(0, EnumSet.of(playedCard));
+        final Round round = Round.createRoundWithMoves(0, asList(new Move(new Player("unnamed"), playedCard)));
         final Player player = new Player();
 
         final boolean canCardBePlayed = player.canPlayCard(cardToPlay, round);
@@ -56,7 +59,7 @@ public class PlayerTest {
         assumeThat(playedCard.getColor(), equalTo(HEARTS));
         assumeThat(cardToPlay.getColor(), not(equalTo(HEARTS)));
 
-        final Round round = Round.createRoundWithCardsPlayed(0, EnumSet.of(playedCard));
+        final Round round = Round.createRoundWithMoves(0, asList(new Move(new Player("unnamed"), playedCard)));
         final Player player = new Player("unnamed", EnumSet.of(HEART_JACK));
 
         final boolean canCardBePlayed = player.canPlayCard(cardToPlay, round);
@@ -67,8 +70,9 @@ public class PlayerTest {
     @Test
     public void canPlayCard_allowsCardOfOtherColor_ifPlayerHasNoCardOfSameColorInDeck() {
 
-        final Round round = Round.createRoundWithCardsPlayed(0, EnumSet.of(CLUB_SIX));
+        final Player previous = new Player("another");
         final Player player = new Player("unnamed", EnumSet.of(HEART_EIGHT, HEART_NINE));
+        final Round round = Round.createRoundWithMoves(0, asList(new Move(previous, CLUB_SIX)));
 
         final boolean canCardBePlayed = player.canPlayCard(HEART_EIGHT, round);
 

@@ -37,4 +37,12 @@ public class Move {
         result = 31 * result + (playedCard != null ? playedCard.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Move{" +
+                "player=" + player +
+                ", playedCard=" + playedCard +
+                '}';
+    }
 }

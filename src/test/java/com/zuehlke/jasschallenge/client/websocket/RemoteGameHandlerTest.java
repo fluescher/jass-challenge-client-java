@@ -1,22 +1,23 @@
 package com.zuehlke.jasschallenge.client.websocket;
 
-import com.zuehlke.jasschallenge.client.LambdaMatcher;
 import com.zuehlke.jasschallenge.client.game.Move;
 import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.game.Round;
-import com.zuehlke.jasschallenge.client.game.Team;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.websocket.messages.*;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.*;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
 
 import static com.zuehlke.jasschallenge.client.LambdaMatcher.match;
 import static com.zuehlke.jasschallenge.client.game.Mode.OBEABE;
+import static com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor.CLUBS;
+import static com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor.DIAMONDS;
+import static com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor.HEARTS;
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.SessionType.AUTOJOIN;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -34,7 +35,7 @@ public class RemoteGameHandlerTest {
 
         final ChooseCard chooseCard = new RemoteGameHandler(localPlayer).onRequestCard();
 
-        assertThat(chooseCard.getData(), equalTo(new RemoteCard(14, RemoteColor.DIAMONDS)));
+        assertThat(chooseCard.getData(), equalTo(new RemoteCard(14, DIAMONDS)));
     }
 
     @Test
@@ -44,11 +45,12 @@ public class RemoteGameHandlerTest {
         when(localPlayer.makeMove(any(Round.class))).thenReturn(new Move(localPlayer, Card.DIAMOND_ACE));
 
         final RemoteGameHandler handler = new RemoteGameHandler(localPlayer);
-        handler.onPlayedCards(new PlayedCards(asList(new RemoteCard(13, RemoteColor.CLUBS), new RemoteCard(10, RemoteColor.DIAMONDS))));
+        handler.onPlayedCards(new PlayedCards(asList(new RemoteCard(13, CLUBS))));
+        handler.onPlayedCards(new PlayedCards(asList(new RemoteCard(13, CLUBS), new RemoteCard(10, DIAMONDS))));
 
         Round expected = Round.createRound(0);
-        expected.playCard(null, Card.CLUB_KING);
-        expected.playCard(null, Card.DIAMOND_TEN);
+        expected.makeMove(new Move(null, Card.CLUB_KING));
+        expected.makeMove(new Move(null, Card.DIAMOND_TEN));
         assertThat(handler.getCurrentRound(), equalTo(expected));
     }
 
@@ -76,9 +78,9 @@ public class RemoteGameHandlerTest {
 
         final Player localPlayer = new Player("test");
         final DealCard dealCard = new DealCard(asList(
-                new RemoteCard(14, RemoteColor.DIAMONDS),
+                new RemoteCard(14, DIAMONDS),
                 new RemoteCard(8, RemoteColor.SPADES),
-                new RemoteCard(6, RemoteColor.CLUBS)));
+                new RemoteCard(6, CLUBS)));
 
         new RemoteGameHandler(localPlayer).onDealCards(dealCard);
 
@@ -117,5 +119,69 @@ public class RemoteGameHandlerTest {
                 match(team -> team.getPlayers().size() == 2, "two members in team a"),
                 match(team -> team.getPlayers().size() == 2, "two members in team b")));
         assertThat(remoteGameHandler.getTeams().get(1).getPlayers().toArray(), hasItemInArray(equalTo(localPlayer)));
+    }
+
+    @Test
+    public void onPlayedCards_mapsPlayedCardToPlayer_startsWithLowestId() {
+        final Player localPlayer = new Player("local");
+        final RemotePlayer remoteLocalPlayer = new RemotePlayer(2, "local");
+        final RemotePlayer remoteOne = new RemotePlayer(0, "remote 1");
+        final RemotePlayer remoteTwo = new RemotePlayer(1, "remote 2");
+        final RemotePlayer remoteThree = new RemotePlayer(3, "remote 3");
+        final List<RemoteTeam> remoteTeams = asList(
+                new RemoteTeam("team a", asList(remoteOne, remoteThree)),
+                new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo)));
+        final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer);
+        remoteGameHandler.onBroadCastTeams(new BroadCastTeams(remoteTeams));
+
+        remoteGameHandler.onPlayedCards(new PlayedCards(asList(new RemoteCard(14, DIAMONDS))));
+
+        assertThat(remoteGameHandler.getCurrentRound().getMoves().get(0).getPlayer().getName(), equalTo(remoteOne.getName()));
+    }
+
+    @Test
+    public void onBroadcastStich_startsNewRound() {
+        final Player localPlayer = new Player("local");
+        final RemotePlayer remoteLocalPlayer = new RemotePlayer(2, "local");
+        final RemotePlayer remoteOne = new RemotePlayer(0, "remote 1");
+        final RemotePlayer remoteTwo = new RemotePlayer(1, "remote 2");
+        final RemotePlayer remoteThree = new RemotePlayer(3, "remote 3");
+        final List<RemoteTeam> remoteTeams = asList(
+                new RemoteTeam("team a", asList(remoteOne, remoteThree)),
+                new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo)));
+        final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer);
+
+        remoteGameHandler.onBroadCastTeams(new BroadCastTeams(remoteTeams));
+        remoteGameHandler.onPlayedCards(new PlayedCards(asList(new RemoteCard(13, CLUBS))));
+        remoteGameHandler.onBroadCastStich(new BroadCastStich(new Stich("local", 0, emptyList(), emptyList())));
+
+        assertThat(remoteGameHandler.getCurrentRound().getMoves(), empty());
+        assertThat(remoteGameHandler.getCurrentRound().getRoundNumber(), equalTo(1));
+    }
+
+    @Test
+    public void onPlayedCards_mapsPlayerCorrectly_startsWithTheLastWhoMadeAStich() {
+        final Player localPlayer = new Player("local");
+        final RemotePlayer remoteLocalPlayer = new RemotePlayer(2, "local");
+        final RemotePlayer remoteOne = new RemotePlayer(0, "remote 1");
+        final RemotePlayer remoteTwo = new RemotePlayer(1, "remote 2");
+        final RemotePlayer remoteThree = new RemotePlayer(3, "remote 3");
+        final List<RemoteTeam> remoteTeams = asList(
+                new RemoteTeam("team a", asList(remoteOne, remoteThree)),
+                new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo)));
+        final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer);
+
+        remoteGameHandler.onBroadCastTeams(new BroadCastTeams(remoteTeams));
+        remoteGameHandler.onBroadCastStich(new BroadCastStich(new Stich("local", 0, emptyList(), emptyList())));
+        remoteGameHandler.onPlayedCards(new PlayedCards(asList(new RemoteCard(14, DIAMONDS))));
+        remoteGameHandler.onPlayedCards(new PlayedCards(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(13, CLUBS))));
+        remoteGameHandler.onPlayedCards(new PlayedCards(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(6, HEARTS))));
+        remoteGameHandler.onPlayedCards(new PlayedCards(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(6, HEARTS), new RemoteCard(11, DIAMONDS))));
+
+        assertThat(remoteGameHandler.getCurrentRound().getMoves(), hasSize(4));
+        assertThat(remoteGameHandler.getCurrentRound().getMoves().get(0).getPlayer().getName(), equalTo("local"));
+        assertThat(remoteGameHandler.getCurrentRound().getMoves().get(1).getPlayer().getName(), equalTo("remote 3"));
+        assertThat(remoteGameHandler.getCurrentRound().getMoves().get(2).getPlayer().getName(), equalTo("remote 1"));
+        assertThat(remoteGameHandler.getCurrentRound().getMoves().get(3).getPlayer().getName(), equalTo("remote 2"));
     }
 }

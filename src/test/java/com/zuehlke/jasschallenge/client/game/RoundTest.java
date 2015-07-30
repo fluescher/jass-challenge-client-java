@@ -47,11 +47,12 @@ public class RoundTest {
     }
 
     @Test(expected = RuntimeException.class)
-    public void playCard_throwsException_whenAlreadyEnoughCardsWerePlayed () {
+    public void makeMove_throwsException_whenAlreadyEnoughCardsWerePlayed () {
 
         final Round round = Round.createRoundWithCardsPlayed(0, EnumSet.of(HEART_ACE, HEART_SIX, HEART_TEN, HEART_JACK));
 
-        round.playCard(new Player(), HEART_SEVEN);
+        final Player player = new Player();
+        round.makeMove(new Move(player, HEART_SEVEN));
     }
 
     @Test
@@ -71,10 +72,10 @@ public class RoundTest {
         final Player playerD = new Player();
 
         final Round round = Round.createRound(0);
-        round.playCard(playerA, HEART_TEN);
-        round.playCard(playerB, HEART_QUEEN);
-        round.playCard(playerC, HEART_SEVEN);
-        round.playCard(playerD, HEART_JACK);
+        round.makeMove(new Move(playerA, HEART_TEN));
+        round.makeMove(new Move(playerB, HEART_QUEEN));
+        round.makeMove(new Move(playerC, HEART_SEVEN));
+        round.makeMove(new Move(playerD, HEART_JACK));
 
         assertThat(round.getWinner(), equalTo(playerB));
     }
@@ -87,10 +88,10 @@ public class RoundTest {
         final Player playerD = new Player();
 
         final Round round = Round.createRound(0);
-        round.playCard(playerA, HEART_SIX);
-        round.playCard(playerB, DIAMOND_ACE);
-        round.playCard(playerC, HEART_SEVEN);
-        round.playCard(playerD, HEART_JACK);
+        round.makeMove(new Move(playerA, HEART_SIX));
+        round.makeMove(new Move(playerB, DIAMOND_ACE));
+        round.makeMove(new Move(playerC, HEART_SEVEN));
+        round.makeMove(new Move(playerD, HEART_JACK));
 
         assertThat(round.getWinner(), equalTo(playerD));
     }

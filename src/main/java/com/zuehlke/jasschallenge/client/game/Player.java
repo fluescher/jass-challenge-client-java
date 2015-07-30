@@ -44,7 +44,6 @@ public class Player {
 
     public Move makeMove(Round round) {
         if(cards.size() == 0) throw new RuntimeException("Cannot play a card without cards in deck");
-
         final Card cardToPlay = cards.stream()
                 .filter(card -> canPlayCard(card, round))
                 .findAny()
