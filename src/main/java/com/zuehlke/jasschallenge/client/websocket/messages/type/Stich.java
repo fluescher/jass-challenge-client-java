@@ -6,12 +6,12 @@ public class Stich {
     private String name;
     private int id;
     private List<RemoteCard> playedCards;
-    private List<Team> teams;
+    private List<RemoteTeam> teams;
 
     public Stich() {
     }
 
-    public Stich(String name, int id, List<RemoteCard> playedCards, List<Team> teams) {
+    public Stich(String name, int id, List<RemoteCard> playedCards, List<RemoteTeam> teams) {
         this.name = name;
         this.id = id;
         this.playedCards = playedCards;
@@ -42,11 +42,11 @@ public class Stich {
         this.playedCards = playedCards;
     }
 
-    public List<Team> getTeams() {
+    public List<RemoteTeam> getTeams() {
         return teams;
     }
 
-    public void setTeams(List<Team> teams) {
+    public void setTeams(List<RemoteTeam> teams) {
         this.teams = teams;
     }
 

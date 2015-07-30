@@ -1,25 +1,25 @@
 package com.zuehlke.jasschallenge.client.websocket.messages;
 
-import com.zuehlke.jasschallenge.client.websocket.messages.type.Team;
+import com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteTeam;
 
 import java.util.List;
 
 public class BroadCastGameFinished extends Message {
 
-    private List<Team> data;
+    private List<RemoteTeam> data;
 
     public BroadCastGameFinished() {
     }
 
-    public BroadCastGameFinished(List<Team> teams) {
-        this.data = teams;
+    public BroadCastGameFinished(List<RemoteTeam> remoteTeams) {
+        this.data = remoteTeams;
     }
 
-    public List<Team> getData() {
+    public List<RemoteTeam> getData() {
         return data;
     }
 
-    public void setData(List<Team> data) {
+    public void setData(List<RemoteTeam> data) {
         this.data = data;
     }
 

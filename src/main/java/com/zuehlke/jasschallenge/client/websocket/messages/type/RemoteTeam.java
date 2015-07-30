@@ -5,21 +5,21 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Team {
+public class RemoteTeam {
     private String name;
     private int points;
     private int currentRoundPoints;
     private List<RemotePlayer> players;
 
-    public Team() {
+    public RemoteTeam() {
     }
 
-    public Team(String name, List<RemotePlayer> players) {
+    public RemoteTeam(String name, List<RemotePlayer> players) {
         this.players = players;
         this.name = name;
     }
 
-    public Team(String name, int points, int currentRoundPoints) {
+    public RemoteTeam(String name, int points, int currentRoundPoints) {
         this.name = name;
         this.points = points;
         this.currentRoundPoints = currentRoundPoints;
@@ -62,12 +62,12 @@ public class Team {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Team team = (Team) o;
+        RemoteTeam remoteTeam = (RemoteTeam) o;
 
-        if (points != team.points) return false;
-        if (currentRoundPoints != team.currentRoundPoints) return false;
-        if (name != null ? !name.equals(team.name) : team.name != null) return false;
-        return !(players != null ? !players.equals(team.players) : team.players != null);
+        if (points != remoteTeam.points) return false;
+        if (currentRoundPoints != remoteTeam.currentRoundPoints) return false;
+        if (name != null ? !name.equals(remoteTeam.name) : remoteTeam.name != null) return false;
+        return !(players != null ? !players.equals(remoteTeam.players) : remoteTeam.players != null);
 
     }
 

@@ -1,22 +1,22 @@
 package com.zuehlke.jasschallenge.client.websocket.messages;
 
-import com.zuehlke.jasschallenge.client.websocket.messages.type.Team;
+import com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteTeam;
 
 public class BroadCastWinnerTeam extends Message {
-    private Team data;
+    private RemoteTeam data;
 
     public BroadCastWinnerTeam() {
     }
 
-    public BroadCastWinnerTeam(Team team) {
-        this.data = team;
+    public BroadCastWinnerTeam(RemoteTeam remoteTeam) {
+        this.data = remoteTeam;
     }
 
-    public Team getData() {
+    public RemoteTeam getData() {
         return data;
     }
 
-    public void setData(Team data) {
+    public void setData(RemoteTeam data) {
         this.data = data;
     }
 

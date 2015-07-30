@@ -1,39 +1,44 @@
 package com.zuehlke.jasschallenge.client.websocket;
 
+import com.zuehlke.jasschallenge.client.game.Move;
 import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.game.Round;
+import com.zuehlke.jasschallenge.client.game.Team;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.websocket.messages.*;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteCard;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor;
-import com.zuehlke.jasschallenge.client.websocket.messages.type.TrumpfChoice;
+import com.zuehlke.jasschallenge.client.websocket.messages.type.RemotePlayer;
+import com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteTeam;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.SessionType.AUTOJOIN;
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.Trumpf.OBEABE;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 public class RemoteGameHandler {
     private final Player localPlayer;
+    private final List<Team> teams;
     private Round currentRound = Round.createRound(0);
 
     public RemoteGameHandler(Player localPlayer) {
         this.localPlayer = localPlayer;
-    }
-
-    public ChooseSession onRequestSessionChoice() {
-        return new ChooseSession(AUTOJOIN);
-    }
-
-    public Player getLocalPlayer() {
-        return localPlayer;
+        this.teams = new ArrayList<>();
     }
 
     public Round getCurrentRound() {
         return currentRound;
+    }
+
+    public List<Team> getTeams() {
+        return teams;
+    }
+
+    public ChooseSession onRequestSessionChoice() {
+        return new ChooseSession(AUTOJOIN);
     }
 
     public ChoosePlayerName onRequestPlayerName() {
@@ -44,12 +49,27 @@ public class RemoteGameHandler {
         localPlayer.setCards(mapAllToCards(dealCard.getData()));
     }
 
+    public void onPlayerJoined(PlayerJoined joinedPlayer) {
+    }
+
+    public void onBroadCastTeams(BroadCastTeams remoteTeams) {
+        teams.addAll(remoteTeams.getData().stream()
+                .map(this::toTeam)
+                .collect(toList()));
+    }
+
     public ChooseTrumpf onRequestTrumpf() {
         return new ChooseTrumpf(OBEABE);
     }
 
+    public void onBroadCastTrumpf(BroadCastTrumpf trumpfChoice) {
+
+    }
+
     public ChooseCard onRequestCard() {
-        return new ChooseCard(mapToRemoteCard(getLocalPlayer().getNextCard(getCurrentRound())));
+        final Move move = localPlayer.makeMove(getCurrentRound());
+        final RemoteCard cardToPlay = mapToRemoteCard(move.getPlayedCard());
+        return new ChooseCard(cardToPlay);
     }
 
     public void onPlayedCards(PlayedCards playedCards) {
@@ -57,18 +77,6 @@ public class RemoteGameHandler {
     }
 
     public void onBroadCastStich(BroadCastStich stich) {
-
-    }
-
-    public void onPlayerJoined(PlayerJoined joinedPlayer) {
-
-    }
-
-    public void onBroadCastTeams(BroadCastTeams teams) {
-
-    }
-
-    public void onBroadCastTrumpf(BroadCastTrumpf trumpfChoice) {
 
     }
 
@@ -84,8 +92,21 @@ public class RemoteGameHandler {
 
     }
 
+    private Team toTeam(RemoteTeam remoteTeam) {
+        return new Team(remoteTeam.getName(), remoteTeam.getPlayers().stream().map(this::mapPlayer).collect(toList()));
+    }
+
+    private Player mapPlayer(RemotePlayer remotePlayer) {
+        final Player player = new Player(remotePlayer.getName());
+        if (player.getName().equals(localPlayer.getName())) {
+            return localPlayer;
+        } else {
+            return player;
+        }
+    }
+
     private static Card mapToCard(RemoteCard remoteCard) {
-        return Arrays.stream(Card.values())
+        return stream(Card.values())
                 .filter(card -> card.getColor() == remoteCard.getColor().getMappedColor())
                 .filter(card -> card.getRank() == remoteCard.getNumber() - 5)
                 .findFirst()
@@ -97,7 +118,7 @@ public class RemoteGameHandler {
     }
 
     private static RemoteCard mapToRemoteCard(Card card) {
-        final RemoteColor remoteColor = Arrays.stream(RemoteColor.values())
+        final RemoteColor remoteColor = stream(RemoteColor.values())
                 .filter(color -> color.getMappedColor() == card.getColor())
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Could not map color"));
