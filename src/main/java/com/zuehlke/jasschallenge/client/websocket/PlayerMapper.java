@@ -20,9 +20,7 @@ public class PlayerMapper {
     }
 
     public Player findPlayerByName(String name) {
-        return allPlayers.stream()
-                .filter(player -> player.getName().equals(name))
-                .findFirst()
+        return tryToFindPlayerByName(name)
                 .orElseThrow(() -> new RuntimeException("No Player with name " + name + " found"));
     }
 

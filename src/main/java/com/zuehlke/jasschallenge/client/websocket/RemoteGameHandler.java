@@ -111,7 +111,7 @@ public class RemoteGameHandler {
         checkEquals(winner, currentRound.getWinner(), "Local winner differs from remote");
 
         this.currentRound = Round.createRound(this.currentRound.getRoundNumber() + 1);
-        this.playingOrder = createOrderStartingFromPlayer(this.playingOrder.getPlayersInInitialPlayingOrder(), winner);
+        this.playingOrder = createOrderStartingFromPlayer(playersInPlayingOrder, winner);
     }
 
     public void onBroadGameFinished(List<RemoteTeam> remoteTeams) {

@@ -25,12 +25,6 @@ public class PlayingOrder {
         this.currentPlayer = 0;
     }
 
-    public List<Player> getOrder() {
-        return IntStream.range(0, 4)
-                .mapToObj(i -> playersInInitialPlayingOrder.get(getBoundIndex(i)))
-                .collect(toList());
-    }
-
     public Player getCurrentPlayer() {
         return playersInInitialPlayingOrder.get(getBoundIndex(currentPlayer));
     }
@@ -39,11 +33,7 @@ public class PlayingOrder {
         currentPlayer = currentPlayer + 1;
     }
 
-    public List<Player> getPlayersInInitialPlayingOrder() {
-        return playersInInitialPlayingOrder;
-    }
-
     private int getBoundIndex(int playerPosition) {
-        return (this.startingPlayer + playerPosition) % 4;
+        return (this.startingPlayer + playerPosition) % playersInInitialPlayingOrder.size();
     }
 }
