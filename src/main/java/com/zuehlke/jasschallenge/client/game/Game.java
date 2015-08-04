@@ -6,7 +6,7 @@ import java.util.List;
 public class Game {
     private final List<Player> players;
 
-    public Game() {
+    public Game(Mode obeabe, List<Player> playersInPlayingOrder) {
         this.players = new ArrayList<>();
     }
 

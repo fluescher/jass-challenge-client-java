@@ -1,6 +1,9 @@
 package com.zuehlke.jasschallenge.client.game;
 
 import java.util.List;
+import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.toList;
 
 public class PlayingOrder {
 
@@ -12,7 +15,7 @@ public class PlayingOrder {
         return new PlayingOrder(playersInInitialPlayingOrder, 0);
     }
 
-    public static PlayingOrder createOrderStartingFromWinner(List<Player> playersInPlayingOrder, Player winner) {
+    public static PlayingOrder createOrderStartingFromPlayer(List<Player> playersInPlayingOrder, Player winner) {
         return new PlayingOrder(playersInPlayingOrder, playersInPlayingOrder.indexOf(winner));
     }
 
@@ -20,6 +23,12 @@ public class PlayingOrder {
         this.playersInInitialPlayingOrder = playersInInitialPlayingOrder;
         this.startingPlayer = startingPlayer;
         this.currentPlayer = 0;
+    }
+
+    public List<Player> getOrder() {
+        return IntStream.range(0, 4)
+                .mapToObj(i -> playersInInitialPlayingOrder.get(getBoundIndex(i)))
+                .collect(toList());
     }
 
     public Player getCurrentPlayer() {

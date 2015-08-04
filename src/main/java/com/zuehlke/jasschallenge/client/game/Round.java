@@ -66,6 +66,7 @@ public class Round {
 
     public Player getWinner() {
         return moves.stream()
+                .filter(move -> move.getPlayedCard().getColor() == getRoundColor())
                 .max((move, move2) -> move.getPlayedCard().isHigherThan(move2.getPlayedCard()) ? 1 : -1)
                 .map(Move::getPlayer)
                 .orElse(null);

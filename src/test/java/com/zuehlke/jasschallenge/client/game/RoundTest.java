@@ -66,10 +66,10 @@ public class RoundTest {
 
     @Test
     public void getWinner_returnsThePlayerWhichPlayedTheHighestCard() {
-        final Player playerA = new Player();
-        final Player playerB = new Player();
-        final Player playerC = new Player();
-        final Player playerD = new Player();
+        final Player playerA = new Player("a");
+        final Player playerB = new Player("b");
+        final Player playerC = new Player("c");
+        final Player playerD = new Player("d");
 
         final Round round = Round.createRound(0);
         round.makeMove(new Move(playerA, HEART_TEN));
@@ -82,17 +82,17 @@ public class RoundTest {
 
     @Test
     public void getWinner_returnsThePlayerWhichPlayedTheHighestCard_withRoundColor() {
-        final Player playerA = new Player();
-        final Player playerB = new Player();
-        final Player playerC = new Player();
-        final Player playerD = new Player();
+        final Player playerA = new Player("a");
+        final Player playerB = new Player("b");
+        final Player playerC = new Player("c");
+        final Player playerD = new Player("d");
 
         final Round round = Round.createRound(0);
-        round.makeMove(new Move(playerA, HEART_SIX));
-        round.makeMove(new Move(playerB, DIAMOND_ACE));
-        round.makeMove(new Move(playerC, HEART_SEVEN));
-        round.makeMove(new Move(playerD, HEART_JACK));
+        round.makeMove(new Move(playerA, HEART_JACK));
+        round.makeMove(new Move(playerB, HEART_NINE));
+        round.makeMove(new Move(playerC, DIAMOND_EIGHT));
+        round.makeMove(new Move(playerD, DIAMOND_NINE));
 
-        assertThat(round.getWinner(), equalTo(playerD));
+        assertThat(round.getWinner(), equalTo(playerA));
     }
 }
