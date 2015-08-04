@@ -1,6 +1,10 @@
 package com.zuehlke.jasschallenge.client.websocket;
 
 import com.zuehlke.jasschallenge.client.websocket.messages.*;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseCard;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChoosePlayerName;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseSession;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseTrumpf;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.*;
 import org.eclipse.jetty.websocket.api.Session;
 import org.junit.Test;
@@ -45,7 +49,7 @@ public class RemoteGameSocketTest {
                 "{\"number\":8,\"color\":\"SPADES\"}," +
                 "{\"number\":6,\"color\":\"CLUBS\"}]}");
 
-        verify(handler).onDealCards(eq(new DealCard(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(8, SPADES), new RemoteCard(6, CLUBS)))));
+        verify(handler).onDealCards(eq(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(8, SPADES), new RemoteCard(6, CLUBS))));
         verifyNoMoreInteractions(handler);
     }
 
@@ -93,7 +97,7 @@ public class RemoteGameSocketTest {
         remoteGameSocket.onMessage("{\"type\":\"PLAYED_CARDS\",\"data\":[{\"number\":13,\"color\":\"CLUBS\"}," +
                 "{\"number\":10,\"color\":\"DIAMONDS\"}]}");
 
-        verify(handler).onPlayedCards(eq(new PlayedCards(asList(new RemoteCard(13, CLUBS), new RemoteCard(10, DIAMONDS)))));
+        verify(handler).onPlayedCards(eq(asList(new RemoteCard(13, CLUBS), new RemoteCard(10, DIAMONDS))));
         verifyNoMoreInteractions(handler);
     }
 
@@ -126,8 +130,7 @@ public class RemoteGameSocketTest {
         final List<RemoteCard> playedCards = asList(new RemoteCard(13, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(12, CLUBS), new RemoteCard(12, SPADES));
         final List<RemoteTeam> remoteTeams = asList(new RemoteTeam("Team 1", 2148, 348), new RemoteTeam("Team 2", 2547, 108));
         final Stich stich = new Stich("1437909005411", 2, playedCards, remoteTeams);
-        final BroadCastStich message = new BroadCastStich(stich);
-        verify(handler).onBroadCastStich(message);
+        verify(handler).onBroadCastStich(stich);
         verifyNoMoreInteractions(handler);
     }
 
@@ -141,7 +144,7 @@ public class RemoteGameSocketTest {
 
         remoteGameSocket.onMessage("{\"type\":\"BROADCAST_SESSION_JOINED\",\"data\":{\"name\":\"1437916730302\",\"id\":3}}");
 
-        verify(handler).onPlayerJoined(eq(new PlayerJoined(new RemotePlayer(3, "1437916730302"))));
+        verify(handler).onPlayerJoined(eq(new RemotePlayer(3, "1437916730302")));
         verifyNoMoreInteractions(handler);
     }
 
@@ -154,9 +157,9 @@ public class RemoteGameSocketTest {
 
         remoteGameSocket.onMessage("{\"type\":\"BROADCAST_TEAMS\",\"data\":[{\"name\":\"Team 1\",\"players\":[{\"name\":\"1437917428074\",\"id\":0},{\"name\":\"1437917436253\",\"id\":2}]},{\"name\":\"Team 2\",\"players\":[{\"name\":\"1437917434340\",\"id\":1},{\"name\":\"1437917437853\",\"id\":3}]}]}");
 
-        verify(handler).onBroadCastTeams(eq(new BroadCastTeams(asList(
+        verify(handler).onBroadCastTeams(eq(asList(
                 new RemoteTeam("Team 1", asList(new RemotePlayer(0, "1437917428074"), new RemotePlayer(2, "1437917436253"))),
-                new RemoteTeam("Team 2", asList(new RemotePlayer(1, "1437917434340"), new RemotePlayer(3, "1437917437853")))))));
+                new RemoteTeam("Team 2", asList(new RemotePlayer(1, "1437917434340"), new RemotePlayer(3, "1437917437853"))))));
         verifyNoMoreInteractions(handler);
     }
 
@@ -169,7 +172,7 @@ public class RemoteGameSocketTest {
 
         remoteGameSocket.onMessage("{\"type\":\"BROADCAST_TRUMPF\",\"data\":{\"mode\":\"OBEABE\",\"trumpfColor\":null}}");
 
-        verify(handler).onBroadCastTrumpf(eq(new BroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null))));
+        verify(handler).onBroadCastTrumpf(eq(new TrumpfChoice(Trumpf.OBEABE, null)));
         verifyNoMoreInteractions(handler);
     }
 
@@ -182,7 +185,7 @@ public class RemoteGameSocketTest {
 
         remoteGameSocket.onMessage("{\"type\":\"BROADCAST_GAME_FINISHED\",\"data\":[{\"name\":\"Team 2\",\"points\":1029,\"currentRoundPoints\":318},{\"name\":\"Team 1\",\"points\":2568,\"currentRoundPoints\":153}]}");
 
-        verify(handler).onBroadGameFinished(eq(new BroadCastGameFinished(asList(new RemoteTeam("Team 2", 1029, 318), new RemoteTeam("Team 1", 2568, 153)))));
+        verify(handler).onBroadGameFinished(eq(asList(new RemoteTeam("Team 2", 1029, 318), new RemoteTeam("Team 1", 2568, 153))));
         verifyNoMoreInteractions(handler);
     }
 
@@ -195,7 +198,7 @@ public class RemoteGameSocketTest {
 
         remoteGameSocket.onMessage("{\"type\":\"BROADCAST_WINNER_TEAM\",\"data\":{\"name\":\"Team 1\",\"points\":2568,\"currentRoundPoints\":0}}");
 
-        verify(handler).onBroadCastWinnerTeam(eq(new BroadCastWinnerTeam(new RemoteTeam("Team 1", 2568, 0))));
+        verify(handler).onBroadCastWinnerTeam(eq(new RemoteTeam("Team 1", 2568, 0)));
         verifyNoMoreInteractions(handler);
     }
 
@@ -208,7 +211,7 @@ public class RemoteGameSocketTest {
 
         remoteGameSocket.onMessage("{\"type\":\"REJECT_CARD\",\"data\":{\"number\":13,\"color\":\"DIAMONDS\"}}");
 
-        verify(handler).onRejectCard(eq(new RejectCard(new RemoteCard(13, DIAMONDS))));
+        verify(handler).onRejectCard(eq(new RemoteCard(13, DIAMONDS)));
         verifyNoMoreInteractions(handler);
     }
 

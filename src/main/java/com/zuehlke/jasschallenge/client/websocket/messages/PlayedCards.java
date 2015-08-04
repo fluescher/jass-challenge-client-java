@@ -1,41 +1,24 @@
 package com.zuehlke.jasschallenge.client.websocket.messages;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.zuehlke.jasschallenge.client.websocket.RemoteGameHandler;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.Response;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteCard;
 
 import java.util.List;
+import java.util.Optional;
 
-public class PlayedCards extends Message {
+public class PlayedCards implements Message {
 
-    private List<RemoteCard> data;
+    private final List<RemoteCard> playedCards;
 
-    public PlayedCards() {
-    }
-
-    public PlayedCards(List<RemoteCard> data) {
-        this.data = data;
-    }
-
-    public List<RemoteCard> getData() {
-        return data;
-    }
-
-    public void setData(List<RemoteCard> data) {
-        this.data = data;
+    public PlayedCards(@JsonProperty(value = "data",required = true) List<RemoteCard> data) {
+        this.playedCards = data;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        PlayedCards that = (PlayedCards) o;
-
-        return !(data != null ? !data.equals(that.data) : that.data != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return data != null ? data.hashCode() : 0;
+    public Optional<Response> dispatch(RemoteGameHandler handler) {
+        handler.onPlayedCards(playedCards);
+        return Optional.empty();
     }
 }

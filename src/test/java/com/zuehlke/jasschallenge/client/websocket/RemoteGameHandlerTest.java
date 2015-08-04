@@ -5,6 +5,10 @@ import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.game.Round;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.websocket.messages.*;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseCard;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChoosePlayerName;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseSession;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseTrumpf;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.*;
 import org.junit.Test;
 
@@ -42,7 +46,7 @@ public class RemoteGameHandlerTest {
                 new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo)));
 
         final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer);
-        remoteGameHandler.onBroadCastTeams(new BroadCastTeams(remoteTeams));
+        remoteGameHandler.onBroadCastTeams(remoteTeams);
 
         final ChooseCard chooseCard = remoteGameHandler.onRequestCard();
 
@@ -65,9 +69,9 @@ public class RemoteGameHandlerTest {
                 new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo)));
 
         final RemoteGameHandler handler = new RemoteGameHandler(localPlayer);
-        handler.onBroadCastTeams(new BroadCastTeams(remoteTeams));
-        handler.onPlayedCards(new PlayedCards(asList(new RemoteCard(13, CLUBS))));
-        handler.onPlayedCards(new PlayedCards(asList(new RemoteCard(13, CLUBS), new RemoteCard(10, DIAMONDS))));
+        handler.onBroadCastTeams(remoteTeams);
+        handler.onPlayedCards(asList(new RemoteCard(13, CLUBS)));
+        handler.onPlayedCards(asList(new RemoteCard(13, CLUBS), new RemoteCard(10, DIAMONDS)));
 
         Round expected = Round.createRound(0);
         expected.makeMove(new Move(new Player("remote 1"), Card.CLUB_KING));
@@ -98,10 +102,10 @@ public class RemoteGameHandlerTest {
     public void onDealCards_setsTheCardsOnLocalPlayer() {
 
         final Player localPlayer = new Player("test");
-        final DealCard dealCard = new DealCard(asList(
+        final List<RemoteCard> dealCard = asList(
                 new RemoteCard(14, DIAMONDS),
                 new RemoteCard(8, RemoteColor.SPADES),
-                new RemoteCard(6, CLUBS)));
+                new RemoteCard(6, CLUBS));
 
         new RemoteGameHandler(localPlayer).onDealCards(dealCard);
 
@@ -131,7 +135,7 @@ public class RemoteGameHandlerTest {
                 new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo)));
 
         final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer);
-        remoteGameHandler.onBroadCastTeams(new BroadCastTeams(remoteTeams));
+        remoteGameHandler.onBroadCastTeams(remoteTeams);
 
         assertThat(remoteGameHandler.getTeams(), contains(
                 match(team -> "team a".equals(team.getTeamName()), "team a"),
@@ -153,9 +157,9 @@ public class RemoteGameHandlerTest {
                 new RemoteTeam("team a", asList(remoteOne, remoteThree)),
                 new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo)));
         final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer);
-        remoteGameHandler.onBroadCastTeams(new BroadCastTeams(remoteTeams));
+        remoteGameHandler.onBroadCastTeams(remoteTeams);
 
-        remoteGameHandler.onPlayedCards(new PlayedCards(asList(new RemoteCard(14, DIAMONDS))));
+        remoteGameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS)));
 
         assertThat(remoteGameHandler.getCurrentRound().getMoves().get(0).getPlayer().getName(), equalTo(remoteOne.getName()));
     }
@@ -172,10 +176,10 @@ public class RemoteGameHandlerTest {
                 new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo)));
         final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer);
 
-        remoteGameHandler.onBroadCastTeams(new BroadCastTeams(remoteTeams));
-        remoteGameHandler.onPlayedCards(new PlayedCards(asList(new RemoteCard(13, CLUBS))));
-        remoteGameHandler.onPlayedCards(new PlayedCards(asList(new RemoteCard(13, CLUBS),new RemoteCard(14, CLUBS))));
-        remoteGameHandler.onBroadCastStich(new BroadCastStich(new Stich("remote 2", 0, emptyList(), emptyList())));
+        remoteGameHandler.onBroadCastTeams(remoteTeams);
+        remoteGameHandler.onPlayedCards(asList(new RemoteCard(13, CLUBS)));
+        remoteGameHandler.onPlayedCards(asList(new RemoteCard(13, CLUBS),new RemoteCard(14, CLUBS)));
+        remoteGameHandler.onBroadCastStich(new Stich("remote 2", 0, emptyList(), emptyList()));
 
         assertThat(remoteGameHandler.getCurrentRound().getMoves(), empty());
         assertThat(remoteGameHandler.getCurrentRound().getRoundNumber(), equalTo(1));
@@ -193,16 +197,16 @@ public class RemoteGameHandlerTest {
                 new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo)));
         final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer);
 
-        remoteGameHandler.onBroadCastTeams(new BroadCastTeams(remoteTeams));
-        remoteGameHandler.onPlayedCards(new PlayedCards(asList(new RemoteCard(6, DIAMONDS))));
-        remoteGameHandler.onPlayedCards(new PlayedCards(asList(new RemoteCard(6, DIAMONDS), new RemoteCard(13, CLUBS))));
-        remoteGameHandler.onPlayedCards(new PlayedCards(asList(new RemoteCard(6, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(14, DIAMONDS))));
-        remoteGameHandler.onPlayedCards(new PlayedCards(asList(new RemoteCard(6, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(14, DIAMONDS), new RemoteCard(11, DIAMONDS))));
-        remoteGameHandler.onBroadCastStich(new BroadCastStich(new Stich("local", 0, emptyList(), emptyList())));
-        remoteGameHandler.onPlayedCards(new PlayedCards(asList(new RemoteCard(14, DIAMONDS))));
-        remoteGameHandler.onPlayedCards(new PlayedCards(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(13, CLUBS))));
-        remoteGameHandler.onPlayedCards(new PlayedCards(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(6, HEARTS))));
-        remoteGameHandler.onPlayedCards(new PlayedCards(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(6, HEARTS), new RemoteCard(11, DIAMONDS))));
+        remoteGameHandler.onBroadCastTeams(remoteTeams);
+        remoteGameHandler.onPlayedCards(asList(new RemoteCard(6, DIAMONDS)));
+        remoteGameHandler.onPlayedCards(asList(new RemoteCard(6, DIAMONDS), new RemoteCard(13, CLUBS)));
+        remoteGameHandler.onPlayedCards(asList(new RemoteCard(6, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(14, DIAMONDS)));
+        remoteGameHandler.onPlayedCards(asList(new RemoteCard(6, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(14, DIAMONDS), new RemoteCard(11, DIAMONDS)));
+        remoteGameHandler.onBroadCastStich(new Stich("local", 0, emptyList(), emptyList()));
+        remoteGameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS)));
+        remoteGameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(13, CLUBS)));
+        remoteGameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(6, HEARTS)));
+        remoteGameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(6, HEARTS), new RemoteCard(11, DIAMONDS)));
 
         assertThat(remoteGameHandler.getCurrentRound().getMoves(), hasSize(4));
         assertThat(remoteGameHandler.getCurrentRound().getMoves().get(0).getPlayer().getName(), equalTo("local"));

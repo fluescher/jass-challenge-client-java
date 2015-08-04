@@ -1,10 +1,9 @@
-package com.zuehlke.jasschallenge.client.websocket.messages;
+package com.zuehlke.jasschallenge.client.websocket.messages.responses;
 
-public class ChoosePlayerName extends Message {
+public class ChoosePlayerName implements Response {
     private final String data;
 
     public ChoosePlayerName(String data) {
-        super(Type.CHOOSE_PLAYER_NAME);
         this.data = data;
     }
 

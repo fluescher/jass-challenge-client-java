@@ -3,9 +3,11 @@ package com.zuehlke.jasschallenge.client.websocket;
 import com.zuehlke.jasschallenge.client.game.*;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.websocket.messages.*;
-import com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteCard;
-import com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor;
-import com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteTeam;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseCard;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChoosePlayerName;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseSession;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseTrumpf;
+import com.zuehlke.jasschallenge.client.websocket.messages.type.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,18 +57,18 @@ public class RemoteGameHandler {
         return new ChoosePlayerName(localPlayer.getName());
     }
 
-    public void onDealCards(DealCard dealCard) {
-        localPlayer.setCards(mapAllToCards(dealCard.getData()));
+    public void onDealCards(List<RemoteCard> dealCard) {
+        localPlayer.setCards(mapAllToCards(dealCard));
     }
 
-    public void onPlayerJoined(PlayerJoined joinedPlayer) {
+    public void onPlayerJoined(RemotePlayer joinedPlayer) {
     }
 
-    public void onBroadCastTeams(BroadCastTeams remoteTeams) {
-        teams.addAll(remoteTeams.getData().stream()
+    public void onBroadCastTeams(List<RemoteTeam> remoteTeams) {
+        teams.addAll(remoteTeams.stream()
                 .map(this::toTeam)
                 .collect(toList()));
-        playersInPlayingOrder = remoteTeams.getData().stream()
+        playersInPlayingOrder = remoteTeams.stream()
                 .flatMap(remoteTeam -> remoteTeam.getPlayers().stream())
                 .sorted((remotePlayer1, remotePlayer2) -> compare(remotePlayer1.getId(), remotePlayer2.getId()))
                 .map(player -> playerMapper.findPlayerByName(player.getName()))
@@ -80,7 +82,7 @@ public class RemoteGameHandler {
         return new ChooseTrumpf(OBEABE);
     }
 
-    public void onBroadCastTrumpf(BroadCastTrumpf trumpfChoice) {
+    public void onBroadCastTrumpf(TrumpfChoice trumpfChoice) {
 
     }
 
@@ -93,9 +95,9 @@ public class RemoteGameHandler {
         return new ChooseCard(cardToPlay);
     }
 
-    public void onPlayedCards(PlayedCards playedCards) {
-        final int playerPosition = playedCards.getData().size() - 1;
-        final RemoteCard remoteCard = playedCards.getData().get(playerPosition);
+    public void onPlayedCards(List<RemoteCard> playedCards) {
+        final int playerPosition = playedCards.size() - 1;
+        final RemoteCard remoteCard = playedCards.get(playerPosition);
 
         final Player player = playingOrder.getCurrentPlayer();
         playingOrder.moveToNextPlayer();
@@ -104,24 +106,24 @@ public class RemoteGameHandler {
         this.currentRound.makeMove(move);
     }
 
-    public void onBroadCastStich(BroadCastStich stich) {
-        final Player winner = playerMapper.findPlayerByName(stich.getData().getName());
+    public void onBroadCastStich(Stich stich) {
+        final Player winner = playerMapper.findPlayerByName(stich.getName());
         checkEquals(winner, currentRound.getWinner(), "Local winner differs from remote");
 
         this.currentRound = Round.createRound(this.currentRound.getRoundNumber() + 1);
         this.playingOrder = createOrderStartingFromPlayer(this.playingOrder.getPlayersInInitialPlayingOrder(), winner);
     }
 
-    public void onBroadGameFinished(BroadCastGameFinished gameFinished) {
+    public void onBroadGameFinished(List<RemoteTeam> remoteTeams) {
         startingPlayerOrder.moveToNextPlayer();
         playingOrder = createOrderStartingFromPlayer(playersInPlayingOrder, startingPlayerOrder.getCurrentPlayer());
     }
 
-    public void onBroadCastWinnerTeam(BroadCastWinnerTeam winnerTeam) {
+    public void onBroadCastWinnerTeam(RemoteTeam winnerTeam) {
 
     }
 
-    public void onRejectCard(RejectCard rejectCard) {
+    public void onRejectCard(RemoteCard rejectCard) {
         throw new RuntimeException("Card was rejected");
     }
 

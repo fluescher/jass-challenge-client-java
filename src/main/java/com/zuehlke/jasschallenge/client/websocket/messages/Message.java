@@ -1,44 +1,33 @@
 package com.zuehlke.jasschallenge.client.websocket.messages;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.zuehlke.jasschallenge.client.websocket.RemoteGameHandler;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.Response;
+
+import java.util.Optional;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Message {
-
-    private Type type;
-
-    public Message() {
-    }
-
-    public Message(Type choosePlayerName) {
-        this.type = choosePlayerName;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    public enum Type {
-        REQUEST_PLAYER_NAME,
-        REQUEST_SESSION_CHOICE,
-        BROADCAST_SESSION_JOINED,
-        BROADCAST_TEAMS,
-        DEAL_CARDS,
-        REQUEST_TRUMPF,
-        CHOOSE_PLAYER_NAME,
-        CHOOSE_SESSION,
-        CHOOSE_TRUMPF,
-        BROADCAST_WINNER_TEAM,
-        BROADCAST_TRUMPF,
-        BROADCAST_STICH,
-        BROADCAST_GAME_FINISHED,
-        CHOOSE_CARD,
-        REQUEST_CARD,
-        REJECT_CARD,
-        PLAYED_CARDS
-    }
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = BroadCastGameFinished.class, name = "BROADCAST_GAME_FINISHED"),
+        @JsonSubTypes.Type(value = BroadCastStich.class, name = "BROADCAST_STICH"),
+        @JsonSubTypes.Type(value = BroadCastTeams.class, name = "BROADCAST_TEAMS"),
+        @JsonSubTypes.Type(value = BroadCastTrumpf.class, name = "BROADCAST_TRUMPF"),
+        @JsonSubTypes.Type(value = BroadCastWinnerTeam.class, name = "BROADCAST_WINNER_TEAM"),
+        @JsonSubTypes.Type(value = RequestCard.class, name = "REQUEST_CARD"),
+        @JsonSubTypes.Type(value = RequestTrumpf.class, name = "REQUEST_TRUMPF"),
+        @JsonSubTypes.Type(value = RejectCard.class, name = "REJECT_CARD"),
+        @JsonSubTypes.Type(value = PlayerJoined.class, name = "BROADCAST_SESSION_JOINED"),
+        @JsonSubTypes.Type(value = DealCard.class, name = "DEAL_CARDS"),
+        @JsonSubTypes.Type(value = RequestPlayerName.class, name = "REQUEST_PLAYER_NAME"),
+        @JsonSubTypes.Type(value = PlayedCards.class, name = "PLAYED_CARDS"),
+        @JsonSubTypes.Type(value = RequestSessionChoice.class, name = "REQUEST_SESSION_CHOICE"),
+})
+public interface Message {
+    Optional<Response> dispatch(RemoteGameHandler handler);
 }

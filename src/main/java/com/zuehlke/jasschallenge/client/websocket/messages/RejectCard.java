@@ -1,38 +1,23 @@
 package com.zuehlke.jasschallenge.client.websocket.messages;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.zuehlke.jasschallenge.client.websocket.RemoteGameHandler;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.Response;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteCard;
 
-public class RejectCard extends Message {
-    private RemoteCard data;
+import java.util.Optional;
 
-    public RejectCard() {
-    }
+public class RejectCard implements Message {
+    private final RemoteCard data;
 
-    public RejectCard(RemoteCard remoteCard) {
+    public RejectCard(@JsonProperty(value = "data",required = true) RemoteCard remoteCard) {
         this.data = remoteCard;
     }
 
-    public RemoteCard getData() {
-        return data;
-    }
-
-    public void setData(RemoteCard data) {
-        this.data = data;
-    }
-
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        RejectCard that = (RejectCard) o;
-
-        return !(data != null ? !data.equals(that.data) : that.data != null);
-
+    public Optional<Response> dispatch(RemoteGameHandler handler) {
+        handler.onRejectCard(data);
+        return Optional.empty();
     }
 
-    @Override
-    public int hashCode() {
-        return data != null ? data.hashCode() : 0;
-    }
 }

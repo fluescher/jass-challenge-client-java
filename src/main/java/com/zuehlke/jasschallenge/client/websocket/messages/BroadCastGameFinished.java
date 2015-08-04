@@ -1,41 +1,25 @@
 package com.zuehlke.jasschallenge.client.websocket.messages;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.zuehlke.jasschallenge.client.websocket.RemoteGameHandler;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.Response;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteTeam;
 
 import java.util.List;
+import java.util.Optional;
 
-public class BroadCastGameFinished extends Message {
+public class BroadCastGameFinished implements Message {
 
-    private List<RemoteTeam> data;
-
-    public BroadCastGameFinished() {
-    }
-
-    public BroadCastGameFinished(List<RemoteTeam> remoteTeams) {
-        this.data = remoteTeams;
-    }
-
-    public List<RemoteTeam> getData() {
-        return data;
-    }
-
-    public void setData(List<RemoteTeam> data) {
-        this.data = data;
+    private final List<RemoteTeam> remoteTeams;
+    
+    public BroadCastGameFinished(
+            @JsonProperty(value = "data", required = true) List<RemoteTeam> remoteTeams) {
+        this.remoteTeams = remoteTeams;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        BroadCastGameFinished that = (BroadCastGameFinished) o;
-
-        return !(data != null ? !data.equals(that.data) : that.data != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return data != null ? data.hashCode() : 0;
+    public Optional<Response> dispatch(RemoteGameHandler handler) {
+        handler.onBroadGameFinished(remoteTeams);
+        return Optional.empty();
     }
 }

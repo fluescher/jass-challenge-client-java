@@ -1,13 +1,12 @@
-package com.zuehlke.jasschallenge.client.websocket.messages;
+package com.zuehlke.jasschallenge.client.websocket.messages.responses;
 
 import com.zuehlke.jasschallenge.client.websocket.messages.type.SessionChoice;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.SessionType;
 
-public class ChooseSession extends Message {
+public class ChooseSession implements Response {
     private final SessionChoice data;
 
     public ChooseSession(SessionType sessionType) {
-        super(Type.CHOOSE_SESSION);
         data = new SessionChoice(sessionType);
     }
 

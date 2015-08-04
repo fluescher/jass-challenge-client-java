@@ -1,39 +1,24 @@
 package com.zuehlke.jasschallenge.client.websocket.messages;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.zuehlke.jasschallenge.client.websocket.RemoteGameHandler;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.Response;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.RemotePlayer;
 
-public class PlayerJoined extends Message {
+import java.util.Optional;
 
-    private RemotePlayer data;
+public class PlayerJoined implements Message {
 
-    public PlayerJoined() {
-    }
+    private final RemotePlayer joinedPlayer;
 
-    public PlayerJoined(RemotePlayer remotePlayer) {
-        data = remotePlayer;
-    }
-
-    public RemotePlayer getData() {
-        return data;
-    }
-
-    public void setData(RemotePlayer data) {
-        this.data = data;
+    public PlayerJoined(@JsonProperty(value = "data",required = true) RemotePlayer remotePlayer) {
+        joinedPlayer = remotePlayer;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        PlayerJoined that = (PlayerJoined) o;
-
-        return !(data != null ? !data.equals(that.data) : that.data != null);
-
+    public Optional<Response> dispatch(RemoteGameHandler handler) {
+        handler.onPlayerJoined(joinedPlayer);
+        return Optional.empty();
     }
 
-    @Override
-    public int hashCode() {
-        return data != null ? data.hashCode() : 0;
-    }
 }

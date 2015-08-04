@@ -1,14 +1,13 @@
-package com.zuehlke.jasschallenge.client.websocket.messages;
+package com.zuehlke.jasschallenge.client.websocket.messages.responses;
 
 import com.zuehlke.jasschallenge.client.websocket.messages.type.Trumpf;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.TrumpfChoice;
 
-public class ChooseTrumpf extends Message {
+public class ChooseTrumpf implements Response {
 
     private final TrumpfChoice data;
 
     public ChooseTrumpf(Trumpf trumpf) {
-        super(Type.CHOOSE_TRUMPF);
         data = new TrumpfChoice(trumpf, null);
     }
 

@@ -1,39 +1,24 @@
 package com.zuehlke.jasschallenge.client.websocket.messages;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.zuehlke.jasschallenge.client.websocket.RemoteGameHandler;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.Response;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.Stich;
 
-public class BroadCastStich extends Message {
+import java.util.Optional;
 
-    private Stich data;
+public class BroadCastStich implements Message {
 
-    public BroadCastStich() {
-    }
+    private final Stich stich;
 
-    public BroadCastStich(Stich data) {
-        this.data = data;
-    }
-
-    public Stich getData() {
-        return data;
-    }
-
-    public void setData(Stich data) {
-        this.data = data;
+    public BroadCastStich(
+            @JsonProperty(value = "data",required = true) Stich stich) {
+        this.stich = stich;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        BroadCastStich that = (BroadCastStich) o;
-
-        return !(data != null ? !data.equals(that.data) : that.data != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return data != null ? data.hashCode() : 0;
+    public Optional<Response> dispatch(RemoteGameHandler handler) {
+        handler.onBroadCastStich(stich);
+        return Optional.empty();
     }
 }

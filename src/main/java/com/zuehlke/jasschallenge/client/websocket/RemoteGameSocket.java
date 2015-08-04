@@ -3,6 +3,7 @@ package com.zuehlke.jasschallenge.client.websocket;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zuehlke.jasschallenge.client.websocket.messages.*;
+import com.zuehlke.jasschallenge.client.websocket.messages.responses.Response;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -42,49 +44,8 @@ public class RemoteGameSocket {
         logger.debug("Received message: {}", msg);
 
         final Message message = read(msg, Message.class);
-        switch (message.getType()) {
-            case REQUEST_PLAYER_NAME:
-                send(handler.onRequestPlayerName());
-                break;
-            case REQUEST_SESSION_CHOICE:
-                send(handler.onRequestSessionChoice());
-                break;
-            case BROADCAST_SESSION_JOINED:
-                handler.onPlayerJoined(read(msg, PlayerJoined.class));
-                break;
-            case BROADCAST_TEAMS:
-                handler.onBroadCastTeams(read(msg, BroadCastTeams.class));
-                break;
-            case DEAL_CARDS:
-                handler.onDealCards(read(msg, DealCard.class));
-                break;
-            case REQUEST_TRUMPF:
-                send(handler.onRequestTrumpf());
-                break;
-            case BROADCAST_TRUMPF:
-                handler.onBroadCastTrumpf(read(msg, BroadCastTrumpf.class));
-                break;
-            case REQUEST_CARD:
-                send(handler.onRequestCard());
-                break;
-            case REJECT_CARD:
-                handler.onRejectCard(read(msg, RejectCard.class));
-                break;
-            case PLAYED_CARDS:
-                handler.onPlayedCards(read(msg, PlayedCards.class));
-                break;
-            case BROADCAST_STICH:
-                handler.onBroadCastStich(read(msg, BroadCastStich.class));
-                break;
-            case BROADCAST_GAME_FINISHED:
-                handler.onBroadGameFinished(read(msg, BroadCastGameFinished.class));
-                break;
-            case BROADCAST_WINNER_TEAM:
-                handler.onBroadCastWinnerTeam(read(msg, BroadCastWinnerTeam.class));
-                break;
-            default:
-                logger.error("Received unknown message: {}", msg);
-        }
+        Optional<Response> response = message.dispatch(handler);
+        response.ifPresent(this::send);
     }
 
     @OnWebSocketClose
@@ -93,17 +54,21 @@ public class RemoteGameSocket {
         closeLatch.countDown();
     }
 
-    private void send(Message message) throws IOException {
-        final String messageString = toJson(message);
-        logger.debug("Sending message: {}", messageString);
-        session.getRemote().sendString(messageString);
+    private void send(Response message) {
+        try {
+            final String messageString = toJson(message);
+            logger.debug("Sending message: {}", messageString);
+            session.getRemote().sendString(messageString);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static <T> T read(String msg, Class<T> valueType) throws IOException {
         return new ObjectMapper().readValue(msg, valueType);
     }
 
-    private static String toJson(Message obj) {
+    private static String toJson(Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
         } catch (JsonProcessingException e) {
