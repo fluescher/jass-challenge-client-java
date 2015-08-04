@@ -1,14 +1,14 @@
 package com.zuehlke.jasschallenge.client.websocket.messages.type;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class RemoteCard {
 
-    private int number;
-    private RemoteColor color;
+    private final int number;
+    private final RemoteColor color;
 
-    public RemoteCard() {
-    }
-
-    public RemoteCard(int number, RemoteColor color) {
+    public RemoteCard(@JsonProperty(value = "number",required = true) int number,
+                      @JsonProperty(value = "color",required = true) RemoteColor color) {
         this.number = number;
         this.color = color;
     }
@@ -17,16 +17,8 @@ public class RemoteCard {
         return number;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
     public RemoteColor getColor() {
         return color;
-    }
-
-    public void setColor(RemoteColor color) {
-        this.color = color;
     }
 
     @Override

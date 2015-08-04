@@ -7,7 +7,7 @@ public class ChooseSession implements Response {
     private final SessionChoice data;
 
     public ChooseSession(SessionType sessionType) {
-        data = new SessionChoice(sessionType);
+        data = new SessionChoice(sessionType, "a session");
     }
 
     public SessionChoice getData() {

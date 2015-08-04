@@ -1,13 +1,13 @@
 package com.zuehlke.jasschallenge.client.websocket.messages.type;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class RemotePlayer {
-    private int id;
-    private  String name;
+    private final int id;
+    private final String name;
 
-    public RemotePlayer() {
-    }
-
-    public RemotePlayer(int id, String name) {
+    public RemotePlayer(@JsonProperty(value = "id",required = true) int id,
+                        @JsonProperty(value = "name",required = true) String name) {
         this.id = id;
         this.name = name;
     }
@@ -16,16 +16,8 @@ public class RemotePlayer {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override

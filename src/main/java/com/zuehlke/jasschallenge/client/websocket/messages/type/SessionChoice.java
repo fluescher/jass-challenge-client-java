@@ -2,10 +2,11 @@ package com.zuehlke.jasschallenge.client.websocket.messages.type;
 
 public class SessionChoice {
     private final SessionType sessionChoice;
-    private final String sessionName = "a session";
+    private final String sessionName;
 
-    public SessionChoice(SessionType sessionChoice) {
+    public SessionChoice(SessionType sessionChoice, String sessionName) {
         this.sessionChoice = sessionChoice;
+        this.sessionName = sessionName;
     }
 
     public SessionType getSessionChoice() {

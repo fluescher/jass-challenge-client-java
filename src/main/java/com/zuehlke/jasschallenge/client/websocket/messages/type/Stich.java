@@ -1,17 +1,19 @@
 package com.zuehlke.jasschallenge.client.websocket.messages.type;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class Stich {
-    private String name;
-    private int id;
-    private List<RemoteCard> playedCards;
-    private List<RemoteTeam> teams;
+    private final String name;
+    private final int id;
+    private final List<RemoteCard> playedCards;
+    private final List<RemoteTeam> teams;
 
-    public Stich() {
-    }
-
-    public Stich(String name, int id, List<RemoteCard> playedCards, List<RemoteTeam> teams) {
+    public Stich(@JsonProperty(value = "name",required = true) String name,
+                 @JsonProperty(value = "id",required = true) int id,
+                 @JsonProperty(value = "playedCards",required = true) List<RemoteCard> playedCards,
+                 @JsonProperty(value = "teams",required = true) List<RemoteTeam> teams) {
         this.name = name;
         this.id = id;
         this.playedCards = playedCards;
@@ -22,32 +24,16 @@ public class Stich {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public List<RemoteCard> getPlayedCards() {
         return playedCards;
     }
 
-    public void setPlayedCards(List<RemoteCard> playedCards) {
-        this.playedCards = playedCards;
-    }
-
     public List<RemoteTeam> getTeams() {
         return teams;
-    }
-
-    public void setTeams(List<RemoteTeam> teams) {
-        this.teams = teams;
     }
 
     @Override

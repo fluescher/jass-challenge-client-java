@@ -1,22 +1,14 @@
 package com.zuehlke.jasschallenge.client.websocket.messages.type;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class TrumpfChoice {
-    private Trumpf mode;
-    private RemoteColor trumpfColor;
+    private final Trumpf mode;
+    private final RemoteColor trumpfColor;
 
-    public TrumpfChoice() {
-    }
-
-    public TrumpfChoice(Trumpf trumpf, RemoteColor trumpfColor) {
+    public TrumpfChoice(@JsonProperty(value = "mode", required = true) Trumpf trumpf,
+                        @JsonProperty(value = "trumpfColor", required = true) RemoteColor trumpfColor) {
         this.mode = trumpf;
-        this.trumpfColor = trumpfColor;
-    }
-
-    public void setMode(Trumpf mode) {
-        this.mode = mode;
-    }
-
-    public void setTrumpfColor(RemoteColor trumpfColor) {
         this.trumpfColor = trumpfColor;
     }
 
