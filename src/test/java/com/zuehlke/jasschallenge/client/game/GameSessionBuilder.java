@@ -5,6 +5,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 public class GameSessionBuilder {
+    private Mode startedGameMode = null;
     private List<Player> playersInPlayingOrder = asList(
             new Player("Player 1"),
             new Player("Player 2"),
@@ -14,6 +15,10 @@ public class GameSessionBuilder {
     private List<Team> teams = asList(
             new Team("Team 1", asList(playersInPlayingOrder.get(0), playersInPlayingOrder.get(2))),
             new Team("Team 2", asList(playersInPlayingOrder.get(1), playersInPlayingOrder.get(3))));
+
+    public static GameSessionBuilder newSession() {
+        return new GameSessionBuilder();
+    }
 
     public GameSessionBuilder withTeams(List<Team> teams) {
         this.teams = teams;
@@ -26,6 +31,15 @@ public class GameSessionBuilder {
     }
 
     public GameSession createGameSession() {
-        return new GameSession(teams, playersInPlayingOrder);
+        final GameSession gameSession = new GameSession(teams, playersInPlayingOrder);
+        if(startedGameMode != null) {
+            gameSession.startNewGame(startedGameMode);
+        }
+        return gameSession;
+    }
+
+    public GameSessionBuilder withStartedGame(Mode mode) {
+        startedGameMode = mode;
+        return this;
     }
 }

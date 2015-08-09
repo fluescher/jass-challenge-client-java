@@ -34,6 +34,11 @@ public class RemoteGameHandler {
         this.playerMapper = new PlayerMapper(localPlayer);
     }
 
+    RemoteGameHandler(Player localPlayer, GameSession gameSession) {
+        this(localPlayer);
+        this.gameSession = gameSession;
+    }
+
     Round getCurrentRound() {
         return gameSession.getCurrentRound();
     }
@@ -83,14 +88,14 @@ public class RemoteGameHandler {
     }
 
     public void onPlayedCards(List<RemoteCard> playedCards) {
+
         final int playerPosition = playedCards.size() - 1;
         final RemoteCard remoteCard = playedCards.get(playerPosition);
 
         final Player player = getCurrentRound().getPlayingOrder().getCurrentPlayer();
-        getCurrentRound().getPlayingOrder().moveToNextPlayer();
 
         final Move move = new Move(player, mapToCard(remoteCard));
-        getCurrentRound().makeMove(move);
+        gameSession.makeMove(move);
     }
 
     public void onBroadCastStich(Stich stich) {

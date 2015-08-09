@@ -29,10 +29,10 @@ public class GameSession {
         return teams;
     }
 
-    public Game startNewGame(Mode obeabe) {
+    public Game startNewGame(Mode mode) {
 
         final PlayingOrder initialOrder = createOrderStartingFromPlayer(playersInPlayingOrder, gameStartingPlayerOrder.getCurrentPlayer());
-        this.currentRound = Round.createRound(new TopDownRules(), 0, initialOrder);
+        this.currentRound = Round.createRound(mode.getRules(), 0, initialOrder);
         gameStartingPlayerOrder.moveToNextPlayer();
         return new Game();
     }
@@ -44,5 +44,11 @@ public class GameSession {
         final Round nextRound  = Round.createRound(currentRound.getRules(), nextRoundNumber, nextPlayingOrder);
         this.currentRound = nextRound;
         return currentRound;
+    }
+
+    public void makeMove(Move move) {
+
+        currentRound.makeMove(move);
+        currentRound.getPlayingOrder().moveToNextPlayer();
     }
 }
