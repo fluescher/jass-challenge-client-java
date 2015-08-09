@@ -17,7 +17,7 @@ public class RoundTest {
     @Test
     public void getRoundColor_returnsColorOfFirstCard() {
 
-        final Round round = Round.createRoundWithCardsPlayed(0, EnumSet.of(DIAMOND_ACE));
+        final Round round = Round.createRoundWithCardsPlayed(0, null, EnumSet.of(DIAMOND_ACE));
 
         assertThat(round.getRoundColor(), equalTo(DIAMONDS));
     }
@@ -25,7 +25,7 @@ public class RoundTest {
     @Test
     public void getRoundColor_returnsNull_ifNoCardHasBeenPlayed() {
 
-        final Round round = Round.createRoundWithCardsPlayed(0, EnumSet.noneOf(Card.class));
+        final Round round = Round.createRoundWithCardsPlayed(0, null, EnumSet.noneOf(Card.class));
 
         assertNull(round.getRoundColor());
     }
@@ -33,7 +33,7 @@ public class RoundTest {
     @Test
     public void getValue_returnsZero_ifNoCardsWerePlayed () {
 
-        final Round round = Round.createRoundWithCardsPlayed(0, EnumSet.noneOf(Card.class));
+        final Round round = Round.createRoundWithCardsPlayed(0, null, EnumSet.noneOf(Card.class));
 
         assertThat(round.getScore(), equalTo(0));
     }
@@ -41,7 +41,7 @@ public class RoundTest {
     @Test
     public void getValue_returnsSumOfValues_ifSomeCardsWerePlayed () {
 
-        final Round round = Round.createRoundWithCardsPlayed(0, EnumSet.of(DIAMOND_ACE, HEART_SIX, HEART_TEN));
+        final Round round = Round.createRoundWithCardsPlayed(0, null, EnumSet.of(DIAMOND_ACE, HEART_SIX, HEART_TEN));
 
         assertThat(round.getScore(), equalTo(21));
     }
@@ -49,7 +49,7 @@ public class RoundTest {
     @Test(expected = RuntimeException.class)
     public void makeMove_throwsException_whenAlreadyEnoughCardsWerePlayed () {
 
-        final Round round = Round.createRoundWithCardsPlayed(0, EnumSet.of(HEART_ACE, HEART_SIX, HEART_TEN, HEART_JACK));
+        final Round round = Round.createRoundWithCardsPlayed(0, null, EnumSet.of(HEART_ACE, HEART_SIX, HEART_TEN, HEART_JACK));
 
         final Player player = new Player();
         round.makeMove(new Move(player, HEART_SEVEN));
@@ -57,7 +57,7 @@ public class RoundTest {
 
     @Test
     public void getWinner_returnsNull_ifNoCardWasPlayed() {
-        final Round round = Round.createRound(0);
+        final Round round = Round.createRound(0, null);
 
         final Player winner = round.getWinner();
 
@@ -71,7 +71,7 @@ public class RoundTest {
         final Player playerC = new Player("c");
         final Player playerD = new Player("d");
 
-        final Round round = Round.createRound(0);
+        final Round round = Round.createRound(0, null);
         round.makeMove(new Move(playerA, HEART_TEN));
         round.makeMove(new Move(playerB, HEART_QUEEN));
         round.makeMove(new Move(playerC, HEART_SEVEN));
@@ -87,7 +87,7 @@ public class RoundTest {
         final Player playerC = new Player("c");
         final Player playerD = new Player("d");
 
-        final Round round = Round.createRound(0);
+        final Round round = Round.createRound(0, null);
         round.makeMove(new Move(playerA, HEART_JACK));
         round.makeMove(new Move(playerB, HEART_NINE));
         round.makeMove(new Move(playerC, DIAMOND_EIGHT));

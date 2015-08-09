@@ -73,7 +73,7 @@ public class RemoteGameHandlerTest {
         handler.onPlayedCards(asList(new RemoteCard(13, CLUBS)));
         handler.onPlayedCards(asList(new RemoteCard(13, CLUBS), new RemoteCard(10, DIAMONDS)));
 
-        Round expected = Round.createRound(0);
+        Round expected = Round.createRound(0, null);
         expected.makeMove(new Move(new Player("remote 1"), Card.CLUB_KING));
         expected.makeMove(new Move(new Player("remote 2"), Card.DIAMOND_TEN));
         assertThat(handler.getCurrentRound(), equalTo(expected));
@@ -84,8 +84,15 @@ public class RemoteGameHandlerTest {
 
         final Player localPlayer = mock(Player.class);
         when(localPlayer.decideTrumpfColor()).thenReturn(OBEABE);
+        when(localPlayer.getName()).thenReturn("local");
+        final RemotePlayer remoteLocalPlayer = new RemotePlayer(2, "local");
+        final List<RemoteTeam> remoteTeams = asList(
+                new RemoteTeam("team a", asList(remoteLocalPlayer)));
 
-        final ChooseTrumpf chooseTrumpf = new RemoteGameHandler(localPlayer).onRequestTrumpf();
+        final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer);
+        remoteGameHandler.onBroadCastTeams(remoteTeams);
+
+        final ChooseTrumpf chooseTrumpf = remoteGameHandler.onRequestTrumpf();
 
         assertThat(chooseTrumpf, equalTo(new ChooseTrumpf(Trumpf.OBEABE)));
     }

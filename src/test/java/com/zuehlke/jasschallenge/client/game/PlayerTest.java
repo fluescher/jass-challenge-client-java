@@ -27,7 +27,7 @@ public class PlayerTest {
     public void canPlayCard_allowsEveryCard_whenNoCardIsPlayed(
             @ForAll Card cardToPlay) {
 
-        final Round round = Round.createRound(0);
+        final Round round = Round.createRound(0, null);
         final Player player = new Player();
 
         final boolean canCardBePlayed = player.canPlayCard(cardToPlay, round);
@@ -42,7 +42,7 @@ public class PlayerTest {
 
         assumeThat(playedCard.getColor(), equalTo(cardToPlay.getColor()));
 
-        final Round round = Round.createRoundWithMoves(0, asList(new Move(new Player("unnamed"), playedCard)));
+        final Round round = Round.createRoundWithMoves(0, null, asList(new Move(new Player("unnamed"), playedCard)));
         final Player player = new Player();
 
         final boolean canCardBePlayed = player.canPlayCard(cardToPlay, round);
@@ -59,7 +59,7 @@ public class PlayerTest {
         assumeThat(playedCard.getColor(), equalTo(HEARTS));
         assumeThat(cardToPlay.getColor(), not(equalTo(HEARTS)));
 
-        final Round round = Round.createRoundWithMoves(0, asList(new Move(new Player("unnamed"), playedCard)));
+        final Round round = Round.createRoundWithMoves(0, null, asList(new Move(new Player("unnamed"), playedCard)));
         final Player player = new Player("unnamed", EnumSet.of(HEART_JACK));
 
         final boolean canCardBePlayed = player.canPlayCard(cardToPlay, round);
@@ -72,7 +72,7 @@ public class PlayerTest {
 
         final Player previous = new Player("another");
         final Player player = new Player("unnamed", EnumSet.of(HEART_EIGHT, HEART_NINE));
-        final Round round = Round.createRoundWithMoves(0, asList(new Move(previous, CLUB_SIX)));
+        final Round round = Round.createRoundWithMoves(0, null, asList(new Move(previous, CLUB_SIX)));
 
         final boolean canCardBePlayed = player.canPlayCard(HEART_EIGHT, round);
 

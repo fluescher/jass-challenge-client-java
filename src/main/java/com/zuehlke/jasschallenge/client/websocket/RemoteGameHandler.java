@@ -2,7 +2,7 @@ package com.zuehlke.jasschallenge.client.websocket;
 
 import com.zuehlke.jasschallenge.client.game.*;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
-import com.zuehlke.jasschallenge.client.websocket.messages.*;
+import com.zuehlke.jasschallenge.client.websocket.messages.PlayerJoinedSession;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseCard;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChoosePlayerName;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseSession;
@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static com.zuehlke.jasschallenge.client.game.PlayingOrder.createOrder;
-import static com.zuehlke.jasschallenge.client.game.PlayingOrder.createOrderStartingFromPlayer;
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.SessionType.AUTOJOIN;
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.Trumpf.OBEABE;
 import static java.lang.Integer.compare;
@@ -26,12 +24,10 @@ import static java.util.stream.Collectors.toSet;
 
 public class RemoteGameHandler {
     private final Player localPlayer;
+    private GameSession gameSession;
+
     private final List<Team> teams;
     private final PlayerMapper playerMapper;
-    private Round currentRound = Round.createRound(0);
-    private PlayingOrder playingOrder;
-    private List<Player> playersInPlayingOrder;
-    private PlayingOrder startingPlayerOrder;
 
     private final static Logger logger = LoggerFactory.getLogger(RemoteGameHandler.class);
 
@@ -42,7 +38,7 @@ public class RemoteGameHandler {
     }
 
     Round getCurrentRound() {
-        return currentRound;
+        return gameSession.getCurrentRound();
     }
 
     List<Team> getTeams() {
@@ -61,24 +57,24 @@ public class RemoteGameHandler {
         localPlayer.setCards(mapAllToCards(dealCard));
     }
 
-    public void onPlayerJoined(RemotePlayer joinedPlayer) {
+    public void onPlayerJoined(PlayerJoinedSession joinedPlayer) {
     }
 
     public void onBroadCastTeams(List<RemoteTeam> remoteTeams) {
         teams.addAll(remoteTeams.stream()
                 .map(this::toTeam)
                 .collect(toList()));
-        playersInPlayingOrder = remoteTeams.stream()
+        List<Player> playersInPlayingOrder = remoteTeams.stream()
                 .flatMap(remoteTeam -> remoteTeam.getPlayers().stream())
                 .sorted((remotePlayer1, remotePlayer2) -> compare(remotePlayer1.getId(), remotePlayer2.getId()))
                 .map(player -> playerMapper.findPlayerByName(player.getName()))
                 .collect(toList());
         logger.debug("Players in playing order: {}", playersInPlayingOrder);
-        startingPlayerOrder = createOrder(playersInPlayingOrder);
-        playingOrder = createOrder(playersInPlayingOrder);
+        gameSession = new GameSession(playersInPlayingOrder);
     }
 
     public ChooseTrumpf onRequestTrumpf() {
+        checkEquals(getCurrentRound().getPlayingOrder().getCurrentPlayer(), localPlayer, "Order differed between remote and local state");
         return new ChooseTrumpf(OBEABE);
     }
 
@@ -87,7 +83,7 @@ public class RemoteGameHandler {
     }
 
     public ChooseCard onRequestCard() {
-        checkEquals(playingOrder.getCurrentPlayer(), localPlayer, "Order differed between remote and local state");
+        checkEquals(getCurrentRound().getPlayingOrder().getCurrentPlayer(), localPlayer, "Order differed between remote and local state");
 
         final Move move = localPlayer.makeMove(getCurrentRound());
         final RemoteCard cardToPlay = mapToRemoteCard(move.getPlayedCard());
@@ -99,24 +95,22 @@ public class RemoteGameHandler {
         final int playerPosition = playedCards.size() - 1;
         final RemoteCard remoteCard = playedCards.get(playerPosition);
 
-        final Player player = playingOrder.getCurrentPlayer();
-        playingOrder.moveToNextPlayer();
+        final Player player = getCurrentRound().getPlayingOrder().getCurrentPlayer();
+        getCurrentRound().getPlayingOrder().moveToNextPlayer();
 
         final Move move = new Move(player, mapToCard(remoteCard));
-        this.currentRound.makeMove(move);
+        getCurrentRound().makeMove(move);
     }
 
     public void onBroadCastStich(Stich stich) {
         final Player winner = playerMapper.findPlayerByName(stich.getName());
-        checkEquals(winner, currentRound.getWinner(), "Local winner differs from remote");
+        checkEquals(winner, getCurrentRound().getWinner(), "Local winner differs from remote");
 
-        this.currentRound = Round.createRound(this.currentRound.getRoundNumber() + 1);
-        this.playingOrder = createOrderStartingFromPlayer(playersInPlayingOrder, winner);
+        gameSession.startNextRound();
     }
 
     public void onBroadGameFinished(List<RemoteTeam> remoteTeams) {
-        startingPlayerOrder.moveToNextPlayer();
-        playingOrder = createOrderStartingFromPlayer(playersInPlayingOrder, startingPlayerOrder.getCurrentPlayer());
+        gameSession.startNewGame();
     }
 
     public void onBroadCastWinnerTeam(RemoteTeam winnerTeam) {

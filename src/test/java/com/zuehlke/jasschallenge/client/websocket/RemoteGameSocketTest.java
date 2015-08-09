@@ -142,9 +142,9 @@ public class RemoteGameSocketTest {
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
         remoteGameSocket.onConnect(session);
 
-        remoteGameSocket.onMessage("{\"type\":\"BROADCAST_SESSION_JOINED\",\"data\":{\"name\":\"1437916730302\",\"id\":3}}");
+        remoteGameSocket.onMessage("{\"type\":\"BROADCAST_SESSION_JOINED\",\"data\":{\"sessionName\":\"32a340ae-5fcf-4086-84a8-9dc871a960cb\",\"player\":{\"id\":0,\"name\":\"1439103645725\"},\"playersInSession\":[{\"id\":0,\"name\":\"1439103645725\"}]}}");
 
-        verify(handler).onPlayerJoined(eq(new RemotePlayer(3, "1437916730302")));
+        verify(handler).onPlayerJoined(eq(new PlayerJoinedSession("32a340ae-5fcf-4086-84a8-9dc871a960cb", new RemotePlayer(0, "1439103645725"), asList(new RemotePlayer(0, "1439103645725")))));
         verifyNoMoreInteractions(handler);
     }
 

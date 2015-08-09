@@ -11,27 +11,29 @@ import static java.util.stream.Collectors.toSet;
 
 public class Round {
     private final int roundNumber;
+    private final PlayingOrder playingOrder;
     private final List<Move> moves = new ArrayList<>();
 
-    public static Round createRound(int roundNumber) {
-        return new Round(roundNumber);
+    public static Round createRound(int roundNumber, PlayingOrder playingOrder) {
+        return new Round(roundNumber, playingOrder);
     }
 
-    public static Round createRoundWithMoves(int roundNumber, List<Move> moves) {
-        return new Round(roundNumber, moves);
+    public static Round createRoundWithMoves(int roundNumber, PlayingOrder playingOrder, List<Move> moves) {
+        return new Round(roundNumber, playingOrder, moves);
     }
 
-    public static Round createRoundWithCardsPlayed(int roundNumber, Set<Card> playedCards) {
+    public static Round createRoundWithCardsPlayed(int roundNumber, PlayingOrder playingOrder, Set<Card> playedCards) {
         List<Move> moves = playedCards.stream().map(card -> new Move(new Player("unnamed"), card)).collect(toList());
-        return createRoundWithMoves(roundNumber, moves);
+        return createRoundWithMoves(roundNumber, playingOrder, moves);
     }
 
-    private Round(int roundNumber) {
-        this(roundNumber, emptyList());
+    private Round(int roundNumber, PlayingOrder playingOrder) {
+        this(roundNumber, playingOrder, emptyList());
     }
 
-    private Round(int roundNumber, List<Move> moves) {
+    private Round(int roundNumber, PlayingOrder playingOrder, List<Move> moves) {
         this.roundNumber = roundNumber;
+        this.playingOrder = playingOrder;
         this.moves.addAll(moves);
     }
 
@@ -101,5 +103,9 @@ public class Round {
                 "roundNumber=" + roundNumber +
                 ", moves=" + moves +
                 '}';
+    }
+
+    public PlayingOrder getPlayingOrder() {
+        return playingOrder;
     }
 }
