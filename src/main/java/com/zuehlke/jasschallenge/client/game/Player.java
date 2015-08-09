@@ -1,7 +1,9 @@
 package com.zuehlke.jasschallenge.client.game;
 
 import com.zuehlke.jasschallenge.client.game.cards.Card;
-import com.zuehlke.jasschallenge.client.game.rules.TopDownRules;
+import com.zuehlke.jasschallenge.client.game.strategy.RandomMoveStrategy;
+import com.zuehlke.jasschallenge.client.game.strategy.Strategy;
+import com.zuehlke.jasschallenge.client.game.strategy.StrategySelector;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -10,18 +12,21 @@ public class Player {
 
     private final String name;
     private final Set<Card> cards;
+    private final StrategySelector strategySelector;
+    private Strategy currentStrategy;
 
     public Player(String name) {
-        this(name, EnumSet.noneOf(Card.class));
+        this(name, new StrategySelector(cards -> Mode.OBEABE, m -> new RandomMoveStrategy()));
     }
 
-    public Player(String name, Set<Card> cards) {
+    public Player(String name, StrategySelector strategySelector) {
+        this(name, strategySelector, EnumSet.noneOf(Card.class));
+    }
+
+    public Player(String name, StrategySelector strategySelector, Set<Card> cards) {
         this.name = name;
         this.cards = EnumSet.copyOf(cards);
-    }
-
-    public Player() {
-        this("unnamed");
+        this.strategySelector = strategySelector;
     }
 
     public String getName() {
@@ -37,18 +42,15 @@ public class Player {
         this.cards.addAll(cards);
     }
 
-    public Move makeMove(Round round) {
-        if(cards.size() == 0) throw new RuntimeException("Cannot play a card without cards in deck");
-        final Card cardToPlay = calculateNextCardToPlay(round);
-        cards.remove(cardToPlay);
-        return new Move(this, cardToPlay);
+    public void prepareForNewGame(Mode mode) {
+        currentStrategy = strategySelector.createStrategyForMode(mode);
     }
 
-    private Card calculateNextCardToPlay(Round round) {
-        return cards.stream()
-                    .filter(card -> new TopDownRules().canPlayCard(card, round.getPlayedCards(), round.getRoundColor(), this.getCards()))
-                    .findAny()
-                    .orElse(cards.stream().findAny().get());
+    public Move makeMove(Round round) {
+        if(cards.size() == 0) throw new RuntimeException("Cannot play a card without cards in deck");
+        final Card cardToPlay = currentStrategy.calculateNextCardToPlay(round, cards);
+        cards.remove(cardToPlay);
+        return new Move(this, cardToPlay);
     }
 
     public Mode decideTrumpfColor() {

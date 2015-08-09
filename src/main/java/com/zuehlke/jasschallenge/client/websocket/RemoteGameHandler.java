@@ -68,7 +68,9 @@ public class RemoteGameHandler {
     }
 
     public void onBroadCastTrumpf(TrumpfChoice trumpfChoice) {
-        gameSession.startNewGame(Mode.valueOf(trumpfChoice.getMode().name()));
+        final Mode nextGameMode = Mode.valueOf(trumpfChoice.getMode().name());
+        localPlayer.prepareForNewGame(nextGameMode);
+        gameSession.startNewGame(nextGameMode);
     }
 
     public ChooseCard onRequestCard() {

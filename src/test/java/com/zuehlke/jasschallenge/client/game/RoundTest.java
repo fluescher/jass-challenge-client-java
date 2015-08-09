@@ -36,7 +36,7 @@ public class RoundTest {
 
         final Round round = Round.createRoundWithCardsPlayed(new TopDownRules(), 0, null, EnumSet.of(HEART_ACE, HEART_SIX, HEART_TEN, HEART_JACK));
 
-        final Player player = new Player();
+        final Player player = new Player("Test player");
         round.makeMove(new Move(player, HEART_SEVEN));
     }
 
