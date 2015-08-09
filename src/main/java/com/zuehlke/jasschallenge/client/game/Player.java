@@ -1,6 +1,7 @@
 package com.zuehlke.jasschallenge.client.game;
 
 import com.zuehlke.jasschallenge.client.game.cards.Card;
+import com.zuehlke.jasschallenge.client.game.rules.TopDownRules;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -14,19 +15,13 @@ public class Player {
         this(name, EnumSet.noneOf(Card.class));
     }
 
-    Player(String name, Set<Card> cards) {
+    public Player(String name, Set<Card> cards) {
         this.name = name;
         this.cards = EnumSet.copyOf(cards);
     }
 
-    Player() {
+    public Player() {
         this("unnamed");
-    }
-
-    public boolean canPlayCard(Card card, Round round) {
-        return round.getPlayedCards().isEmpty()
-                || card.getColor() == round.getRoundColor()
-                || !cards.stream().anyMatch(playersCard -> playersCard.getColor() == round.getRoundColor());
     }
 
     public String getName() {
@@ -44,12 +39,16 @@ public class Player {
 
     public Move makeMove(Round round) {
         if(cards.size() == 0) throw new RuntimeException("Cannot play a card without cards in deck");
-        final Card cardToPlay = cards.stream()
-                .filter(card -> canPlayCard(card, round))
-                .findAny()
-                .orElse(cards.stream().findAny().get());
+        final Card cardToPlay = calculateNextCardToPlay(round);
         cards.remove(cardToPlay);
         return new Move(this, cardToPlay);
+    }
+
+    private Card calculateNextCardToPlay(Round round) {
+        return cards.stream()
+                    .filter(card -> new TopDownRules().canPlayCard(card, round.getPlayedCards(), round.getRoundColor(), this.getCards()))
+                    .findAny()
+                    .orElse(cards.stream().findAny().get());
     }
 
     public Mode decideTrumpfColor() {

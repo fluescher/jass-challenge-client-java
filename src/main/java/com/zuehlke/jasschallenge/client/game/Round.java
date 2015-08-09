@@ -2,6 +2,8 @@ package com.zuehlke.jasschallenge.client.game;
 
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.cards.Color;
+import com.zuehlke.jasschallenge.client.game.rules.Rules;
+import com.zuehlke.jasschallenge.client.game.rules.TopDownRules;
 
 import java.util.*;
 
@@ -10,28 +12,30 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 public class Round {
+    private final Rules rules;
     private final int roundNumber;
     private final PlayingOrder playingOrder;
     private final List<Move> moves = new ArrayList<>();
 
-    public static Round createRound(int roundNumber, PlayingOrder playingOrder) {
-        return new Round(roundNumber, playingOrder);
+    public static Round createRound(Rules rules, int roundNumber, PlayingOrder playingOrder) {
+        return new Round(rules, roundNumber, playingOrder);
     }
 
-    public static Round createRoundWithMoves(int roundNumber, PlayingOrder playingOrder, List<Move> moves) {
-        return new Round(roundNumber, playingOrder, moves);
+    public static Round createRoundWithMoves(Rules rules, int roundNumber, PlayingOrder playingOrder, List<Move> moves) {
+        return new Round(rules, roundNumber, playingOrder, moves);
     }
 
-    public static Round createRoundWithCardsPlayed(int roundNumber, PlayingOrder playingOrder, Set<Card> playedCards) {
+    public static Round createRoundWithCardsPlayed(Rules rules, int roundNumber, PlayingOrder playingOrder, Set<Card> playedCards) {
         List<Move> moves = playedCards.stream().map(card -> new Move(new Player("unnamed"), card)).collect(toList());
-        return createRoundWithMoves(roundNumber, playingOrder, moves);
+        return createRoundWithMoves(rules, roundNumber, playingOrder, moves);
     }
 
-    private Round(int roundNumber, PlayingOrder playingOrder) {
-        this(roundNumber, playingOrder, emptyList());
+    private Round(Rules rules, int roundNumber, PlayingOrder playingOrder) {
+        this(rules, roundNumber, playingOrder, emptyList());
     }
 
-    private Round(int roundNumber, PlayingOrder playingOrder, List<Move> moves) {
+    private Round(Rules rules, int roundNumber, PlayingOrder playingOrder, List<Move> moves) {
+        this.rules = rules;
         this.roundNumber = roundNumber;
         this.playingOrder = playingOrder;
         this.moves.addAll(moves);
@@ -60,18 +64,8 @@ public class Round {
         return moves.get(0).getPlayedCard().getColor();
     }
 
-    public int getScore() {
-        return getPlayedCards().stream()
-                          .mapToInt(Card::getScore)
-                          .sum();
-    }
-
     public Player getWinner() {
-        return moves.stream()
-                .filter(move -> move.getPlayedCard().getColor() == getRoundColor())
-                .max((move, move2) -> move.getPlayedCard().isHigherThan(move2.getPlayedCard()) ? 1 : -1)
-                .map(Move::getPlayer)
-                .orElse(null);
+        return rules.determineWinner(this.moves, getRoundColor());
     }
 
     public List<Move> getMoves() {
@@ -107,5 +101,9 @@ public class Round {
 
     public PlayingOrder getPlayingOrder() {
         return playingOrder;
+    }
+
+    public Rules getRules() {
+        return rules;
     }
 }

@@ -4,6 +4,7 @@ import com.zuehlke.jasschallenge.client.game.Move;
 import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.game.Round;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
+import com.zuehlke.jasschallenge.client.game.rules.TopDownRules;
 import com.zuehlke.jasschallenge.client.websocket.messages.*;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseCard;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChoosePlayerName;
@@ -47,6 +48,7 @@ public class RemoteGameHandlerTest {
 
         final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer);
         remoteGameHandler.onBroadCastTeams(remoteTeams);
+        remoteGameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
 
         final ChooseCard chooseCard = remoteGameHandler.onRequestCard();
 
@@ -70,10 +72,11 @@ public class RemoteGameHandlerTest {
 
         final RemoteGameHandler handler = new RemoteGameHandler(localPlayer);
         handler.onBroadCastTeams(remoteTeams);
+        handler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
         handler.onPlayedCards(asList(new RemoteCard(13, CLUBS)));
         handler.onPlayedCards(asList(new RemoteCard(13, CLUBS), new RemoteCard(10, DIAMONDS)));
 
-        Round expected = Round.createRound(0, null);
+        Round expected = Round.createRound(new TopDownRules(), 0, null);
         expected.makeMove(new Move(new Player("remote 1"), Card.CLUB_KING));
         expected.makeMove(new Move(new Player("remote 2"), Card.DIAMOND_TEN));
         assertThat(handler.getCurrentRound(), equalTo(expected));
@@ -91,6 +94,7 @@ public class RemoteGameHandlerTest {
 
         final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer);
         remoteGameHandler.onBroadCastTeams(remoteTeams);
+        remoteGameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
 
         final ChooseTrumpf chooseTrumpf = remoteGameHandler.onRequestTrumpf();
 
@@ -165,6 +169,7 @@ public class RemoteGameHandlerTest {
                 new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo)));
         final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer);
         remoteGameHandler.onBroadCastTeams(remoteTeams);
+        remoteGameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
 
         remoteGameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS)));
 
@@ -184,6 +189,7 @@ public class RemoteGameHandlerTest {
         final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer);
 
         remoteGameHandler.onBroadCastTeams(remoteTeams);
+        remoteGameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
         remoteGameHandler.onPlayedCards(asList(new RemoteCard(13, CLUBS)));
         remoteGameHandler.onPlayedCards(asList(new RemoteCard(13, CLUBS),new RemoteCard(14, CLUBS)));
         remoteGameHandler.onBroadCastStich(new Stich("remote 2", 0, emptyList(), emptyList()));
@@ -205,6 +211,7 @@ public class RemoteGameHandlerTest {
         final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer);
 
         remoteGameHandler.onBroadCastTeams(remoteTeams);
+        remoteGameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
         remoteGameHandler.onPlayedCards(asList(new RemoteCard(6, DIAMONDS)));
         remoteGameHandler.onPlayedCards(asList(new RemoteCard(6, DIAMONDS), new RemoteCard(13, CLUBS)));
         remoteGameHandler.onPlayedCards(asList(new RemoteCard(6, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(14, DIAMONDS)));

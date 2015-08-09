@@ -11,7 +11,6 @@ import com.zuehlke.jasschallenge.client.websocket.messages.type.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -26,7 +25,6 @@ public class RemoteGameHandler {
     private final Player localPlayer;
     private GameSession gameSession;
 
-    private final List<Team> teams;
     private final PlayerMapper playerMapper;
 
     private final static Logger logger = LoggerFactory.getLogger(RemoteGameHandler.class);
@@ -34,7 +32,6 @@ public class RemoteGameHandler {
     public RemoteGameHandler(Player localPlayer) {
         this.localPlayer = localPlayer;
         this.playerMapper = new PlayerMapper(localPlayer);
-        this.teams = new ArrayList<>();
     }
 
     Round getCurrentRound() {
@@ -42,7 +39,7 @@ public class RemoteGameHandler {
     }
 
     List<Team> getTeams() {
-        return teams;
+        return gameSession.getTeams();
     }
 
     public ChooseSession onRequestSessionChoice() {
@@ -61,25 +58,17 @@ public class RemoteGameHandler {
     }
 
     public void onBroadCastTeams(List<RemoteTeam> remoteTeams) {
-        teams.addAll(remoteTeams.stream()
-                .map(this::toTeam)
-                .collect(toList()));
-        List<Player> playersInPlayingOrder = remoteTeams.stream()
-                .flatMap(remoteTeam -> remoteTeam.getPlayers().stream())
-                .sorted((remotePlayer1, remotePlayer2) -> compare(remotePlayer1.getId(), remotePlayer2.getId()))
-                .map(player -> playerMapper.findPlayerByName(player.getName()))
-                .collect(toList());
-        logger.debug("Players in playing order: {}", playersInPlayingOrder);
-        gameSession = new GameSession(playersInPlayingOrder);
+        final List<Team> teams = mapTeams(remoteTeams);
+        final List<Player> playersInPlayingOrder = getPlayersInPlayingOrder(remoteTeams);
+        gameSession = new GameSession(teams, playersInPlayingOrder);
     }
 
     public ChooseTrumpf onRequestTrumpf() {
-        checkEquals(getCurrentRound().getPlayingOrder().getCurrentPlayer(), localPlayer, "Order differed between remote and local state");
         return new ChooseTrumpf(OBEABE);
     }
 
     public void onBroadCastTrumpf(TrumpfChoice trumpfChoice) {
-
+        gameSession.startNewGame(Mode.valueOf(trumpfChoice.getMode().name()));
     }
 
     public ChooseCard onRequestCard() {
@@ -110,7 +99,6 @@ public class RemoteGameHandler {
     }
 
     public void onBroadGameFinished(List<RemoteTeam> remoteTeams) {
-        gameSession.startNewGame();
     }
 
     public void onBroadCastWinnerTeam(RemoteTeam winnerTeam) {
@@ -119,6 +107,20 @@ public class RemoteGameHandler {
 
     public void onRejectCard(RemoteCard rejectCard) {
         throw new RuntimeException("Card was rejected");
+    }
+
+    private List<Team> mapTeams(List<RemoteTeam> remoteTeams) {
+        return remoteTeams.stream()
+                .map(this::toTeam)
+                .collect(toList());
+    }
+
+    private List<Player> getPlayersInPlayingOrder(List<RemoteTeam> remoteTeams) {
+        return remoteTeams.stream()
+                .flatMap(remoteTeam -> remoteTeam.getPlayers().stream())
+                .sorted((remotePlayer1, remotePlayer2) -> compare(remotePlayer1.getId(), remotePlayer2.getId()))
+                .map(player -> playerMapper.findPlayerByName(player.getName()))
+                .collect(toList());
     }
 
     private Team toTeam(RemoteTeam remoteTeam) {
