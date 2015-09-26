@@ -5,7 +5,7 @@ This client allows you to easily develop a bot for the Jass challenge.
 
 ## Getting started
 
-Clone this repository and start the [Application](src/main/java/com/zuehlke/jasschallenge/client/Application.java) class:
+Clone this repository and start (`gradle run`) the [Application](src/main/java/com/zuehlke/jasschallenge/client/Application.java) class:
 
 ``` java
 public class Application {
