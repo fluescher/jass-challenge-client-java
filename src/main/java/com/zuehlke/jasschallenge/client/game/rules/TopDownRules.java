@@ -7,6 +7,7 @@ import com.zuehlke.jasschallenge.client.game.cards.Color;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public class TopDownRules implements Rules {
 
@@ -18,9 +19,12 @@ public class TopDownRules implements Rules {
     }
 
     @Override
-    public Player determineWinner(List<Move> moves, Color roundColor) {
+    public Player determineWinner(List<Move> moves) {
+        if(moves == null || moves.isEmpty()) return null;
+
+        final Color firstCardColor = moves.get(0).getPlayedCard().getColor();
         return moves.stream()
-                .filter(move -> move.getPlayedCard().getColor() == roundColor)
+                .filter(allCardsWithColor(firstCardColor))
                 .max((move, move2) -> move.getPlayedCard().isHigherThan(move2.getPlayedCard()) ? 1 : -1)
                 .map(Move::getPlayer)
                 .orElse(null);
@@ -31,6 +35,10 @@ public class TopDownRules implements Rules {
         return alreadyPlayedCards.isEmpty()
                 || card.getColor() == currentRoundColor
                 || !playerCards.stream().anyMatch(playersCard -> playersCard.getColor() == currentRoundColor);
+    }
+
+    private static Predicate<Move> allCardsWithColor(Color firstCardColor) {
+        return move -> move.getPlayedCard().getColor() == firstCardColor;
     }
 
 }

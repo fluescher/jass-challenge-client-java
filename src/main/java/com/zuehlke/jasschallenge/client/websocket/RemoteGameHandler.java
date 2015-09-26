@@ -74,14 +74,13 @@ public class RemoteGameHandler {
 
     public void onBroadCastTrumpf(TrumpfChoice trumpfChoice) {
         final Mode nextGameMode = Mode.valueOf(trumpfChoice.getMode().name());
-        localPlayer.prepareForNewGame(nextGameMode);
         gameSession.startNewGame(nextGameMode);
     }
 
     public ChooseCard onRequestCard() {
         checkEquals(getCurrentRound().getPlayingOrder().getCurrentPlayer(), localPlayer, "Order differed between remote and local state");
 
-        final Move move = localPlayer.makeMove(getCurrentRound());
+        final Move move = localPlayer.makeMove(gameSession);
         final RemoteCard cardToPlay = mapToRemoteCard(move.getPlayedCard());
 
         return new ChooseCard(cardToPlay);

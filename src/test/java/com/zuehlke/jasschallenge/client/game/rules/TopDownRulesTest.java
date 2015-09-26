@@ -105,7 +105,7 @@ public class TopDownRulesTest {
     @Test
     public void determineWinner_noMovesWereMade_returnsNull() {
 
-        final Player winner = new TopDownRules().determineWinner(emptyList(), null);
+        final Player winner = new TopDownRules().determineWinner(emptyList());
 
         assertNull(winner);
     }
@@ -122,7 +122,7 @@ public class TopDownRulesTest {
                 new Move(playerC, HEART_SEVEN),
                 new Move(playerD, HEART_JACK));
 
-        final Player winner = new TopDownRules().determineWinner(moves, HEARTS);
+        final Player winner = new TopDownRules().determineWinner(moves);
 
         assertThat(winner, equalTo(playerB));
     }
@@ -139,7 +139,7 @@ public class TopDownRulesTest {
                 new Move(playerC, DIAMOND_EIGHT),
                 new Move(playerD, DIAMOND_NINE));
 
-        final Player winner = new TopDownRules().determineWinner(moves, Color.HEARTS);
+        final Player winner = new TopDownRules().determineWinner(moves);
 
         assertThat(winner, equalTo(playerA));
     }

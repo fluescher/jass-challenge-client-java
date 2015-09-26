@@ -3,12 +3,9 @@ package com.zuehlke.jasschallenge.client.game;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.cards.Color;
 import com.zuehlke.jasschallenge.client.game.rules.Rules;
-import com.zuehlke.jasschallenge.client.game.rules.TopDownRules;
 
 import java.util.*;
 
-import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 public class Round {
@@ -17,35 +14,24 @@ public class Round {
     private final PlayingOrder playingOrder;
     private final List<Move> moves = new ArrayList<>();
 
-    public static Round createRound(Rules rules, int roundNumber, PlayingOrder playingOrder) {
-        return new Round(rules, roundNumber, playingOrder);
-    }
-
-    public static Round createRoundWithMoves(Rules rules, int roundNumber, PlayingOrder playingOrder, List<Move> moves) {
-        return new Round(rules, roundNumber, playingOrder, moves);
-    }
-
-    public static Round createRoundWithCardsPlayed(Rules rules, int roundNumber, PlayingOrder playingOrder, Set<Card> playedCards) {
-        List<Move> moves = playedCards.stream().map(card -> new Move(new Player("unnamed"), card)).collect(toList());
-        return createRoundWithMoves(rules, roundNumber, playingOrder, moves);
+    public static Round createRound(Mode gameMode, int roundNumber, PlayingOrder playingOrder) {
+        return new Round(gameMode.getRules(), roundNumber, playingOrder);
     }
 
     private Round(Rules rules, int roundNumber, PlayingOrder playingOrder) {
-        this(rules, roundNumber, playingOrder, emptyList());
-    }
-
-    private Round(Rules rules, int roundNumber, PlayingOrder playingOrder, List<Move> moves) {
         this.rules = rules;
         this.roundNumber = roundNumber;
         this.playingOrder = playingOrder;
-        this.moves.addAll(moves);
     }
 
     public void makeMove(Move move) {
-        if(moves.size() == 4) {
+        if (!move.getPlayer().equals(playingOrder.getCurrentPlayer()))
+            throw new RuntimeException("It's not players "+move.getPlayer()+" turn");
+        if (moves.size() == 4)
             throw new RuntimeException("Only four card can be played in a round");
-        }
+
         moves.add(move);
+        playingOrder.moveToNextPlayer();
     }
 
     public int getRoundNumber() {
@@ -59,17 +45,25 @@ public class Round {
     }
 
     public Color getRoundColor() {
-        if(moves.size() == 0) return null;
+        if (moves.size() == 0) return null;
 
         return moves.get(0).getPlayedCard().getColor();
     }
 
     public Player getWinner() {
-        return rules.determineWinner(this.moves, getRoundColor());
+        return rules.determineWinner(this.moves);
     }
 
     public List<Move> getMoves() {
         return moves;
+    }
+
+    public PlayingOrder getPlayingOrder() {
+        return playingOrder;
+    }
+
+    public Rules getRules() {
+        return rules;
     }
 
     @Override
@@ -99,11 +93,5 @@ public class Round {
                 '}';
     }
 
-    public PlayingOrder getPlayingOrder() {
-        return playingOrder;
-    }
 
-    public Rules getRules() {
-        return rules;
-    }
 }

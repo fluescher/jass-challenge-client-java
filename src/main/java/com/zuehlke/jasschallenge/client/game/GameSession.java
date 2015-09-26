@@ -1,7 +1,5 @@
 package com.zuehlke.jasschallenge.client.game;
 
-import com.zuehlke.jasschallenge.client.game.rules.TopDownRules;
-
 import java.util.List;
 
 import static com.zuehlke.jasschallenge.client.game.PlayingOrder.createOrder;
@@ -12,7 +10,7 @@ public class GameSession {
     private final List<Team> teams;
     private final List<Player> playersInPlayingOrder;
     private final PlayingOrder gameStartingPlayerOrder;
-    private Round currentRound;
+    private Game currentGame;
 
     public GameSession(List<Team> teams, List<Player> playersInPlayingOrder) {
         this.teams = teams;
@@ -22,7 +20,10 @@ public class GameSession {
     }
 
     public Round getCurrentRound() {
-        return currentRound;
+
+        if(currentGame == null) return null;
+
+        return currentGame.getCurrentRound();
     }
 
     public List<Team> getTeams() {
@@ -32,23 +33,23 @@ public class GameSession {
     public Game startNewGame(Mode mode) {
 
         final PlayingOrder initialOrder = createOrderStartingFromPlayer(playersInPlayingOrder, gameStartingPlayerOrder.getCurrentPlayer());
-        this.currentRound = Round.createRound(mode.getRules(), 0, initialOrder);
         gameStartingPlayerOrder.moveToNextPlayer();
-        return new Game();
+
+        currentGame = Game.startGame(mode, initialOrder);
+        return currentGame;
     }
 
     public Round startNextRound() {
 
-        final PlayingOrder nextPlayingOrder = createOrderStartingFromPlayer(playersInPlayingOrder, currentRound.getWinner());
-        final int nextRoundNumber = currentRound.getRoundNumber() + 1;
-        final Round nextRound  = Round.createRound(currentRound.getRules(), nextRoundNumber, nextPlayingOrder);
-        this.currentRound = nextRound;
-        return currentRound;
+        return currentGame.startNextRound();
     }
 
     public void makeMove(Move move) {
 
-        currentRound.makeMove(move);
-        currentRound.getPlayingOrder().moveToNextPlayer();
+        currentGame.getCurrentRound().makeMove(move);
+    }
+
+    public Game getCurrentGame() {
+        return currentGame;
     }
 }

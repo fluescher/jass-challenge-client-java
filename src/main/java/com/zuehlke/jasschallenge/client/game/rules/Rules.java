@@ -12,7 +12,7 @@ import java.util.Set;
 public interface Rules {
     int calculateScore(Set<Card> playedCards);
 
-    Player determineWinner(List<Move> moves, Color roundColor);
+    Player determineWinner(List<Move> moves);
 
     boolean canPlayCard(Card card, Set<Card> alreadyPlayedCards, Color currentRoundColor, Set<Card> playerCards);
 }

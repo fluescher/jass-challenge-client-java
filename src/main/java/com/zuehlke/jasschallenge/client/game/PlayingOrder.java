@@ -15,8 +15,8 @@ public class PlayingOrder {
         return new PlayingOrder(playersInInitialPlayingOrder, 0);
     }
 
-    public static PlayingOrder createOrderStartingFromPlayer(List<Player> playersInPlayingOrder, Player winner) {
-        return new PlayingOrder(playersInPlayingOrder, playersInPlayingOrder.indexOf(winner));
+    public static PlayingOrder createOrderStartingFromPlayer(List<Player> playersInPlayingOrder, Player startFrom) {
+        return new PlayingOrder(playersInPlayingOrder, playersInPlayingOrder.indexOf(startFrom));
     }
 
     private PlayingOrder(List<Player> playersInInitialPlayingOrder, int startingPlayer) {
@@ -24,6 +24,8 @@ public class PlayingOrder {
         this.startingPlayer = startingPlayer;
         this.currentPlayer = 0;
     }
+
+    public List<Player> getPlayerInOrder() { return playersInInitialPlayingOrder; }
 
     public Player getCurrentPlayer() {
         return playersInInitialPlayingOrder.get(getBoundIndex(currentPlayer));

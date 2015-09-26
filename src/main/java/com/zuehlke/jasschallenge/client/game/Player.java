@@ -1,9 +1,8 @@
 package com.zuehlke.jasschallenge.client.game;
 
 import com.zuehlke.jasschallenge.client.game.cards.Card;
-import com.zuehlke.jasschallenge.client.game.strategy.RandomMoveStrategy;
-import com.zuehlke.jasschallenge.client.game.strategy.Strategy;
-import com.zuehlke.jasschallenge.client.game.strategy.StrategySelector;
+import com.zuehlke.jasschallenge.client.game.strategy.RandomMoveJassStrategy;
+import com.zuehlke.jasschallenge.client.game.strategy.JassStrategy;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -12,21 +11,20 @@ public class Player {
 
     private final String name;
     private final Set<Card> cards;
-    private final StrategySelector strategySelector;
-    private Strategy currentStrategy;
+    private final JassStrategy currentJassStrategy;
 
     public Player(String name) {
-        this(name, new StrategySelector(cards -> Mode.OBEABE, m -> new RandomMoveStrategy()));
+        this(name, new RandomMoveJassStrategy());
     }
 
-    public Player(String name, StrategySelector strategySelector) {
-        this(name, strategySelector, EnumSet.noneOf(Card.class));
+    public Player(String name, JassStrategy strategy) {
+        this(name, strategy, EnumSet.noneOf(Card.class));
     }
 
-    public Player(String name, StrategySelector strategySelector, Set<Card> cards) {
+    public Player(String name, JassStrategy strategySelector, Set<Card> cards) {
         this.name = name;
         this.cards = EnumSet.copyOf(cards);
-        this.strategySelector = strategySelector;
+        this.currentJassStrategy = strategySelector;
     }
 
     public String getName() {
@@ -42,13 +40,9 @@ public class Player {
         this.cards.addAll(cards);
     }
 
-    public void prepareForNewGame(Mode mode) {
-        currentStrategy = strategySelector.createStrategyForMode(mode);
-    }
-
-    public Move makeMove(Round round) {
+    public Move makeMove(GameSession session) {
         if(cards.size() == 0) throw new RuntimeException("Cannot play a card without cards in deck");
-        final Card cardToPlay = currentStrategy.calculateNextCardToPlay(round, cards);
+        final Card cardToPlay = currentJassStrategy.chooseCard(cards, session);
         cards.remove(cardToPlay);
         return new Move(this, cardToPlay);
     }

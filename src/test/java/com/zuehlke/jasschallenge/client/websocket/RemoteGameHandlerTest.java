@@ -2,8 +2,6 @@ package com.zuehlke.jasschallenge.client.websocket;
 
 import com.zuehlke.jasschallenge.client.game.*;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
-import com.zuehlke.jasschallenge.client.game.rules.TopDownRules;
-import com.zuehlke.jasschallenge.client.websocket.messages.*;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseCard;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChoosePlayerName;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseSession;
@@ -15,15 +13,13 @@ import java.util.List;
 
 import static com.zuehlke.jasschallenge.client.LambdaMatcher.match;
 import static com.zuehlke.jasschallenge.client.game.Mode.OBEABE;
-import static com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor.CLUBS;
-import static com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor.DIAMONDS;
-import static com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor.HEARTS;
+import static com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor.*;
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.SessionType.AUTOJOIN;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -33,7 +29,7 @@ public class RemoteGameHandlerTest {
     public void onRequestCard_returnsTheCardPlayedFromTheLocalPlayer() {
 
         final Player localPlayer = mock(Player.class);
-        when(localPlayer.makeMove(any(Round.class))).thenReturn(new Move(localPlayer, Card.DIAMOND_ACE));
+        when(localPlayer.makeMove(any(GameSession.class))).thenReturn(new Move(localPlayer, Card.DIAMOND_ACE));
         when(localPlayer.getName()).thenReturn("local");
         final RemotePlayer remoteLocalPlayer = new RemotePlayer(0, "local");
         final RemotePlayer remoteOne = new RemotePlayer(2, "remote 1");
@@ -170,7 +166,7 @@ public class RemoteGameHandlerTest {
 
         final Player localPlayer = mock(Player.class);
         when(localPlayer.getName()).thenReturn("local");
-        when(localPlayer.makeMove(any(Round.class))).thenReturn(new Move(localPlayer, Card.DIAMOND_ACE));
+        when(localPlayer.makeMove(any(GameSession.class))).thenReturn(new Move(localPlayer, Card.DIAMOND_ACE));
 
         final RemotePlayer remoteLocalPlayer = new RemotePlayer(2, "local");
         final RemotePlayer remoteOne = new RemotePlayer(0, "remote 1");
@@ -186,9 +182,11 @@ public class RemoteGameHandlerTest {
         handler.onPlayedCards(asList(new RemoteCard(13, CLUBS)));
         handler.onPlayedCards(asList(new RemoteCard(13, CLUBS), new RemoteCard(10, DIAMONDS)));
 
-        Round expected = Round.createRound(new TopDownRules(), 0, null);
-        expected.makeMove(new Move(new Player("remote 1"), Card.CLUB_KING));
-        expected.makeMove(new Move(new Player("remote 2"), Card.DIAMOND_TEN));
+        final Player playerOne = new Player("remote 1");
+        final Player playerTwo = new Player("remote 2");
+        Round expected = Round.createRound(OBEABE, 0, PlayingOrder.createOrder(asList(playerOne, playerTwo)));
+        expected.makeMove(new Move(playerOne, Card.CLUB_KING));
+        expected.makeMove(new Move(playerTwo, Card.DIAMOND_TEN));
         assertThat(handler.getCurrentRound(), equalTo(expected));
     }
 
