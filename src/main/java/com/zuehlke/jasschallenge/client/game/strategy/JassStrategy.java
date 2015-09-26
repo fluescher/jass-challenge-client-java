@@ -14,7 +14,7 @@ public interface JassStrategy {
 
     default void onSessionStarted(GameSession session) {}
     default void onGameStarted(GameSession session) {}
-    default void onMoveMade(GameSession session, Move move) {}
+    default void onMoveMade(Move move, GameSession session) {}
     default void onGameFinished() {}
     default void onSessionFinished() {}
 }
