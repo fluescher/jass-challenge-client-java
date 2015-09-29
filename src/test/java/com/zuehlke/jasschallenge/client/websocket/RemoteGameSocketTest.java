@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor.*;
-import static com.zuehlke.jasschallenge.client.websocket.messages.type.SessionType.AUTOJOIN;
+import static com.zuehlke.jasschallenge.client.websocket.messages.type.SessionChoice.AUTOJOIN;
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.Trumpf.OBEABE;
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.*;
@@ -65,7 +65,7 @@ public class RemoteGameSocketTest {
         remoteGameSocket.onMessage("{\"type\":\"REQUEST_SESSION_CHOICE\"}");
 
         verify(session.getRemote()).sendString("{\"type\":\"CHOOSE_SESSION\"," +
-                "\"data\":{\"sessionChoice\":\"AUTOJOIN\",\"sessionName\":\"a session\"}}");
+                "\"data\":{\"sessionChoice\":\"AUTOJOIN\",\"sessionName\":\"Java Client Session\"}}");
         verify(handler).onRequestSessionChoice();
         verifyNoMoreInteractions(handler);
     }

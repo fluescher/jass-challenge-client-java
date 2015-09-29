@@ -5,7 +5,7 @@ import com.zuehlke.jasschallenge.client.game.strategy.RandomMoveJassStrategy;
 
 public class Application {
     public static void main(String[] args) throws Exception {
-        final String name = String.valueOf(System.currentTimeMillis());
+        final String name = System.getProperty("name", String.valueOf(System.currentTimeMillis()));
         final Player myLocalPlayer = new Player(name, new RandomMoveJassStrategy());
 
         final RemoteGame remoteGame = new RemoteGame("ws://jasschallenge.herokuapp.com", myLocalPlayer);

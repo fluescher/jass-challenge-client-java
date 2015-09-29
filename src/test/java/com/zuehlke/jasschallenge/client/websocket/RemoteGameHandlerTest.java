@@ -14,7 +14,7 @@ import java.util.List;
 import static com.zuehlke.jasschallenge.client.LambdaMatcher.match;
 import static com.zuehlke.jasschallenge.client.game.Mode.OBEABE;
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor.*;
-import static com.zuehlke.jasschallenge.client.websocket.messages.type.SessionType.AUTOJOIN;
+import static com.zuehlke.jasschallenge.client.websocket.messages.type.SessionChoice.AUTOJOIN;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.contains;

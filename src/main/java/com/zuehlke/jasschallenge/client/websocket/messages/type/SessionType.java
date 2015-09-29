@@ -1,5 +1,6 @@
 package com.zuehlke.jasschallenge.client.websocket.messages.type;
 
 public enum SessionType {
-    AUTOJOIN
+    SINGLE_GAME,
+    TOURNAMENT
 }

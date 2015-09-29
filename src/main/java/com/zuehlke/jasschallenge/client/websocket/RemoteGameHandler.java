@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Set;
 
-import static com.zuehlke.jasschallenge.client.websocket.messages.type.SessionType.AUTOJOIN;
+import static com.zuehlke.jasschallenge.client.websocket.messages.type.SessionChoice.AUTOJOIN;
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.Trumpf.OBEABE;
 import static java.lang.Integer.compare;
 import static java.util.Arrays.stream;
