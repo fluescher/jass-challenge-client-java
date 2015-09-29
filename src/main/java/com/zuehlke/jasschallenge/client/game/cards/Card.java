@@ -56,11 +56,15 @@ public enum Card {
         return color;
     }
 
+    public int getTrumpfScore() { return value.getTrumpfScore(); }
+
     public int getScore() {
         return value.getScore();
     }
 
     public int getRank() { return value.getRank(); }
+
+    public int getTrumpfRank() { return value.getTrumpfRank(); }
 
     public boolean isHigherThan(Card other) {
         return color == other.color && value.getRank() > other.value.getRank();

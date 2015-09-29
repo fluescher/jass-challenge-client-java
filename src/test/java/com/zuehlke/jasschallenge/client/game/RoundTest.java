@@ -1,6 +1,7 @@
 package com.zuehlke.jasschallenge.client.game;
 
 import com.zuehlke.jasschallenge.client.game.cards.Card;
+import com.zuehlke.jasschallenge.client.game.mode.Mode;
 import org.junit.Test;
 
 import java.util.EnumSet;
@@ -70,7 +71,7 @@ public class RoundTest {
     }
 
     private static Round createRoundWithMoves(int roundNumber, PlayingOrder playingOrder, List<Move> moves) {
-        final Round round = Round.createRound(Mode.OBEABE, roundNumber, playingOrder);
+        final Round round = Round.createRound(Mode.topdown(), roundNumber, playingOrder);
         for (Move move : moves) round.makeMove(move);
         return round;
     }

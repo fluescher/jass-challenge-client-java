@@ -2,6 +2,7 @@ package com.zuehlke.jasschallenge.client.websocket;
 
 import com.zuehlke.jasschallenge.client.game.*;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
+import com.zuehlke.jasschallenge.client.game.mode.Mode;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseCard;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChoosePlayerName;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseSession;
@@ -12,7 +13,6 @@ import org.junit.Test;
 import java.util.List;
 
 import static com.zuehlke.jasschallenge.client.LambdaMatcher.match;
-import static com.zuehlke.jasschallenge.client.game.Mode.OBEABE;
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor.*;
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.SessionChoice.AUTOJOIN;
 import static java.util.Arrays.asList;
@@ -52,7 +52,7 @@ public class RemoteGameHandlerTest {
     public void onRequestTrumpf_asksThePlayerForTrumpf() {
 
         final Player localPlayer = mock(Player.class);
-        when(localPlayer.decideTrumpfColor()).thenReturn(OBEABE);
+        when(localPlayer.chooseTrumpf(any(GameSession.class))).thenReturn(Mode.topdown());
         when(localPlayer.getName()).thenReturn("local");
         final RemotePlayer remoteLocalPlayer = new RemotePlayer(2, "local");
         final List<RemoteTeam> remoteTeams = asList(
@@ -152,7 +152,7 @@ public class RemoteGameHandlerTest {
         when(localPlayer.getName()).thenReturn("Player 1");
         final GameSession session = spy(GameSessionBuilder
                 .newSession()
-                .withStartedGame(OBEABE)
+                .withStartedGame(Mode.topdown())
                 .createGameSession());
         final RemoteGameHandler handler = new RemoteGameHandler(localPlayer, session);
 
@@ -184,7 +184,7 @@ public class RemoteGameHandlerTest {
 
         final Player playerOne = new Player("remote 1");
         final Player playerTwo = new Player("remote 2");
-        Round expected = Round.createRound(OBEABE, 0, PlayingOrder.createOrder(asList(playerOne, playerTwo)));
+        Round expected = Round.createRound(Mode.topdown(), 0, PlayingOrder.createOrder(asList(playerOne, playerTwo)));
         expected.makeMove(new Move(playerOne, Card.CLUB_KING));
         expected.makeMove(new Move(playerTwo, Card.DIAMOND_TEN));
         assertThat(handler.getCurrentRound(), equalTo(expected));

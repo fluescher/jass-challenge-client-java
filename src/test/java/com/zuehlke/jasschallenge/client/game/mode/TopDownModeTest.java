@@ -1,4 +1,4 @@
-package com.zuehlke.jasschallenge.client.game.rules;
+package com.zuehlke.jasschallenge.client.game.mode;
 
 import com.pholser.junit.quickcheck.ForAll;
 import com.zuehlke.jasschallenge.client.game.Move;
@@ -25,12 +25,12 @@ import static org.junit.Assert.*;
 import static org.junit.Assume.assumeThat;
 
 @RunWith(Theories.class)
-public class TopDownRulesTest {
+public class TopDownModeTest {
 
     @Test
     public void calculateScore_ifNoCardsWerePlayed_returnsZero() {
 
-        int score = new TopDownRules().calculateScore(EnumSet.noneOf(Card.class));
+        int score = new TopDownMode().calculateScore(EnumSet.noneOf(Card.class));
 
         assertThat(score, equalTo(0));
     }
@@ -40,7 +40,7 @@ public class TopDownRulesTest {
 
         final EnumSet<Card> cards = EnumSet.of(DIAMOND_ACE, HEART_SIX, HEART_TEN);
 
-        final int score = new TopDownRules().calculateScore(cards);
+        final int score = new TopDownMode().calculateScore(cards);
 
         assertThat(score, equalTo(21));
     }
@@ -52,7 +52,7 @@ public class TopDownRulesTest {
         final Set<Card> alreadyPlayedCards = EnumSet.noneOf(Card.class);
         final Set<Card> playerCards = EnumSet.of(cardToPlay);
 
-        final boolean canCardBePlayed = new TopDownRules().canPlayCard(cardToPlay, alreadyPlayedCards, null, playerCards);
+        final boolean canCardBePlayed = new TopDownMode().canPlayCard(cardToPlay, alreadyPlayedCards, null, playerCards);
 
         assertTrue(canCardBePlayed);
     }
@@ -68,7 +68,7 @@ public class TopDownRulesTest {
         final Color roundColor = playedCard.getColor();
         final Set<Card> playerCards = EnumSet.of(cardToPlay);
 
-        final boolean canCardBePlayed = new TopDownRules().canPlayCard(cardToPlay, alreadyPlayedCards, roundColor, playerCards);
+        final boolean canCardBePlayed = new TopDownMode().canPlayCard(cardToPlay, alreadyPlayedCards, roundColor, playerCards);
 
         assertTrue(canCardBePlayed);
     }
@@ -86,7 +86,7 @@ public class TopDownRulesTest {
         final Color roundColor = playedCard.getColor();
         final Set<Card> playerCards = EnumSet.of(HEART_JACK);
 
-        final boolean canCardBePlayed = new TopDownRules().canPlayCard(cardToPlay, alreadyPlayedCards, roundColor, playerCards);
+        final boolean canCardBePlayed = new TopDownMode().canPlayCard(cardToPlay, alreadyPlayedCards, roundColor, playerCards);
 
         assertFalse(canCardBePlayed);
     }
@@ -97,7 +97,7 @@ public class TopDownRulesTest {
         final EnumSet<Card> alreadyPlayedCards = EnumSet.of(CLUB_SIX);
         final EnumSet<Card> playersCards = EnumSet.of(HEART_EIGHT, HEART_NINE);
 
-        final boolean canCardBePlayed = new TopDownRules().canPlayCard(HEART_EIGHT, alreadyPlayedCards, CLUBS, playersCards);
+        final boolean canCardBePlayed = new TopDownMode().canPlayCard(HEART_EIGHT, alreadyPlayedCards, CLUBS, playersCards);
 
         assertTrue(canCardBePlayed);
     }
@@ -105,7 +105,7 @@ public class TopDownRulesTest {
     @Test
     public void determineWinner_noMovesWereMade_returnsNull() {
 
-        final Player winner = new TopDownRules().determineWinner(emptyList());
+        final Player winner = new TopDownMode().determineWinner(emptyList());
 
         assertNull(winner);
     }
@@ -122,7 +122,7 @@ public class TopDownRulesTest {
                 new Move(playerC, HEART_SEVEN),
                 new Move(playerD, HEART_JACK));
 
-        final Player winner = new TopDownRules().determineWinner(moves);
+        final Player winner = new TopDownMode().determineWinner(moves);
 
         assertThat(winner, equalTo(playerB));
     }
@@ -139,7 +139,7 @@ public class TopDownRulesTest {
                 new Move(playerC, DIAMOND_EIGHT),
                 new Move(playerD, DIAMOND_NINE));
 
-        final Player winner = new TopDownRules().determineWinner(moves);
+        final Player winner = new TopDownMode().determineWinner(moves);
 
         assertThat(winner, equalTo(playerA));
     }

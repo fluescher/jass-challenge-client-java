@@ -1,6 +1,7 @@
 package com.zuehlke.jasschallenge.client.game;
 
 import com.zuehlke.jasschallenge.client.game.cards.Card;
+import com.zuehlke.jasschallenge.client.game.mode.Mode;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.not;
@@ -22,7 +23,7 @@ public class GameSessionTest {
 
         final GameSession gameSession = GameSessionBuilder.newSession().createGameSession();
 
-        gameSession.startNewGame(Mode.OBEABE);
+        gameSession.startNewGame(Mode.topdown());
 
         assertThat(gameSession.getCurrentRound(), is(not(nullValue())));
     }
@@ -32,7 +33,7 @@ public class GameSessionTest {
 
         final GameSession gameSession = GameSessionBuilder.newSession().createGameSession();
 
-        gameSession.startNewGame(Mode.OBEABE);
+        gameSession.startNewGame(Mode.topdown());
         Round secondRound = gameSession.startNextRound();
 
         assertThat(secondRound.getRoundNumber(), is(1));
@@ -41,7 +42,7 @@ public class GameSessionTest {
     @Test
     public void makeMove_inANewGame_storesMoveOnRound() {
         final GameSession gameSession = GameSessionBuilder.newSession()
-                .withStartedGame(Mode.OBEABE)
+                .withStartedGame(Mode.topdown())
                 .createGameSession();
 
         gameSession.makeMove(new Move(new Player("Player 1"), Card.CLUB_ACE));
@@ -52,7 +53,7 @@ public class GameSessionTest {
     @Test
     public void makeMove_inANewGame_advancesToNextPlayer() {
         final GameSession gameSession = GameSessionBuilder.newSession()
-                .withStartedGame(Mode.OBEABE)
+                .withStartedGame(Mode.topdown())
                 .createGameSession();
 
         gameSession.makeMove(new Move(new Player("Player 1"), Card.CLUB_ACE));

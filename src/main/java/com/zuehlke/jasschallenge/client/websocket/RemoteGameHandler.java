@@ -2,6 +2,8 @@ package com.zuehlke.jasschallenge.client.websocket;
 
 import com.zuehlke.jasschallenge.client.game.*;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
+import com.zuehlke.jasschallenge.client.game.cards.Color;
+import com.zuehlke.jasschallenge.client.game.mode.Mode;
 import com.zuehlke.jasschallenge.client.websocket.messages.PlayerJoinedSession;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseCard;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChoosePlayerName;
@@ -15,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.SessionChoice.AUTOJOIN;
-import static com.zuehlke.jasschallenge.client.websocket.messages.type.Trumpf.OBEABE;
 import static java.lang.Integer.compare;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
@@ -66,15 +67,18 @@ public class RemoteGameHandler {
         final List<Team> teams = mapTeams(remoteTeams);
         final List<Player> playersInPlayingOrder = getPlayersInPlayingOrder(remoteTeams);
         gameSession = new GameSession(teams, playersInPlayingOrder);
+        localPlayer.onSessionStarted(gameSession);
     }
 
     public ChooseTrumpf onRequestTrumpf() {
-        return new ChooseTrumpf(OBEABE);
+        final Mode mode = localPlayer.chooseTrumpf(gameSession);
+        return new ChooseTrumpf(Trumpf.valueOf(mode.getTrumpfName().toString()), mapColor(mode.getTrumpfColor()));
     }
 
     public void onBroadCastTrumpf(TrumpfChoice trumpfChoice) {
-        final Mode nextGameMode = Mode.valueOf(trumpfChoice.getMode().name());
+        final Mode nextGameMode = mapMode(trumpfChoice);
         gameSession.startNewGame(nextGameMode);
+        localPlayer.onGameStarted(gameSession);
     }
 
     public ChooseCard onRequestCard() {
@@ -95,6 +99,7 @@ public class RemoteGameHandler {
 
         final Move move = new Move(player, mapToCard(remoteCard));
         gameSession.makeMove(move);
+        localPlayer.onMoveMade(move, gameSession);
     }
 
     public void onBroadCastStich(Stich stich) {
@@ -105,14 +110,26 @@ public class RemoteGameHandler {
     }
 
     public void onBroadGameFinished(List<RemoteTeam> remoteTeams) {
+        localPlayer.onGameFinished();
     }
 
     public void onBroadCastWinnerTeam(RemoteTeam winnerTeam) {
-
+        localPlayer.onSessionFinished();
     }
 
     public void onRejectCard(RemoteCard rejectCard) {
         throw new RuntimeException("Card was rejected");
+    }
+
+    private static Mode mapMode(TrumpfChoice trumpf) {
+        switch(trumpf.getMode()) {
+            case OBEABE:
+                return Mode.topdown();
+            case TRUMPF:
+                return Mode.trump(trumpf.getTrumpfColor().getMappedColor());
+            default:
+                throw new RuntimeException("Unknown trumpf received: " + trumpf);
+        }
     }
 
     private List<Team> mapTeams(List<RemoteTeam> remoteTeams) {
@@ -147,11 +164,17 @@ public class RemoteGameHandler {
     }
 
     private static RemoteCard mapToRemoteCard(Card card) {
-        final RemoteColor remoteColor = stream(RemoteColor.values())
-                .filter(color -> color.getMappedColor() == card.getColor())
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Could not map color"));
+        final RemoteColor remoteColor = mapColor(card.getColor());
         return new RemoteCard(card.getRank() + 5, remoteColor);
+    }
+
+    private static RemoteColor mapColor(Color localColor) {
+        if(localColor == null) return null;
+
+        return stream(RemoteColor.values())
+                    .filter(color -> color.getMappedColor() == localColor)
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Could not map color"));
     }
 
     private static void checkEquals(Object a, Object b, String errorMessage) {

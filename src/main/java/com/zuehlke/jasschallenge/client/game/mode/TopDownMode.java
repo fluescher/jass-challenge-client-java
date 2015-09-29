@@ -1,4 +1,4 @@
-package com.zuehlke.jasschallenge.client.game.rules;
+package com.zuehlke.jasschallenge.client.game.mode;
 
 import com.zuehlke.jasschallenge.client.game.Move;
 import com.zuehlke.jasschallenge.client.game.Player;
@@ -9,18 +9,27 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class TopDownRules implements Rules {
+class TopDownMode implements Mode {
+    @Override
+    public TrumpfName getTrumpfName() {
+        return TrumpfName.OBEABE;
+    }
+
+    @Override
+    public Color getTrumpfColor() {
+        return null;
+    }
 
     @Override
     public int calculateScore(Set<Card> playedCards) {
         return playedCards.stream()
-                          .mapToInt(Card::getScore)
-                          .sum();
+                .mapToInt(Card::getScore)
+                .sum();
     }
 
     @Override
     public Player determineWinner(List<Move> moves) {
-        if(moves == null || moves.isEmpty()) return null;
+        if (moves == null || moves.isEmpty()) return null;
 
         final Color firstCardColor = moves.get(0).getPlayedCard().getColor();
         return moves.stream()
@@ -40,5 +49,4 @@ public class TopDownRules implements Rules {
     private static Predicate<Move> allCardsWithColor(Color firstCardColor) {
         return move -> move.getPlayedCard().getColor() == firstCardColor;
     }
-
 }

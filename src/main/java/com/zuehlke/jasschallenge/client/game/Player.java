@@ -1,6 +1,7 @@
 package com.zuehlke.jasschallenge.client.game;
 
 import com.zuehlke.jasschallenge.client.game.cards.Card;
+import com.zuehlke.jasschallenge.client.game.mode.Mode;
 import com.zuehlke.jasschallenge.client.game.strategy.RandomMoveJassStrategy;
 import com.zuehlke.jasschallenge.client.game.strategy.JassStrategy;
 
@@ -47,8 +48,32 @@ public class Player {
         return new Move(this, cardToPlay);
     }
 
-    public Mode decideTrumpfColor() {
-        return Mode.OBEABE;
+    public Card chooseCard(GameSession session) {
+        return currentJassStrategy.chooseCard(cards, session);
+    }
+
+    public Mode chooseTrumpf(GameSession session) {
+        return currentJassStrategy.chooseTrumpf(cards, session);
+    }
+
+    public void onMoveMade(Move move, GameSession session) {
+        currentJassStrategy.onMoveMade(move, session);
+    }
+
+    public void onSessionFinished() {
+        currentJassStrategy.onSessionFinished();
+    }
+
+    public void onGameFinished() {
+        currentJassStrategy.onGameFinished();
+    }
+
+    public void onGameStarted(GameSession session) {
+        currentJassStrategy.onGameStarted(session);
+    }
+
+    public void onSessionStarted(GameSession session) {
+        currentJassStrategy.onSessionStarted(session);
     }
 
     @Override

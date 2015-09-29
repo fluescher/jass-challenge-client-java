@@ -2,16 +2,17 @@ package com.zuehlke.jasschallenge.client.game.strategy;
 
 import com.zuehlke.jasschallenge.client.game.Game;
 import com.zuehlke.jasschallenge.client.game.GameSession;
-import com.zuehlke.jasschallenge.client.game.Mode;
 import com.zuehlke.jasschallenge.client.game.Round;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
+import com.zuehlke.jasschallenge.client.game.cards.Color;
+import com.zuehlke.jasschallenge.client.game.mode.Mode;
 
 import java.util.Set;
 
 public class RandomMoveJassStrategy implements JassStrategy {
     @Override
     public Mode chooseTrumpf(Set<Card> availableCards, GameSession session) {
-        return Mode.OBEABE;
+        return Mode.trump(Color.HEARTS);
     }
 
     @Override
@@ -20,7 +21,7 @@ public class RandomMoveJassStrategy implements JassStrategy {
         final Round round = currentGame.getCurrentRound();
 
         return availableCards.stream()
-                    .filter(card -> round.getRules().canPlayCard(card, round.getPlayedCards(), round.getRoundColor(), availableCards))
+                    .filter(card -> round.getMode().canPlayCard(card, round.getPlayedCards(), round.getRoundColor(), availableCards))
                     .findAny()
                     .orElse(availableCards.stream().findAny().get());
     }

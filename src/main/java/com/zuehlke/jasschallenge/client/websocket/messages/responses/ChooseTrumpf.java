@@ -1,5 +1,6 @@
 package com.zuehlke.jasschallenge.client.websocket.messages.responses;
 
+import com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.Trumpf;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.TrumpfChoice;
 
@@ -9,6 +10,10 @@ public class ChooseTrumpf implements Response {
 
     public ChooseTrumpf(Trumpf trumpf) {
         data = new TrumpfChoice(trumpf, null);
+    }
+
+    public ChooseTrumpf(Trumpf trumpf, RemoteColor color) {
+        data = new TrumpfChoice(trumpf, color);
     }
 
     public TrumpfChoice getData() {

@@ -2,24 +2,26 @@ package com.zuehlke.jasschallenge.client.game;
 
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.cards.Color;
-import com.zuehlke.jasschallenge.client.game.rules.Rules;
+import com.zuehlke.jasschallenge.client.game.mode.Mode;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
 
 public class Round {
-    private final Rules rules;
+    private final Mode mode;
     private final int roundNumber;
     private final PlayingOrder playingOrder;
     private final List<Move> moves = new ArrayList<>();
 
     public static Round createRound(Mode gameMode, int roundNumber, PlayingOrder playingOrder) {
-        return new Round(gameMode.getRules(), roundNumber, playingOrder);
+        return new Round(gameMode, roundNumber, playingOrder);
     }
 
-    private Round(Rules rules, int roundNumber, PlayingOrder playingOrder) {
-        this.rules = rules;
+    private Round(Mode mode, int roundNumber, PlayingOrder playingOrder) {
+        this.mode = mode;
         this.roundNumber = roundNumber;
         this.playingOrder = playingOrder;
     }
@@ -51,7 +53,7 @@ public class Round {
     }
 
     public Player getWinner() {
-        return rules.determineWinner(this.moves);
+        return mode.determineWinner(this.moves);
     }
 
     public List<Move> getMoves() {
@@ -62,8 +64,8 @@ public class Round {
         return playingOrder;
     }
 
-    public Rules getRules() {
-        return rules;
+    public Mode getMode() {
+        return mode;
     }
 
     @Override

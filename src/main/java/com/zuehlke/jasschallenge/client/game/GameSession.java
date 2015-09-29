@@ -1,5 +1,7 @@
 package com.zuehlke.jasschallenge.client.game;
 
+import com.zuehlke.jasschallenge.client.game.mode.Mode;
+
 import java.util.List;
 
 import static com.zuehlke.jasschallenge.client.game.PlayingOrder.createOrder;
