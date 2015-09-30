@@ -5,6 +5,7 @@ import com.zuehlke.jasschallenge.client.game.Move;
 import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.cards.Color;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.contrib.theories.Theories;
 import org.junit.contrib.theories.Theory;
@@ -26,6 +27,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeThat;
+import static org.junit.Assume.assumeTrue;
 
 @RunWith(Theories.class)
 public class TrumpfColorModeTest {
@@ -152,6 +154,7 @@ public class TrumpfColorModeTest {
             @ForAll Card playedCard,
             @ForAll Card cardToPlay) {
 
+        assumeThat(playedCard, not(equalTo(cardToPlay)));
         assumeThat(playedCard.getColor(), equalTo(cardToPlay.getColor()));
 
         final Set<Card> alreadyPlayedCards = EnumSet.of(playedCard);
@@ -161,6 +164,39 @@ public class TrumpfColorModeTest {
         final boolean canCardBePlayed = new TrumpfColorMode(HEARTS).canPlayCard(cardToPlay, alreadyPlayedCards, roundColor, playerCards);
 
         assertTrue(canCardBePlayed);
+    }
+
+    @Test
+    public void canPlayCard_withOnlyTrumpfInHand_underTrumpfIsAllowed() {
+
+        final Set<Card> alreadyPlayedCards = EnumSet.of(DIAMOND_ACE, HEART_NINE);
+        final Set<Card> playerCards = EnumSet.of(HEART_ACE, HEART_SEVEN);
+
+        final boolean canCardBePlayed = new TrumpfColorMode(HEARTS).canPlayCard(HEART_SEVEN, alreadyPlayedCards, Color.DIAMONDS, playerCards);
+
+        assertTrue(canCardBePlayed);
+    }
+
+    @Test
+    public void canPlayCard_withNoCardsOfRoundColor_undertrumpfStillNotAllowed() {
+
+        final Set<Card> alreadyPlayedCards = EnumSet.of(DIAMOND_SIX, HEART_SEVEN, HEART_EIGHT);
+        final Set<Card> playerCards = EnumSet.of(HEART_QUEEN, HEART_SIX, HEART_KING, CLUB_SEVEN, CLUB_KING, SPADE_SIX, SPADE_TEN, SPADE_JACK, SPADE_KING);
+
+        final boolean canCardBePlayed = new TrumpfColorMode(HEARTS).canPlayCard(HEART_SIX, alreadyPlayedCards, Color.DIAMONDS, playerCards);
+
+        assertFalse(canCardBePlayed);
+    }
+
+    @Test
+    public void canPlayCard_withPlayedCards_underTrumpfIsNotAllowed() {
+
+        final Set<Card> alreadyPlayedCards = EnumSet.of(DIAMOND_SIX, HEART_SIX, HEART_EIGHT);
+        final Set<Card> playerCards = EnumSet.of(HEART_ACE, DIAMOND_JACK, HEART_SEVEN);
+
+        final boolean canCardBePlayed = new TrumpfColorMode(HEARTS).canPlayCard(HEART_SEVEN, alreadyPlayedCards, Color.DIAMONDS, playerCards);
+
+        assertFalse(canCardBePlayed);
     }
 
     @Theory
@@ -187,6 +223,7 @@ public class TrumpfColorModeTest {
             @ForAll Card cardToPlay) {
 
         assumeThat(cardToPlay.getColor(), equalTo(CLUBS));
+        assumeTrue(cardToPlay.isHigherTrumpfThan(playedCard));
 
         final Set<Card> alreadyPlayedCards = EnumSet.of(playedCard);
         final Set<Card> playerCards = EnumSet.of(cardToPlay);

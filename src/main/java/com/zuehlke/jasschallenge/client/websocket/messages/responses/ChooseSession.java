@@ -8,11 +8,11 @@ public class ChooseSession implements Response {
     private final ChooseSessionData data;
 
     public ChooseSession(SessionChoice sessionChoice) {
-        this(sessionChoice, "Java Client Session");
+        this(sessionChoice, "Java Client Session", SessionType.TOURNAMENT);
     }
 
-    public ChooseSession(SessionChoice sessionChoice, String sessionName) {
-        data = new ChooseSessionData(sessionChoice, sessionName, SessionType.TOURNAMENT);
+    public ChooseSession(SessionChoice sessionChoice, String sessionName, SessionType tournament) {
+        data = new ChooseSessionData(sessionChoice, sessionName, tournament);
     }
 
     public ChooseSessionData getData() {

@@ -49,7 +49,7 @@ public class RemoteGameHandler {
     }
 
     public ChooseSession onRequestSessionChoice() {
-        return new ChooseSession(AUTOJOIN);
+        return new ChooseSession(AUTOJOIN, "Java Client session", SessionType.TOURNAMENT);
     }
 
     public ChoosePlayerName onRequestPlayerName() {

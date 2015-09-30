@@ -5,8 +5,8 @@ import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.cards.Color;
 
-import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -55,9 +55,30 @@ class TrumpfColorMode implements Mode {
 
     @Override
     public boolean canPlayCard(Card card, Set<Card> alreadyPlayedCards, Color currentRoundColor, Set<Card> playerCards) {
-        return alreadyPlayedCards.isEmpty()
-                || card.getColor() == currentRoundColor
-                || !playerCards.stream().anyMatch(playersCard -> playersCard.getColor() == currentRoundColor);
+        final boolean noCardsHaveBeenPlayed = alreadyPlayedCards.isEmpty();
+        final boolean hasOtherCardsOfRoundColor = playerCards.stream().anyMatch(playersCard -> playersCard.getColor() == currentRoundColor);
+        final boolean isHighestTrumpfInRound = isTrumpf(card) && isHighestTrumpf(card, alreadyPlayedCards);
+
+        if(noCardsHaveBeenPlayed) return true;
+        if(hasOnlyTrumpf(playerCards)) return true;
+        if(isTrumpf(card)) return isHighestTrumpfInRound;
+        else return !hasOtherCardsOfRoundColor || card.getColor() == currentRoundColor;
+    }
+
+    private boolean hasOnlyTrumpf(Set<Card> cards) {
+        return cards.stream().allMatch(card -> card.getColor() == trumpfColor);
+    }
+
+    private boolean isHighestTrumpf(Card card, Set<Card> alreadyPlayedCards) {
+        return highestTrumpf(alreadyPlayedCards)
+                .map(card::isHigherTrumpfThan)
+                .orElse(true);
+    }
+
+    private Optional<Card> highestTrumpf(Set<Card> alreadyPlayedCards) {
+        return alreadyPlayedCards.stream()
+                .filter(card -> card.getColor() == trumpfColor)
+                .max(this::compareTrumpf);
     }
 
     private boolean isTrumpf(Card card) {
@@ -66,7 +87,7 @@ class TrumpfColorMode implements Mode {
 
     private int compareWithTrumpf(Move move1, Move move2) {
         if (isTrumpf(move1.getPlayedCard()) && isTrumpf(move2.getPlayedCard())) {
-            return compareTrumpfMoves(move1, move2);
+            return compareTrumpf(move1.getPlayedCard(), move2.getPlayedCard());
         } else if (isTrumpf(move1.getPlayedCard())) {
             return 1;
         } else if (isTrumpf(move2.getPlayedCard())) {
@@ -76,8 +97,8 @@ class TrumpfColorMode implements Mode {
         }
     }
 
-    private int compareTrumpfMoves(Move move1, Move move2) {
-        return move1.getPlayedCard().getTrumpfRank() > move2.getPlayedCard().getTrumpfRank() ? 1 : -1;
+    private int compareTrumpf(Card first, Card second) {
+        return first.isHigherTrumpfThan(second) ? 1 : -1;
     }
 
     private int compareMoves(Move move1, Move move2) {

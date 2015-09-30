@@ -68,11 +68,11 @@ public class RemoteGameHandlerTest {
     }
 
     @Test
-    public void onRequestSession_returnsThSessionChoice() {
+    public void onRequestSession_returnsSessionChoice() {
 
         final ChooseSession chooseSession = new RemoteGameHandler(null).onRequestSessionChoice();
 
-        assertThat(chooseSession, equalTo(new ChooseSession(AUTOJOIN)));
+        assertThat(chooseSession, equalTo(new ChooseSession(AUTOJOIN, "Java client session", SessionType.TOURNAMENT)));
     }
 
     @Test
