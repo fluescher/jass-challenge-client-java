@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static com.shazam.shazamcrest.matcher.Matchers.sameBeanAs;
 import static com.zuehlke.jasschallenge.client.LambdaMatcher.match;
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor.*;
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.SessionChoice.AUTOJOIN;
@@ -72,7 +73,7 @@ public class RemoteGameHandlerTest {
 
         final ChooseSession chooseSession = new RemoteGameHandler(null).onRequestSessionChoice();
 
-        assertThat(chooseSession, equalTo(new ChooseSession(AUTOJOIN, "Java client session", SessionType.TOURNAMENT)));
+        assertThat(chooseSession, sameBeanAs(new ChooseSession(AUTOJOIN, "Java Client session", SessionType.TOURNAMENT)));
     }
 
     @Test
