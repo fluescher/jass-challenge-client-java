@@ -9,11 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class RemoteGame {
 
-    private final static Logger logger = LoggerFactory.getLogger(RemoteGame.class);
+    private static final Logger logger = LoggerFactory.getLogger(RemoteGame.class);
+    private static final int MIN_NEEDED_THREAD_COUNT = 5;
     private final Player player;
     private final String targetUrl;
 
@@ -23,7 +25,7 @@ public class RemoteGame {
     }
 
     public void start() throws Exception {
-        final WebSocketClient client = new WebSocketClient();
+        final WebSocketClient client = new WebSocketClient(Executors.newFixedThreadPool(MIN_NEEDED_THREAD_COUNT));
         try {
             RemoteGameSocket socket = new RemoteGameSocket(new RemoteGameHandler(player));
             client.start();

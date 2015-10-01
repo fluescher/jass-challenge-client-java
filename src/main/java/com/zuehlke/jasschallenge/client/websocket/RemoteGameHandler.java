@@ -110,10 +110,16 @@ public class RemoteGameHandler {
     }
 
     public void onBroadGameFinished(List<RemoteTeam> remoteTeams) {
+        logger.info("Game finished: {} ({}) -- {} ({})",
+                remoteTeams.get(0).getName(), remoteTeams.get(0).getCurrentRoundPoints(),
+                remoteTeams.get(1).getName(), remoteTeams.get(1).getCurrentRoundPoints());
         localPlayer.onGameFinished();
     }
 
     public void onBroadCastWinnerTeam(RemoteTeam winnerTeam) {
+        logger.info("Session finished. Winner: {} ({})",
+                winnerTeam.getName(),
+                winnerTeam.getCurrentRoundPoints());
         localPlayer.onSessionFinished();
     }
 
