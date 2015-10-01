@@ -123,8 +123,10 @@ public class RemoteGameHandler {
 
     private static Mode mapMode(TrumpfChoice trumpf) {
         switch(trumpf.getMode()) {
+            case UNDEUFE:
+                return Mode.bottomUp();
             case OBEABE:
-                return Mode.topdown();
+                return Mode.topDown();
             case TRUMPF:
                 return Mode.trump(trumpf.getTrumpfColor().getMappedColor());
             default:

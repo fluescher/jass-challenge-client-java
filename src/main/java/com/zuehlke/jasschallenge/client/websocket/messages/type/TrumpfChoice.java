@@ -7,7 +7,7 @@ public class TrumpfChoice {
     private final RemoteColor trumpfColor;
 
     public TrumpfChoice(@JsonProperty(value = "mode", required = true) Trumpf trumpf,
-                        @JsonProperty(value = "trumpfColor", required = true) RemoteColor trumpfColor) {
+                        @JsonProperty(value = "trumpfColor", required = false) RemoteColor trumpfColor) {
         this.mode = trumpf;
         this.trumpfColor = trumpfColor;
     }

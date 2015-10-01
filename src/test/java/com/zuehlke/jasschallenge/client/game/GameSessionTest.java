@@ -23,7 +23,7 @@ public class GameSessionTest {
 
         final GameSession gameSession = GameSessionBuilder.newSession().createGameSession();
 
-        gameSession.startNewGame(Mode.topdown());
+        gameSession.startNewGame(Mode.topDown());
 
         assertThat(gameSession.getCurrentRound(), is(not(nullValue())));
     }
@@ -33,7 +33,7 @@ public class GameSessionTest {
 
         final GameSession gameSession = GameSessionBuilder.newSession().createGameSession();
 
-        gameSession.startNewGame(Mode.topdown());
+        gameSession.startNewGame(Mode.topDown());
         Round secondRound = gameSession.startNextRound();
 
         assertThat(secondRound.getRoundNumber(), is(1));
@@ -42,7 +42,7 @@ public class GameSessionTest {
     @Test
     public void makeMove_inANewGame_storesMoveOnRound() {
         final GameSession gameSession = GameSessionBuilder.newSession()
-                .withStartedGame(Mode.topdown())
+                .withStartedGame(Mode.topDown())
                 .createGameSession();
 
         gameSession.makeMove(new Move(new Player("Player 1"), Card.CLUB_ACE));
@@ -53,7 +53,7 @@ public class GameSessionTest {
     @Test
     public void makeMove_inANewGame_advancesToNextPlayer() {
         final GameSession gameSession = GameSessionBuilder.newSession()
-                .withStartedGame(Mode.topdown())
+                .withStartedGame(Mode.topDown())
                 .createGameSession();
 
         gameSession.makeMove(new Move(new Player("Player 1"), Card.CLUB_ACE));

@@ -5,7 +5,7 @@ import com.zuehlke.jasschallenge.client.game.Move;
 import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.cards.Color;
-import org.hamcrest.Matchers;
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.contrib.theories.Theories;
 import org.junit.contrib.theories.Theory;
@@ -20,22 +20,22 @@ import static com.zuehlke.jasschallenge.client.game.cards.Color.CLUBS;
 import static com.zuehlke.jasschallenge.client.game.cards.Color.HEARTS;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
 import static org.junit.Assume.assumeThat;
 
 @RunWith(Theories.class)
-public class TopDownModeTest {
+public class BottomUpModeTest {
 
     @Test
-    public void calculateScore_eightWasPlayed() {
+    public void calculateScore_withSomeCards() {
 
-        final Set<Card> playedCards = EnumSet.of(CLUB_EIGHT);
+        final Set<Card> playedCards = EnumSet.of(DIAMOND_KING, DIAMOND_NINE, CLUB_SEVEN, CLUB_TEN);
 
-        final int score = Mode.topDown().calculateScore(playedCards);
+        final int score = Mode.bottomUp().calculateScore(playedCards);
 
-        assertThat(score, Matchers.equalTo(8));
+        assertThat(score, equalTo(14));
     }
 
     @Test
@@ -43,9 +43,9 @@ public class TopDownModeTest {
 
         final Set<Card> playedCards = EnumSet.of(CLUB_SIX);
 
-        final int score = Mode.topDown().calculateScore(playedCards);
+        final int score = Mode.bottomUp().calculateScore(playedCards);
 
-        assertThat(score, Matchers.equalTo(0));
+        assertThat(score, equalTo(11));
     }
 
     @Test
@@ -53,27 +53,19 @@ public class TopDownModeTest {
 
         final Set<Card> playedCards = EnumSet.of(CLUB_ACE);
 
-        final int score = Mode.topDown().calculateScore(playedCards);
-
-        assertThat(score, Matchers.equalTo(11));
-    }
-
-    @Test
-    public void calculateScore_ifNoCardsWerePlayed_returnsZero() {
-
-        int score = Mode.topDown().calculateScore(EnumSet.noneOf(Card.class));
+        final int score = Mode.bottomUp().calculateScore(playedCards);
 
         assertThat(score, equalTo(0));
     }
 
     @Test
-    public void calculateScore_someCardsArePlayed_returnsSumOfCardScores() {
+    public void calculateScore_eightWasPlayed() {
 
-        final EnumSet<Card> cards = EnumSet.of(DIAMOND_ACE, HEART_SIX, HEART_TEN);
+        final Set<Card> playedCards = EnumSet.of(CLUB_EIGHT);
 
-        final int score = Mode.topDown().calculateScore(cards);
+        final int score = Mode.bottomUp().calculateScore(playedCards);
 
-        assertThat(score, equalTo(21));
+        assertThat(score, equalTo(8));
     }
 
     @Theory
@@ -83,7 +75,7 @@ public class TopDownModeTest {
         final Set<Card> alreadyPlayedCards = EnumSet.noneOf(Card.class);
         final Set<Card> playerCards = EnumSet.of(cardToPlay);
 
-        final boolean canCardBePlayed = Mode.topDown().canPlayCard(cardToPlay, alreadyPlayedCards, null, playerCards);
+        final boolean canCardBePlayed = Mode.bottomUp().canPlayCard(cardToPlay, alreadyPlayedCards, null, playerCards);
 
         assertTrue(canCardBePlayed);
     }
@@ -93,13 +85,13 @@ public class TopDownModeTest {
             @ForAll Card playedCard,
             @ForAll Card cardToPlay) {
 
-        assumeThat(playedCard.getColor(), equalTo(cardToPlay.getColor()));
+        assumeThat(playedCard.getColor(), CoreMatchers.equalTo(cardToPlay.getColor()));
 
         final Set<Card> alreadyPlayedCards = EnumSet.of(playedCard);
         final Color roundColor = playedCard.getColor();
         final Set<Card> playerCards = EnumSet.of(cardToPlay);
 
-        final boolean canCardBePlayed = Mode.topDown().canPlayCard(cardToPlay, alreadyPlayedCards, roundColor, playerCards);
+        final boolean canCardBePlayed = Mode.bottomUp().canPlayCard(cardToPlay, alreadyPlayedCards, roundColor, playerCards);
 
         assertTrue(canCardBePlayed);
     }
@@ -109,15 +101,15 @@ public class TopDownModeTest {
             @ForAll Card playedCard,
             @ForAll Card cardToPlay) {
 
-        assumeThat(playedCard, not(equalTo(HEART_JACK)));
-        assumeThat(playedCard.getColor(), equalTo(HEARTS));
-        assumeThat(cardToPlay.getColor(), not(equalTo(HEARTS)));
+        assumeThat(playedCard, not(CoreMatchers.equalTo(HEART_JACK)));
+        assumeThat(playedCard.getColor(), CoreMatchers.equalTo(HEARTS));
+        assumeThat(cardToPlay.getColor(), not(CoreMatchers.equalTo(HEARTS)));
 
         final Set<Card> alreadyPlayedCards = EnumSet.of(playedCard);
         final Color roundColor = playedCard.getColor();
         final Set<Card> playerCards = EnumSet.of(HEART_JACK);
 
-        final boolean canCardBePlayed = Mode.topDown().canPlayCard(cardToPlay, alreadyPlayedCards, roundColor, playerCards);
+        final boolean canCardBePlayed = Mode.bottomUp().canPlayCard(cardToPlay, alreadyPlayedCards, roundColor, playerCards);
 
         assertFalse(canCardBePlayed);
     }
@@ -128,7 +120,7 @@ public class TopDownModeTest {
         final EnumSet<Card> alreadyPlayedCards = EnumSet.of(CLUB_SIX);
         final EnumSet<Card> playersCards = EnumSet.of(HEART_EIGHT, HEART_NINE);
 
-        final boolean canCardBePlayed = Mode.topDown().canPlayCard(HEART_EIGHT, alreadyPlayedCards, CLUBS, playersCards);
+        final boolean canCardBePlayed = Mode.bottomUp().canPlayCard(HEART_EIGHT, alreadyPlayedCards, CLUBS, playersCards);
 
         assertTrue(canCardBePlayed);
     }
@@ -136,13 +128,13 @@ public class TopDownModeTest {
     @Test
     public void determineWinner_noMovesWereMade_returnsNull() {
 
-        final Player winner = Mode.topDown().determineWinner(emptyList());
+        final Player winner = Mode.bottomUp().determineWinner(emptyList());
 
         assertNull(winner);
     }
 
     @Test
-    public void determineWinner_movesWithAllTheSameColor_returnsThePlayerWhichPlayedTheHighestCard() {
+    public void determineWinner_movesWithAllTheSameColor_returnsThePlayerWhichPlayedTheLowestCard() {
         final Player playerA = new Player("a");
         final Player playerB = new Player("b");
         final Player playerC = new Player("c");
@@ -153,13 +145,13 @@ public class TopDownModeTest {
                 new Move(playerC, HEART_SEVEN),
                 new Move(playerD, HEART_JACK));
 
-        final Player winner = Mode.topDown().determineWinner(moves);
+        final Player winner = Mode.bottomUp().determineWinner(moves);
 
-        assertThat(winner, equalTo(playerB));
+        assertThat(winner, equalTo(playerC));
     }
 
     @Test
-    public void determineWinner_movesWithDifferentColors__returnsThePlayerWhichPlayedTheHighestCardOfRoundColor() {
+    public void determineWinner_movesWithDifferentColors__returnsThePlayerWhichPlayedTheLowestCardOfRoundColor() {
         final Player playerA = new Player("a");
         final Player playerB = new Player("b");
         final Player playerC = new Player("c");
@@ -170,9 +162,10 @@ public class TopDownModeTest {
                 new Move(playerC, DIAMOND_EIGHT),
                 new Move(playerD, DIAMOND_NINE));
 
-        final Player winner = Mode.topDown().determineWinner(moves);
+        final Player winner = Mode.bottomUp().determineWinner(moves);
 
-        assertThat(winner, equalTo(playerA));
+        assertThat(winner, equalTo(playerB));
     }
+
 
 }

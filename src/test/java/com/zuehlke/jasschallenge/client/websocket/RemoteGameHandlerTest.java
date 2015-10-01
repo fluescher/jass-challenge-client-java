@@ -53,7 +53,7 @@ public class RemoteGameHandlerTest {
     public void onRequestTrumpf_asksThePlayerForTrumpf() {
 
         final Player localPlayer = mock(Player.class);
-        when(localPlayer.chooseTrumpf(any(GameSession.class))).thenReturn(Mode.topdown());
+        when(localPlayer.chooseTrumpf(any(GameSession.class))).thenReturn(Mode.topDown());
         when(localPlayer.getName()).thenReturn("local");
         final RemotePlayer remoteLocalPlayer = new RemotePlayer(2, "local");
         final List<RemoteTeam> remoteTeams = asList(
@@ -153,7 +153,7 @@ public class RemoteGameHandlerTest {
         when(localPlayer.getName()).thenReturn("Player 1");
         final GameSession session = spy(GameSessionBuilder
                 .newSession()
-                .withStartedGame(Mode.topdown())
+                .withStartedGame(Mode.topDown())
                 .createGameSession());
         final RemoteGameHandler handler = new RemoteGameHandler(localPlayer, session);
 
@@ -189,7 +189,7 @@ public class RemoteGameHandlerTest {
         final Player playerOne = new Player("remote 1");
         final Player playerTwo = new Player("remote 2");
         final Player playerThree = new Player("remote 3");
-        Round expected = Round.createRound(Mode.topdown(), 0, PlayingOrder.createOrder(asList(playerOne, playerTwo, null, playerThree)));
+        Round expected = Round.createRound(Mode.topDown(), 0, PlayingOrder.createOrder(asList(playerOne, playerTwo, null, playerThree)));
         expected.makeMove(new Move(playerOne, Card.CLUB_KING));
         expected.makeMove(new Move(playerTwo, Card.DIAMOND_TEN));
         assertThat(handler.getCurrentRound(), sameBeanAs(expected));

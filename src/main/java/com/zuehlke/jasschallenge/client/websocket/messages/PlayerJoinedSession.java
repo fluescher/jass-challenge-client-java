@@ -1,12 +1,9 @@
 package com.zuehlke.jasschallenge.client.websocket.messages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.zuehlke.jasschallenge.client.websocket.RemoteGameHandler;
-import com.zuehlke.jasschallenge.client.websocket.messages.responses.Response;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.RemotePlayer;
 
 import java.util.List;
-import java.util.Optional;
 
 public class PlayerJoinedSession {
 

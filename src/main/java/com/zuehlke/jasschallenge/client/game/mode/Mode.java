@@ -10,7 +10,8 @@ import java.util.Set;
 
 public interface Mode {
 
-    static Mode topdown() { return new TopDownMode(); }
+    static Mode topDown() { return new TopDownMode(); }
+    static Mode bottomUp() { return new BottomUpMode(); }
     static Mode trump(Color color) { return new TrumpfColorMode(color); }
 
     TrumpfName getTrumpfName();

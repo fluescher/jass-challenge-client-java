@@ -3,7 +3,9 @@ package com.zuehlke.jasschallenge.client.websocket;
 import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.RemotePlayer;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 public class PlayerMapper {
 

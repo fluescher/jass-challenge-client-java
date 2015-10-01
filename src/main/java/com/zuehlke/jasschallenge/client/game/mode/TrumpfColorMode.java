@@ -62,7 +62,7 @@ class TrumpfColorMode implements Mode {
 
         if(noCardsHaveBeenPlayed) return true;
         if(hasOnlyTrumpf(playerCards)) return true;
-        if(isTrumpf(card)) return isHighestTrumpfInRound;
+        if(isTrumpf(card) && currentRoundColor != trumpfColor) return isHighestTrumpfInRound;
         if(currentRoundColor == trumpfColor && hasOnlyJackOfTrumpf(playerCards)) return true;
         else return !hasOtherCardsOfRoundColor || card.getColor() == currentRoundColor;
     }

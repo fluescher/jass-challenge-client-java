@@ -2,8 +2,8 @@ package com.zuehlke.jasschallenge.client.game;
 
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.mode.Mode;
-import com.zuehlke.jasschallenge.client.game.strategy.RandomMoveJassStrategy;
 import com.zuehlke.jasschallenge.client.game.strategy.JassStrategy;
+import com.zuehlke.jasschallenge.client.game.strategy.RandomMoveJassStrategy;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -90,5 +90,12 @@ public class Player {
     @Override
     public int hashCode() {
         return name != null ? name.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }

@@ -71,7 +71,7 @@ public class RoundTest {
     }
 
     private static Round createRoundWithMoves(int roundNumber, PlayingOrder playingOrder, List<Move> moves) {
-        final Round round = Round.createRound(Mode.topdown(), roundNumber, playingOrder);
+        final Round round = Round.createRound(Mode.topDown(), roundNumber, playingOrder);
         for (Move move : moves) round.makeMove(move);
         return round;
     }
