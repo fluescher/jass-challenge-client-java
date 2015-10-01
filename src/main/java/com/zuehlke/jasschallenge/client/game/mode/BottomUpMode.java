@@ -26,13 +26,7 @@ class BottomUpMode implements Mode{
     @Override
     public int calculateScore(Set<Card> playedCards) {
         return playedCards.stream()
-                .mapToInt(card -> {
-                    switch (card.getValue()) {
-                        case ACE: return SIX.getScore();
-                        case SIX: return ACE.getScore();
-                        default:  return card.getScore();
-                    }
-                })
+                .mapToInt(card -> card.getValue().getBottomUpScore())
                 .sum();
     }
 
