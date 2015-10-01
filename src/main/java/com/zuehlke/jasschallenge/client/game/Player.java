@@ -3,7 +3,7 @@ package com.zuehlke.jasschallenge.client.game;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.mode.Mode;
 import com.zuehlke.jasschallenge.client.game.strategy.JassStrategy;
-import com.zuehlke.jasschallenge.client.game.strategy.RandomMoveJassStrategy;
+import com.zuehlke.jasschallenge.client.game.strategy.RandomJassStrategy;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -15,7 +15,7 @@ public class Player {
     private final JassStrategy currentJassStrategy;
 
     public Player(String name) {
-        this(name, new RandomMoveJassStrategy());
+        this(name, new RandomJassStrategy());
     }
 
     public Player(String name, JassStrategy strategy) {

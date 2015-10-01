@@ -4,14 +4,24 @@ import com.zuehlke.jasschallenge.client.game.Game;
 import com.zuehlke.jasschallenge.client.game.GameSession;
 import com.zuehlke.jasschallenge.client.game.Round;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
+import com.zuehlke.jasschallenge.client.game.cards.Color;
 import com.zuehlke.jasschallenge.client.game.mode.Mode;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
-public class RandomMoveJassStrategy implements JassStrategy {
+public class RandomJassStrategy implements JassStrategy {
     @Override
     public Mode chooseTrumpf(Set<Card> availableCards, GameSession session) {
-        return Mode.bottomUp();
+        final List<Mode> allPossibleModes = new ArrayList<>();
+        allPossibleModes.add(Mode.bottomUp());
+        allPossibleModes.add(Mode.topDown());
+        for(Color color : Color.values()) {
+            allPossibleModes.add(Mode.trump(color));
+        }
+        return allPossibleModes.get(new Random().nextInt(allPossibleModes.size()));
     }
 
     @Override
