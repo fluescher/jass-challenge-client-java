@@ -199,6 +199,17 @@ public class TrumpfColorModeTest {
         assertFalse(canCardBePlayed);
     }
 
+    @Test
+    public void canPlayCard_withOnlyJackOfTrumpfColor() {
+
+        final Set<Card> alreadyPlayedCards = EnumSet.of(CLUB_SEVEN);
+        final Set<Card> playerCards = EnumSet.of(CLUB_JACK, HEART_SEVEN);
+
+        final boolean canCardBePlayed = new TrumpfColorMode(CLUBS).canPlayCard(HEART_SEVEN, alreadyPlayedCards, CLUBS, playerCards);
+
+        assertTrue(canCardBePlayed);
+    }
+
     @Theory
     public void canPlayCard_withPlayedCards_allowsNoCardsOfOtherColor(
             @ForAll Card playedCard,

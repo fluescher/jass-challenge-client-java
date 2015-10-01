@@ -23,7 +23,7 @@ public class RemoteGame {
     }
 
     public void start() throws Exception {
-                WebSocketClient client = new WebSocketClient();
+        final WebSocketClient client = new WebSocketClient();
         try {
             RemoteGameSocket socket = new RemoteGameSocket(new RemoteGameHandler(player));
             client.start();

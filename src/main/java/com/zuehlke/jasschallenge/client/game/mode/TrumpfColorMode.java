@@ -3,6 +3,7 @@ package com.zuehlke.jasschallenge.client.game.mode;
 import com.zuehlke.jasschallenge.client.game.Move;
 import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
+import com.zuehlke.jasschallenge.client.game.cards.CardValue;
 import com.zuehlke.jasschallenge.client.game.cards.Color;
 
 import java.util.List;
@@ -62,7 +63,14 @@ class TrumpfColorMode implements Mode {
         if(noCardsHaveBeenPlayed) return true;
         if(hasOnlyTrumpf(playerCards)) return true;
         if(isTrumpf(card)) return isHighestTrumpfInRound;
+        if(currentRoundColor == trumpfColor && hasOnlyJackOfTrumpf(playerCards)) return true;
         else return !hasOtherCardsOfRoundColor || card.getColor() == currentRoundColor;
+    }
+
+    private boolean hasOnlyJackOfTrumpf(Set<Card> playerCards) {
+        return playerCards.stream()
+                .filter(cards -> cards.getColor() == trumpfColor)
+                .allMatch(card -> card.getValue() == CardValue.JACK);
     }
 
     private boolean hasOnlyTrumpf(Set<Card> cards) {

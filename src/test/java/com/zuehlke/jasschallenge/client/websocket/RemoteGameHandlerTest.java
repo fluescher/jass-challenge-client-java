@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static com.shazam.shazamcrest.MatcherAssert.assertThat;
 import static com.shazam.shazamcrest.matcher.Matchers.sameBeanAs;
 import static com.zuehlke.jasschallenge.client.LambdaMatcher.match;
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor.*;
@@ -20,7 +21,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -97,7 +97,7 @@ public class RemoteGameHandlerTest {
 
         final ChoosePlayerName choosePlayerName = new RemoteGameHandler(localPlayer).onRequestPlayerName();
 
-        assertThat(choosePlayerName, equalTo(new ChoosePlayerName("test")));
+        assertThat(choosePlayerName, sameBeanAs(new ChoosePlayerName("test")));
     }
 
     @Test
@@ -159,15 +159,18 @@ public class RemoteGameHandlerTest {
 
         handler.onPlayedCards(asList(new RemoteCard(13, CLUBS)));
 
-        verify(session).makeMove(new Move(new Player("Player 1"), Card.CLUB_KING));
+        verify(session).makeMove(argThat(sameBeanAs(new Move(new Player("Player 1"), Card.CLUB_KING))));
     }
 
     @Test
     public void onPlayedCards_roundIsUpdated() {
 
-        final Player localPlayer = mock(Player.class);
-        when(localPlayer.getName()).thenReturn("local");
-        when(localPlayer.makeMove(any(GameSession.class))).thenReturn(new Move(localPlayer, Card.DIAMOND_ACE));
+        final Player localPlayer = new Player("local") {
+            @Override
+            public Move makeMove(GameSession session) {
+                return new Move(this, Card.DIAMOND_ACE);
+            }
+        };
 
         final RemotePlayer remoteLocalPlayer = new RemotePlayer(2, "local");
         final RemotePlayer remoteOne = new RemotePlayer(0, "remote 1");
@@ -185,10 +188,11 @@ public class RemoteGameHandlerTest {
 
         final Player playerOne = new Player("remote 1");
         final Player playerTwo = new Player("remote 2");
-        Round expected = Round.createRound(Mode.topdown(), 0, PlayingOrder.createOrder(asList(playerOne, playerTwo)));
+        final Player playerThree = new Player("remote 3");
+        Round expected = Round.createRound(Mode.topdown(), 0, PlayingOrder.createOrder(asList(playerOne, playerTwo, null, playerThree)));
         expected.makeMove(new Move(playerOne, Card.CLUB_KING));
         expected.makeMove(new Move(playerTwo, Card.DIAMOND_TEN));
-        assertThat(handler.getCurrentRound(), equalTo(expected));
+        assertThat(handler.getCurrentRound(), sameBeanAs(expected));
     }
 
     @Test

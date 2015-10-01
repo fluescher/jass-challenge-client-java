@@ -68,32 +68,4 @@ public class Round {
         return mode;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Round round = (Round) o;
-
-        if (roundNumber != round.roundNumber) return false;
-        return !(moves != null ? !moves.equals(round.moves) : round.moves != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = roundNumber;
-        result = 31 * result + (moves != null ? moves.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Round{" +
-                "roundNumber=" + roundNumber +
-                ", moves=" + moves +
-                '}';
-    }
-
-
 }
