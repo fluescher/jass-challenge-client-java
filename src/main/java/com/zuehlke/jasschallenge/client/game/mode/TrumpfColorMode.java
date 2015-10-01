@@ -35,9 +35,9 @@ class TrumpfColorMode implements Mode {
         return playedCards.stream()
                 .mapToInt(card -> {
                     if (isTrumpf(card)) {
-                        return card.getTrumpfScore();
+                        return card.getValue().getTrumpfScore();
                     } else {
-                        return card.getScore();
+                        return card.getValue().getScore();
                     }
                 }).sum();
     }

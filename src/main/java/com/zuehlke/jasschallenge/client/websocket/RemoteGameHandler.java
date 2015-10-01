@@ -156,7 +156,7 @@ public class RemoteGameHandler {
     private static Card mapToCard(RemoteCard remoteCard) {
         return stream(Card.values())
                 .filter(card -> card.getColor() == remoteCard.getColor().getMappedColor())
-                .filter(card -> card.getRank() == remoteCard.getNumber() - 5)
+                .filter(card -> card.getValue().getRank() == remoteCard.getNumber() - 5)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Unable to map card"));
     }
@@ -167,7 +167,7 @@ public class RemoteGameHandler {
 
     private static RemoteCard mapToRemoteCard(Card card) {
         final RemoteColor remoteColor = mapColor(card.getColor());
-        return new RemoteCard(card.getRank() + 5, remoteColor);
+        return new RemoteCard(card.getValue().getRank() + 5, remoteColor);
     }
 
     private static RemoteColor mapColor(Color localColor) {

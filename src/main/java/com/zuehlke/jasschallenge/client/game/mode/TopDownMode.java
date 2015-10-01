@@ -23,7 +23,7 @@ class TopDownMode implements Mode {
     @Override
     public int calculateScore(Set<Card> playedCards) {
         return playedCards.stream()
-                .mapToInt(Card::getScore)
+                .mapToInt(card -> card.getValue().getScore())
                 .sum();
     }
 
