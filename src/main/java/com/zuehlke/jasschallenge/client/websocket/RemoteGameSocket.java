@@ -35,13 +35,13 @@ public class RemoteGameSocket {
 
     @OnWebSocketConnect
     public void onConnect(Session session) {
-        logger.debug("Got connect: {}", session);
+        logger.trace("Got connect: {}", session);
         this.session = session;
     }
 
     @OnWebSocketMessage
     public void onMessage(String msg) throws IOException {
-        logger.debug("Received message: {}", msg);
+        logger.trace("Received message: {}", msg);
 
         final Message message = read(msg, Message.class);
         Optional<Response> response = message.dispatch(handler);
@@ -50,14 +50,14 @@ public class RemoteGameSocket {
 
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
-        logger.debug("Connection closed: {} - {}", statusCode, reason);
+        logger.trace("Connection closed: {} - {}", statusCode, reason);
         closeLatch.countDown();
     }
 
     private void send(Response message) {
         try {
             final String messageString = toJson(message);
-            logger.debug("Sending message: {}", messageString);
+            logger.trace("Sending message: {}", messageString);
             session.getRemote().sendString(messageString);
         } catch (IOException e) {
             throw new RuntimeException(e);

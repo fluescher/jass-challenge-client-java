@@ -76,6 +76,8 @@ public class RemoteGameHandler {
     }
 
     public void onBroadCastTrumpf(TrumpfChoice trumpfChoice) {
+        logger.info("Game started: {}", trumpfChoice.getMode());
+
         final Mode nextGameMode = mapMode(trumpfChoice);
         gameSession.startNewGame(nextGameMode);
         localPlayer.onGameStarted(gameSession);
