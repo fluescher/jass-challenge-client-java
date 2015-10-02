@@ -1,6 +1,7 @@
 package com.zuehlke.jasschallenge.client.game.mode;
 
 import com.pholser.junit.quickcheck.ForAll;
+import com.zuehlke.jasschallenge.client.game.Game;
 import com.zuehlke.jasschallenge.client.game.Move;
 import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
@@ -35,7 +36,7 @@ public class BottomUpModeTest {
 
         final int score = Mode.bottomUp().calculateScore(playedCards);
 
-        assertThat(score, equalTo(14));
+        assertThat(score, equalTo(42));
     }
 
     @Test
@@ -45,7 +46,7 @@ public class BottomUpModeTest {
 
         final int score = Mode.bottomUp().calculateScore(playedCards);
 
-        assertThat(score, equalTo(11));
+        assertThat(score, equalTo(33));
     }
 
     @Test
@@ -65,7 +66,17 @@ public class BottomUpModeTest {
 
         final int score = Mode.bottomUp().calculateScore(playedCards);
 
-        assertThat(score, equalTo(8));
+        assertThat(score, equalTo(24));
+    }
+
+    @Test
+    public void calculateScore_lastRoundWasPlayed() {
+
+        final EnumSet<Card> cards = EnumSet.of(DIAMOND_ACE, HEART_SIX, HEART_TEN);
+
+        final int score = Mode.bottomUp().calculateRoundScore(Game.LAST_ROUND_NUMBER, cards);
+
+        assertThat(score, equalTo(63 + 15));
     }
 
     @Theory
@@ -82,8 +93,8 @@ public class BottomUpModeTest {
 
     @Theory
     public void canPlayCard_withPlayedCards_allowsCardsOfSameColor(
-            @ForAll Card playedCard,
-            @ForAll Card cardToPlay) {
+            @ForAll(sampleSize = 10) Card playedCard,
+            @ForAll(sampleSize = 10) Card cardToPlay) {
 
         assumeThat(playedCard.getColor(), CoreMatchers.equalTo(cardToPlay.getColor()));
 
@@ -98,8 +109,8 @@ public class BottomUpModeTest {
 
     @Theory
     public void canPlayCard_withPlayedCards_allowsNoCardsOfOtherColor(
-            @ForAll Card playedCard,
-            @ForAll Card cardToPlay) {
+            @ForAll(sampleSize = 10) Card playedCard,
+            @ForAll(sampleSize = 10) Card cardToPlay) {
 
         assumeThat(playedCard, not(CoreMatchers.equalTo(HEART_JACK)));
         assumeThat(playedCard.getColor(), CoreMatchers.equalTo(HEARTS));

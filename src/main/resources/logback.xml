@@ -8,7 +8,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.zuehlke" level="DEBUG" />
+    <logger name="com.zuehlke" level="TRACE" />
 
     <root level="INFO">
         <appender-ref ref="STDOUT" />

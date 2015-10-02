@@ -18,6 +18,7 @@ import static com.zuehlke.jasschallenge.client.LambdaMatcher.match;
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor.*;
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.SessionChoice.AUTOJOIN;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyEnumeration;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.*;
@@ -57,7 +58,8 @@ public class RemoteGameHandlerTest {
         when(localPlayer.getName()).thenReturn("local");
         final RemotePlayer remoteLocalPlayer = new RemotePlayer(2, "local");
         final List<RemoteTeam> remoteTeams = asList(
-                new RemoteTeam("team a", asList(remoteLocalPlayer)));
+                new RemoteTeam("team a", asList(remoteLocalPlayer)),
+                new RemoteTeam("team b", asList(remoteLocalPlayer)));
 
         final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer);
         remoteGameHandler.onBroadCastTeams(remoteTeams);
@@ -131,16 +133,19 @@ public class RemoteGameHandlerTest {
         final RemotePlayer remoteOne = new RemotePlayer(0, "remote 1");
         final RemotePlayer remoteTwo = new RemotePlayer(1, "remote 2");
         final RemotePlayer remoteThree = new RemotePlayer(3, "remote 3");
+        final RemoteTeam remoteTeam1 = new RemoteTeam("team a", asList(remoteOne, remoteThree));
+        remoteTeam1.setCurrentRoundPoints(45);
+        final RemoteTeam remoteTeam2 = new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo));
         final List<RemoteTeam> remoteTeams = asList(
-                new RemoteTeam("team a", asList(remoteOne, remoteThree)),
-                new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo)));
+                remoteTeam1,
+                remoteTeam2);
         final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer);
 
         remoteGameHandler.onBroadCastTeams(remoteTeams);
         remoteGameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
         remoteGameHandler.onPlayedCards(asList(new RemoteCard(13, CLUBS)));
         remoteGameHandler.onPlayedCards(asList(new RemoteCard(13, CLUBS), new RemoteCard(14, CLUBS)));
-        remoteGameHandler.onBroadCastStich(new Stich("remote 2", 0, emptyList(), emptyList()));
+        remoteGameHandler.onBroadCastStich(new Stich("remote 2", 0, emptyList(), asList(remoteTeam1, remoteTeam2)));
 
         assertThat(remoteGameHandler.getCurrentRound().getMoves(), empty());
         assertThat(remoteGameHandler.getCurrentRound().getRoundNumber(), equalTo(1));
@@ -221,9 +226,12 @@ public class RemoteGameHandlerTest {
         final RemotePlayer remoteOne = new RemotePlayer(0, "remote 1");
         final RemotePlayer remoteTwo = new RemotePlayer(1, "remote 2");
         final RemotePlayer remoteThree = new RemotePlayer(3, "remote 3");
+        final RemoteTeam remoteTeamA = new RemoteTeam("team a", asList(remoteOne, remoteThree));
+        remoteTeamA.setCurrentRoundPoints(51);
+        final RemoteTeam remoteTeamB = new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo));
         final List<RemoteTeam> remoteTeams = asList(
-                new RemoteTeam("team a", asList(remoteOne, remoteThree)),
-                new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo)));
+                remoteTeamA,
+                remoteTeamB);
         final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer);
 
         remoteGameHandler.onBroadCastTeams(remoteTeams);
@@ -232,7 +240,7 @@ public class RemoteGameHandlerTest {
         remoteGameHandler.onPlayedCards(asList(new RemoteCard(6, DIAMONDS), new RemoteCard(13, CLUBS)));
         remoteGameHandler.onPlayedCards(asList(new RemoteCard(6, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(14, DIAMONDS)));
         remoteGameHandler.onPlayedCards(asList(new RemoteCard(6, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(14, DIAMONDS), new RemoteCard(11, DIAMONDS)));
-        remoteGameHandler.onBroadCastStich(new Stich("local", 0, emptyList(), emptyList()));
+        remoteGameHandler.onBroadCastStich(new Stich("local", 0, emptyList(), asList(remoteTeamA, remoteTeamB)));
         remoteGameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS)));
         remoteGameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(13, CLUBS)));
         remoteGameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(6, HEARTS)));

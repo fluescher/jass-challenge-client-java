@@ -1,6 +1,7 @@
 package com.zuehlke.jasschallenge.client.game.mode;
 
 import com.pholser.junit.quickcheck.ForAll;
+import com.zuehlke.jasschallenge.client.game.Game;
 import com.zuehlke.jasschallenge.client.game.Move;
 import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
@@ -38,21 +39,41 @@ public class TrumpfColorModeTest {
     @Test
     public void calculateScore_someNoTrumpfCardsWerePlayed() {
 
-        final EnumSet<Card> playedCards = EnumSet.of(Card.DIAMOND_ACE, Card.DIAMOND_KING, Card.HEART_TEN);
+        final Set<Card> playedCards = EnumSet.of(Card.DIAMOND_ACE, Card.DIAMOND_KING, Card.SPADE_TEN);
 
-        final int score = Mode.trump(CLUBS).calculateScore(playedCards);
+        final int score = Mode.trump(HEARTS).calculateScore(playedCards);
 
-        assertThat(score, equalTo(25));
+        assertThat(score, equalTo( 11 + 4 + 10));
     }
 
     @Test
     public void calculateScore_trumpfCardsHaveSpecialScores() {
 
-        final EnumSet<Card> playedCards = EnumSet.of(Card.CLUB_JACK, Card.CLUB_NINE);
+        final Set<Card> playedCards = EnumSet.of(Card.HEART_JACK, Card.HEART_NINE);
 
-        final int score = Mode.trump(CLUBS).calculateScore(playedCards);
+        final int score = Mode.trump(HEARTS).calculateScore(playedCards);
 
-        assertThat(score, equalTo(34));
+        assertThat(score, equalTo(20+14));
+    }
+
+    @Test
+    public void calculateScore_blackColorIsTrumpf() {
+
+        final Set<Card> playedCards = EnumSet.of(Card.SPADE_ACE, Card.SPADE_EIGHT);
+
+        final int score = Mode.trump(SPADES).calculateScore(playedCards);
+
+        assertThat(score, equalTo(11 * 2));
+    }
+
+    @Test
+    public void calculateScore_lastRoundWasPlayed() {
+
+        final EnumSet<Card> cards = EnumSet.of(DIAMOND_ACE, HEART_SIX, HEART_TEN);
+
+        final int score = Mode.trump(SPADES).calculateRoundScore(Game.LAST_ROUND_NUMBER, cards);
+
+        assertThat(score, equalTo((11+10)*2 + 10));
     }
 
     @Test
@@ -160,8 +181,8 @@ public class TrumpfColorModeTest {
 
     @Theory
     public void canPlayCard_withPlayedCards_allowsCardsOfSameColor(
-            @ForAll Card playedCard,
-            @ForAll Card cardToPlay) {
+            @ForAll(sampleSize = 10) Card playedCard,
+            @ForAll(sampleSize = 10) Card cardToPlay) {
 
         assumeThat(playedCard, not(equalTo(cardToPlay)));
         assumeThat(playedCard.getColor(), equalTo(cardToPlay.getColor()));
@@ -221,8 +242,8 @@ public class TrumpfColorModeTest {
 
     @Theory
     public void canPlayCard_withPlayedCards_allowsNoCardsOfOtherColor(
-            @ForAll Card playedCard,
-            @ForAll Card cardToPlay) {
+            @ForAll(sampleSize = 10) Card playedCard,
+            @ForAll(sampleSize = 10) Card cardToPlay) {
 
         assumeThat(playedCard.getColor(), equalTo(HEARTS));
         assumeThat(playedCard, not(equalTo(cardToPlay)));
@@ -239,8 +260,8 @@ public class TrumpfColorModeTest {
 
     @Theory
     public void canPlayCard_noTrumpfWasPlayed_trumpfCanAlwaysBePlayed(
-            @ForAll Card playedCard,
-            @ForAll Card cardToPlay) {
+            @ForAll(sampleSize = 10) Card playedCard,
+            @ForAll(sampleSize = 10) Card cardToPlay) {
 
         assumeThat(cardToPlay.getColor(), equalTo(CLUBS));
         assumeTrue(cardToPlay.isHigherTrumpfThan(playedCard));

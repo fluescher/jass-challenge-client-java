@@ -1,5 +1,6 @@
 package com.zuehlke.jasschallenge.client.game.mode;
 
+import com.zuehlke.jasschallenge.client.game.Game;
 import com.zuehlke.jasschallenge.client.game.Move;
 import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
@@ -11,9 +12,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import static java.lang.String.valueOf;
+
 class TrumpfColorMode implements Mode {
 
     private final Color trumpfColor;
+    private final GeneralRules generalRules = new GeneralRules();
 
     public TrumpfColorMode(Color trumpfColor) {
 
@@ -31,8 +35,16 @@ class TrumpfColorMode implements Mode {
     }
 
     @Override
+    public int calculateRoundScore(int roundNumber, Set<Card> playedCards) {
+        if(roundNumber == Game.LAST_ROUND_NUMBER) {
+            return generalRules.calculateLastRoundBonus(getModeFactor()) + calculateScore(playedCards);
+        }
+        return calculateScore(playedCards);
+    }
+
+    @Override
     public int calculateScore(Set<Card> playedCards) {
-        return playedCards.stream()
+        return getModeFactor() * playedCards.stream()
                 .mapToInt(card -> {
                     if (isTrumpf(card)) {
                         return card.getValue().getTrumpfScore();
@@ -40,6 +52,11 @@ class TrumpfColorMode implements Mode {
                         return card.getValue().getScore();
                     }
                 }).sum();
+    }
+
+    private int getModeFactor() {
+        if(trumpfColor == Color.SPADES || trumpfColor == Color.CLUBS) return 2;
+        return 1;
     }
 
     @Override
@@ -65,6 +82,11 @@ class TrumpfColorMode implements Mode {
         if(isTrumpf(card) && currentRoundColor != trumpfColor) return isHighestTrumpfInRound;
         if(currentRoundColor == trumpfColor && hasOnlyJackOfTrumpf(playerCards)) return true;
         else return !hasOtherCardsOfRoundColor || card.getColor() == currentRoundColor;
+    }
+
+    @Override
+    public String toString() {
+        return valueOf(getTrumpfName()) + " - " +  valueOf(getTrumpfColor());
     }
 
     private boolean hasOnlyJackOfTrumpf(Set<Card> playerCards) {

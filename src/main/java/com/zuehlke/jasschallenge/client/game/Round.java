@@ -40,6 +40,11 @@ public class Round {
         return roundNumber;
     }
 
+    public int calculateScore() {
+
+        return mode.calculateRoundScore(roundNumber, getPlayedCards());
+    }
+
     public Set<Card> getPlayedCards() {
         return moves.stream()
                 .map(Move::getPlayedCard)

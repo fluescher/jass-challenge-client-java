@@ -1,11 +1,11 @@
 package com.zuehlke.jasschallenge.client.game.mode;
 
 import com.pholser.junit.quickcheck.ForAll;
+import com.zuehlke.jasschallenge.client.game.Game;
 import com.zuehlke.jasschallenge.client.game.Move;
 import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.cards.Color;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.contrib.theories.Theories;
 import org.junit.contrib.theories.Theory;
@@ -35,7 +35,7 @@ public class TopDownModeTest {
 
         final int score = Mode.topDown().calculateScore(playedCards);
 
-        assertThat(score, Matchers.equalTo(8));
+        assertThat(score, equalTo(24));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class TopDownModeTest {
 
         final int score = Mode.topDown().calculateScore(playedCards);
 
-        assertThat(score, Matchers.equalTo(0));
+        assertThat(score, equalTo(0));
     }
 
     @Test
@@ -55,7 +55,7 @@ public class TopDownModeTest {
 
         final int score = Mode.topDown().calculateScore(playedCards);
 
-        assertThat(score, Matchers.equalTo(11));
+        assertThat(score, equalTo(33));
     }
 
     @Test
@@ -73,7 +73,17 @@ public class TopDownModeTest {
 
         final int score = Mode.topDown().calculateScore(cards);
 
-        assertThat(score, equalTo(21));
+        assertThat(score, equalTo((11+10)*3));
+    }
+
+    @Test
+    public void calculateScore_lastRoundWasPlayed() {
+
+        final EnumSet<Card> cards = EnumSet.of(DIAMOND_ACE, HEART_SIX, HEART_TEN);
+
+        final int score = Mode.topDown().calculateRoundScore(Game.LAST_ROUND_NUMBER, cards);
+
+        assertThat(score, equalTo((11+10)*3 + 15));
     }
 
     @Theory
@@ -90,8 +100,8 @@ public class TopDownModeTest {
 
     @Theory
     public void canPlayCard_withPlayedCards_allowsCardsOfSameColor(
-            @ForAll Card playedCard,
-            @ForAll Card cardToPlay) {
+            @ForAll(sampleSize = 10) Card playedCard,
+            @ForAll(sampleSize = 10) Card cardToPlay) {
 
         assumeThat(playedCard.getColor(), equalTo(cardToPlay.getColor()));
 
@@ -106,8 +116,8 @@ public class TopDownModeTest {
 
     @Theory
     public void canPlayCard_withPlayedCards_allowsNoCardsOfOtherColor(
-            @ForAll Card playedCard,
-            @ForAll Card cardToPlay) {
+            @ForAll(sampleSize = 10) Card playedCard,
+            @ForAll(sampleSize = 10) Card cardToPlay) {
 
         assumeThat(playedCard, not(equalTo(HEART_JACK)));
         assumeThat(playedCard.getColor(), equalTo(HEARTS));

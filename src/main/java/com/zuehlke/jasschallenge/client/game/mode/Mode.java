@@ -14,6 +14,8 @@ public interface Mode {
     static Mode bottomUp() { return new BottomUpMode(); }
     static Mode trump(Color color) { return new TrumpfColorMode(color); }
 
+    default int calculateRoundScore(int roundNumber, Set<Card> playedCards) { return calculateScore(playedCards); };
+
     TrumpfName getTrumpfName();
 
     Color getTrumpfColor();

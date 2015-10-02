@@ -37,7 +37,7 @@ public class GameSession {
         final PlayingOrder initialOrder = createOrderStartingFromPlayer(playersInPlayingOrder, gameStartingPlayerOrder.getCurrentPlayer());
         gameStartingPlayerOrder.moveToNextPlayer();
 
-        currentGame = Game.startGame(mode, initialOrder);
+        currentGame = Game.startGame(mode, initialOrder, teams);
         return currentGame;
     }
 
@@ -48,7 +48,7 @@ public class GameSession {
 
     public void makeMove(Move move) {
 
-        currentGame.getCurrentRound().makeMove(move);
+        currentGame.makeMove(move);
     }
 
     public Game getCurrentGame() {

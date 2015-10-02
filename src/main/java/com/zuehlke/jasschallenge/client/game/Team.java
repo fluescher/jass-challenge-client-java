@@ -19,6 +19,10 @@ public class Team {
         return players;
     }
 
+    public boolean isTeamOfPlayer(Player player) {
+        return players.contains(player);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

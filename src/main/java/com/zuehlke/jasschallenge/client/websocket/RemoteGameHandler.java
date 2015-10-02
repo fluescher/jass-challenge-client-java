@@ -76,9 +76,10 @@ public class RemoteGameHandler {
     }
 
     public void onBroadCastTrumpf(TrumpfChoice trumpfChoice) {
-        logger.info("Game started: {}", trumpfChoice.getMode());
 
         final Mode nextGameMode = mapMode(trumpfChoice);
+        logger.info("Game started: {}", nextGameMode);
+
         gameSession.startNewGame(nextGameMode);
         localPlayer.onGameStarted(gameSession);
     }
@@ -109,6 +110,10 @@ public class RemoteGameHandler {
         checkEquals(winner, getCurrentRound().getWinner(), "Local winner differs from remote");
 
         gameSession.startNextRound();
+
+        checkEquals(stich.getTeams().get(0).getCurrentRoundPoints(),
+                gameSession.getCurrentGame().getResult().getTeamScore(winner),
+                "Local score differs from remote");
     }
 
     public void onBroadGameFinished(List<RemoteTeam> remoteTeams) {

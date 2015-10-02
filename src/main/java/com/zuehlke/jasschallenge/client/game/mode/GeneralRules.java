@@ -12,7 +12,19 @@ import java.util.function.Predicate;
 
 class GeneralRules {
 
-    public Player getWinner(List<Move> moves, Comparator<Move> moveComparator) {
+    public static final int LAST_ROUND_BONUS = 5;
+
+    public int calculateLastRoundBonus(int factor) {
+        return factor * LAST_ROUND_BONUS;
+    }
+
+    public boolean canPlayCard(Card card, Set<Card> alreadyPlayedCards, Color currentRoundColor, Set<Card> playerCards) {
+        return alreadyPlayedCards.isEmpty()
+                || card.getColor() == currentRoundColor
+                || !playerCards.stream().anyMatch(playersCard -> playersCard.getColor() == currentRoundColor);
+    }
+
+    public Player determineWinner(List<Move> moves, Comparator<Move> moveComparator) {
         if (moves == null || moves.isEmpty()) return null;
 
         final Color firstCardColor = moves.get(0).getPlayedCard().getColor();
@@ -25,12 +37,6 @@ class GeneralRules {
 
     private static Predicate<Move> allCardsWithColor(Color firstCardColor) {
         return move -> move.getPlayedCard().getColor() == firstCardColor;
-    }
-
-    public boolean canPlayCard(Card card, Set<Card> alreadyPlayedCards, Color currentRoundColor, Set<Card> playerCards) {
-        return alreadyPlayedCards.isEmpty()
-                || card.getColor() == currentRoundColor
-                || !playerCards.stream().anyMatch(playersCard -> playersCard.getColor() == currentRoundColor);
     }
 
 }
