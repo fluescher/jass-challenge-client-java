@@ -30,6 +30,19 @@ public class GameSessionTest {
     }
 
     @Test
+    public void startNewGame_aGameWasPlayed() {
+
+        final GameSession gameSession = GameSessionBuilder.newSession()
+                .withStartedGame(Mode.bottomUp())
+                .createGameSession();
+        gameSession.makeMove(new Move(new Player("Player 1"), Card.CLUB_TEN));
+        gameSession.startNextRound();
+        gameSession.startNewGame(Mode.topDown());
+
+        assertThat(gameSession.getResult().getTeamScore(new Player("Player 1")), equalTo(30));
+    }
+
+    @Test
     public void startNextRound_aRoundIsAlreadyPlayed_resultPointsAreUpdated() {
 
         final Player playerA = new Player("Player 1");

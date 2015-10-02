@@ -1,56 +1,67 @@
 package com.zuehlke.jasschallenge.client.game;
 
 public class Result {
-    private final TeamPoints teamAPoints;
-    private final TeamPoints teamBPoints;
+    private final TeamScore teamAScore;
+    private final TeamScore teamBScore;
 
     public Result(Team teamA, Team teamB) {
-        this.teamAPoints = new TeamPoints(teamA);
-        this.teamBPoints = new TeamPoints(teamB);
+        this.teamAScore = new TeamScore(teamA);
+        this.teamBScore = new TeamScore(teamB);
     }
 
     public int getTeamScore(Player player) {
-        return getTeamPointsForPlayer(player).getScore();
+        return getTeamScoreForPlayer(player).getScore();
     }
 
-    public void updateWinningTeamScore(int bonusScore) {
+    public boolean isMatch() {
+
+        return teamAScore.getScore() == 0 || teamBScore.getScore() == 0;
+    }
+
+    void updateWinningTeamScore(int bonusScore) {
+
         final Team winningTeam = getWinningTeam();
         updateTeamScore(winningTeam.getPlayers().get(0), bonusScore);
     }
 
-    public boolean isMatch() {
-        return teamAPoints.getScore() == 0 || teamBPoints.getScore() == 0;
+    void add(Result result) {
+        
+        getScoreForTeam(result.teamAScore.getTeam()).addScore(result.teamAScore.getScore());
+        getScoreForTeam(result.teamBScore.getTeam()).addScore(result.teamBScore.getScore());
+    }
+
+    void updateTeamScore(Player winningPlayer, int lastScore) {
+
+        final TeamScore teamScore = getTeamScoreForPlayer(winningPlayer);
+        teamScore.addScore(lastScore);
+    }
+
+    private TeamScore getScoreForTeam(Team team) {
+
+        if(team.equals(teamAScore.getTeam())) return teamAScore;
+        else return teamBScore;
     }
 
     private Team getWinningTeam() {
 
-        if(teamAPoints.getScore() > teamBPoints.getScore()) {
-            return teamAPoints.getTeam();
+        if(teamAScore.getScore() > teamBScore.getScore()) {
+            return teamAScore.getTeam();
         } else {
-            return teamBPoints.getTeam();
+            return teamBScore.getTeam();
         }
     }
 
-    void updateTeamScore(Player winningPlayer, int lastScore) {
-        final TeamPoints teamScore = getTeamPointsForPlayer(winningPlayer);
-        teamScore.addScore(lastScore);
+    private TeamScore getTeamScoreForPlayer(Player player) {
+
+        if(teamAScore.getTeam().isTeamOfPlayer(player)) return teamAScore;
+        else return teamBScore;
     }
 
-    private TeamPoints getTeamPointsForPlayer(Player player) {
-        if(teamAPoints.getTeam().isTeamOfPlayer(player)) return teamAPoints;
-        else return teamBPoints;
-    }
-
-    private TeamPoints getTeamPointsForTeam(Team team) {
-        if (teamAPoints.getTeam().equals(team)) return teamAPoints;
-        else return teamBPoints;
-    }
-
-    private static class TeamPoints {
+    private static class TeamScore {
         private final Team team;
         private int score;
 
-        public TeamPoints(Team team) {
+        public TeamScore(Team team) {
             this.team = team;
             this.score = 0;
         }

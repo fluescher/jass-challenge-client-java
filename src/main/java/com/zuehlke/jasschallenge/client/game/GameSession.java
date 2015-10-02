@@ -13,12 +13,15 @@ public class GameSession {
     private final List<Player> playersInPlayingOrder;
     private final PlayingOrder gameStartingPlayerOrder;
     private Game currentGame;
+    private Result result;
 
     public GameSession(List<Team> teams, List<Player> playersInPlayingOrder) {
         this.teams = teams;
 
         this.playersInPlayingOrder = playersInPlayingOrder;
         this.gameStartingPlayerOrder = createOrder(playersInPlayingOrder);
+
+        result = new Result(teams.get(0), teams.get(0));
     }
 
     public Round getCurrentRound() {
@@ -33,6 +36,8 @@ public class GameSession {
     }
 
     public Game startNewGame(Mode mode) {
+
+        updateResult();
 
         final PlayingOrder initialOrder = createOrderStartingFromPlayer(playersInPlayingOrder, gameStartingPlayerOrder.getCurrentPlayer());
         gameStartingPlayerOrder.moveToNextPlayer();
@@ -53,5 +58,15 @@ public class GameSession {
 
     public Game getCurrentGame() {
         return currentGame;
+    }
+
+    public Result getResult() {
+        return result;
+    }
+
+    private void updateResult() {
+        if(currentGame == null) return;
+
+        result.add(currentGame.getResult());
     }
 }
