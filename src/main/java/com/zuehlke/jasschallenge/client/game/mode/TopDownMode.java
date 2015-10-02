@@ -55,6 +55,11 @@ class TopDownMode implements Mode {
     }
 
     @Override
+    public int getFactor() {
+        return FACTOR;
+    }
+
+    @Override
     public String toString() {
 
         return valueOf(getTrumpfName());

@@ -35,12 +35,23 @@ public class Game {
     }
 
     public Round startNextRound() {
-        updateLastRoundResult();
+        updateRoundResult();
+        if(currentRound.isLastRound() && result.isMatch()) {
+            result.updateWinningTeamScore(calculateMatchBonus());
+        }
         this.currentRound = createNextRound();
         return currentRound;
     }
 
-    private void updateLastRoundResult() {
+    public void makeMove(Move move) {
+        getCurrentRound().makeMove(move);
+    }
+
+    private int calculateMatchBonus() {
+        return currentRound.getMode().getFactor() * 100;
+    }
+
+    private void updateRoundResult() {
         final int lastScore = this.currentRound.calculateScore();
         final Player winner = this.currentRound.getWinner();
 
@@ -51,9 +62,5 @@ public class Game {
         final PlayingOrder nextPlayingOrder = createOrderStartingFromPlayer(order.getPlayerInOrder(), currentRound.getWinner());
         final int nextRoundNumber = currentRound.getRoundNumber() + 1;
         return Round.createRound(mode, nextRoundNumber, nextPlayingOrder);
-    }
-
-    public void makeMove(Move move) {
-        getCurrentRound().makeMove(move);
     }
 }

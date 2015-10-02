@@ -14,7 +14,7 @@ public interface Mode {
     static Mode bottomUp() { return new BottomUpMode(); }
     static Mode trump(Color color) { return new TrumpfColorMode(color); }
 
-    default int calculateRoundScore(int roundNumber, Set<Card> playedCards) { return calculateScore(playedCards); };
+    int calculateRoundScore(int roundNumber, Set<Card> playedCards);
 
     TrumpfName getTrumpfName();
 
@@ -25,4 +25,6 @@ public interface Mode {
     Player determineWinner(List<Move> moves);
 
     boolean canPlayCard(Card card, Set<Card> alreadyPlayedCards, Color currentRoundColor, Set<Card> playerCards);
+
+    int getFactor();
 }

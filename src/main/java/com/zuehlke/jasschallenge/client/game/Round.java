@@ -73,4 +73,7 @@ public class Round {
         return mode;
     }
 
+    public boolean isLastRound() {
+        return getRoundNumber() == Game.LAST_ROUND_NUMBER;
+    }
 }

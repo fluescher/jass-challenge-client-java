@@ -13,6 +13,24 @@ public class Result {
         return getTeamPointsForPlayer(player).getScore();
     }
 
+    public void updateWinningTeamScore(int bonusScore) {
+        final Team winningTeam = getWinningTeam();
+        updateTeamScore(winningTeam.getPlayers().get(0), bonusScore);
+    }
+
+    public boolean isMatch() {
+        return teamAPoints.getScore() == 0 || teamBPoints.getScore() == 0;
+    }
+
+    private Team getWinningTeam() {
+
+        if(teamAPoints.getScore() > teamBPoints.getScore()) {
+            return teamAPoints.getTeam();
+        } else {
+            return teamBPoints.getTeam();
+        }
+    }
+
     void updateTeamScore(Player winningPlayer, int lastScore) {
         final TeamPoints teamScore = getTeamPointsForPlayer(winningPlayer);
         teamScore.addScore(lastScore);

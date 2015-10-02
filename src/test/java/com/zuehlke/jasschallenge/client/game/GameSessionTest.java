@@ -61,6 +61,21 @@ public class GameSessionTest {
     }
 
     @Test
+    public void startNextRound_multipleRoundsArePlayed_matchBonusIsAdded() {
+
+        final Player player = new Player("Player 1");
+        final GameSession gameSession = GameSessionBuilder.newSession().createGameSession();
+        gameSession.startNewGame(Mode.topDown());
+        for(int i = 0 ; i <= Game.LAST_ROUND_NUMBER; i++) {
+            gameSession.makeMove(new Move(player, Card.CLUB_TEN));
+            gameSession.startNextRound();
+        }
+        gameSession.startNextRound();
+
+        assertThat(gameSession.getCurrentGame().getResult().getTeamScore(player), equalTo((10 * 3) * 9 + 5 * 3 + 100 * 3 ));
+    }
+
+    @Test
     public void startNextRound_afterAPlayedRound_roundNumberIsIncreased() {
 
         final GameSession gameSession = GameSessionBuilder.newSession().createGameSession();

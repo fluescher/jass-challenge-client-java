@@ -3,7 +3,7 @@ package com.zuehlke.jasschallenge.client.game.cards;
 public enum CardValue {
     SIX(1,1,0,0,11),
     SEVEN(2,0),
-    EIGHT(3,3,8,0,8),
+    EIGHT(3,8),
     NINE(4,12,0,14,0),
     TEN(5,10),
     JACK(6,13,2,20,2),

@@ -72,11 +72,22 @@ public class BottomUpModeTest {
     @Test
     public void calculateScore_lastRoundWasPlayed() {
 
-        final EnumSet<Card> cards = EnumSet.of(DIAMOND_ACE, HEART_SIX, HEART_TEN);
+        final Set<Card> cards = EnumSet.of(DIAMOND_ACE, HEART_SIX, HEART_TEN);
 
         final int score = Mode.bottomUp().calculateRoundScore(Game.LAST_ROUND_NUMBER, cards);
 
         assertThat(score, equalTo(63 + 15));
+    }
+
+
+    @Test
+    public void calculateScore_() {
+
+        final Set<Card> cards = EnumSet.of(Card.SPADE_JACK, SPADE_QUEEN, SPADE_KING, SPADE_ACE);
+
+        final int score = Mode.bottomUp().calculateRoundScore(5, cards);
+
+        assertThat(score, equalTo((2+3+4)*3));
     }
 
     @Theory

@@ -37,26 +37,22 @@ class TrumpfColorMode implements Mode {
     @Override
     public int calculateRoundScore(int roundNumber, Set<Card> playedCards) {
         if(roundNumber == Game.LAST_ROUND_NUMBER) {
-            return generalRules.calculateLastRoundBonus(getModeFactor()) + calculateScore(playedCards);
+            return generalRules.calculateLastRoundBonus(getFactor()) + calculateScore(playedCards);
         }
         return calculateScore(playedCards);
     }
 
     @Override
     public int calculateScore(Set<Card> playedCards) {
-        return getModeFactor() * playedCards.stream()
+        return getFactor() * playedCards.stream()
                 .mapToInt(card -> {
+                    if(card.getValue() == CardValue.EIGHT) return 0;
                     if (isTrumpf(card)) {
                         return card.getValue().getTrumpfScore();
                     } else {
                         return card.getValue().getScore();
                     }
                 }).sum();
-    }
-
-    private int getModeFactor() {
-        if(trumpfColor == Color.SPADES || trumpfColor == Color.CLUBS) return 2;
-        return 1;
     }
 
     @Override
@@ -82,6 +78,12 @@ class TrumpfColorMode implements Mode {
         if(isTrumpf(card) && currentRoundColor != trumpfColor) return isHighestTrumpfInRound;
         if(currentRoundColor == trumpfColor && hasOnlyJackOfTrumpf(playerCards)) return true;
         else return !hasOtherCardsOfRoundColor || card.getColor() == currentRoundColor;
+    }
+
+    @Override
+    public int getFactor() {
+        if(trumpfColor == Color.SPADES || trumpfColor == Color.CLUBS) return 2;
+        return 1;
     }
 
     @Override

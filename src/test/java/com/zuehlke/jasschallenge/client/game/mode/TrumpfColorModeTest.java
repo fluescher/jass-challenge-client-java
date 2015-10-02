@@ -77,6 +77,15 @@ public class TrumpfColorModeTest {
     }
 
     @Test
+    public void calculateScore_eightWasPlayed() {
+        Set<Card> playedCards = EnumSet.of(HEART_QUEEN, HEART_TEN, HEART_EIGHT, DIAMOND_SIX);
+
+        final int score = Mode.trump(SPADES).calculateRoundScore(2, playedCards);
+
+        assertThat(score, equalTo((3+10)*2));
+    }
+
+    @Test
     public void determineWinner_noMovesWereMade_returnsNull() {
 
         final Player winner = Mode.trump(CLUBS).determineWinner(emptyList());
