@@ -13,7 +13,7 @@ public class Application {
         final String name = "Your bot name here";
         final Player myLocalPlayer = new Player(name, new RandomMoveJassStrategy());
 
-        final RemoteGame remoteGame = new RemoteGame("ws://jasschallenge.herokuapp.com", myLocalPlayer);
+        final RemoteGame remoteGame = new RemoteGame("ws://jasschallenge.herokuapp.com", myLocalPlayer, SessionType.SINGLE_GAME);
         remoteGame.start();
     }
 }
