@@ -16,6 +16,7 @@ public class RemoteGame {
 
     private static final Logger logger = LoggerFactory.getLogger(RemoteGame.class);
     private static final int MIN_NEEDED_THREAD_COUNT = 5;
+    public static final int CLOSE_TIMEOUT_MIN = 5;
     private final Player player;
     private final String targetUrl;
 
@@ -34,7 +35,7 @@ public class RemoteGame {
             ClientUpgradeRequest request = new ClientUpgradeRequest();
             client.connect(socket, uri, request);
             logger.debug("Connecting to: {}", uri);
-            socket.awaitClose(5, TimeUnit.MINUTES);
+            socket.awaitClose(CLOSE_TIMEOUT_MIN, TimeUnit.MINUTES);
         } finally {
             client.stop();
         }

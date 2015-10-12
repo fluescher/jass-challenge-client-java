@@ -27,6 +27,7 @@ import java.util.Optional;
         @JsonSubTypes.Type(value = RequestPlayerName.class, name = "REQUEST_PLAYER_NAME"),
         @JsonSubTypes.Type(value = PlayedCards.class, name = "PLAYED_CARDS"),
         @JsonSubTypes.Type(value = RequestSessionChoice.class, name = "REQUEST_SESSION_CHOICE"),
+        @JsonSubTypes.Type(value = BroadCastTournamentRanking.class, name = "BROADCAST_TOURNAMENT_RANKING_TABLE")
 })
 public interface Message {
     Optional<Response> dispatch(RemoteGameHandler handler);
