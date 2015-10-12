@@ -10,22 +10,32 @@ import java.util.Set;
 
 public class Player {
 
+    private int id = -1;
     private final String name;
     private final Set<Card> cards;
     private final JassStrategy currentJassStrategy;
+
+    public Player(int id, String name) {
+        this(name);
+        this.id = id;
+    }
 
     public Player(String name) {
         this(name, new RandomJassStrategy());
     }
 
     public Player(String name, JassStrategy strategy) {
-        this(name, strategy, EnumSet.noneOf(Card.class));
+        this.name = name;
+        this.cards = EnumSet.noneOf(Card.class);
+        this.currentJassStrategy = strategy;
     }
 
-    public Player(String name, JassStrategy strategySelector, Set<Card> cards) {
-        this.name = name;
-        this.cards = EnumSet.copyOf(cards);
-        this.currentJassStrategy = strategySelector;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -76,6 +86,7 @@ public class Player {
         currentJassStrategy.onSessionStarted(session);
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -83,19 +94,25 @@ public class Player {
 
         Player player = (Player) o;
 
+        if (id != player.id) return false;
         return !(name != null ? !name.equals(player.name) : player.name != null);
 
     }
 
     @Override
     public int hashCode() {
-        return name != null ? name.hashCode() : 0;
+        int result = id;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
         return "Player{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", cards=" + cards +
+                ", currentJassStrategy=" + currentJassStrategy +
                 '}';
     }
 }

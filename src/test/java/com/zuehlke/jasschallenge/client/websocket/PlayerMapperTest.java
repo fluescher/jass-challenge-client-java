@@ -12,7 +12,7 @@ public class PlayerMapperTest {
 
     @Test
     public void mapPlayer_returnsExistingPlayer() {
-        final Player localPlayer = new Player("localPlayer");
+        final Player localPlayer = new Player(0, "localPlayer");
 
         final Player foundPlayer = new PlayerMapper(localPlayer).mapPlayer(new RemotePlayer(0, "localPlayer"));
 
@@ -21,7 +21,7 @@ public class PlayerMapperTest {
 
     @Test
     public void mapPlayer_returnsNewlyCreatedPlayer() {
-        final Player localPlayer = new Player("localPlayer");
+        final Player localPlayer = new Player(1, "localPlayer");
 
         final Player foundPlayer = new PlayerMapper(localPlayer).mapPlayer(new RemotePlayer(0, "unknown"));
 
@@ -34,23 +34,23 @@ public class PlayerMapperTest {
         final PlayerMapper playerMapper = new PlayerMapper(localPlayer);
         playerMapper.mapPlayer(new RemotePlayer(0, "will be created"));
 
-        final Player foundPlayer = playerMapper.findPlayerByName("will be created");
+        final Player foundPlayer = playerMapper.findPlayerById(0);
 
-        assertThat(foundPlayer.getName(), equalTo("will be created"));
+        assertThat(foundPlayer.getId(), equalTo(0));
     }
 
     @Test
     public void findPlayerByName_returnsFoundPlayer() {
-        final Player localPlayer = new Player("localPlayer");
+        final Player localPlayer = new Player(1, "localPlayer");
 
-        final Player foundPlayer = new PlayerMapper(localPlayer).findPlayerByName("localPlayer");
+        final Player foundPlayer = new PlayerMapper(localPlayer).findPlayerById(1);
 
         assertThat(foundPlayer, equalTo(localPlayer));
     }
 
     @Test(expected = RuntimeException.class)
     public void findPlayerByName_throwsException_ifNoSuchPlayerExists() {
-        new PlayerMapper(new Player("localPlayer")).findPlayerByName("unknown");
+        new PlayerMapper(new Player(1, "localPlayer")).findPlayerById(2);
     }
 
 }

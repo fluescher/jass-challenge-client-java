@@ -2,6 +2,7 @@ package com.zuehlke.jasschallenge.client;
 
 import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.game.strategy.RandomJassStrategy;
+import com.zuehlke.jasschallenge.client.websocket.messages.type.SessionType;
 
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
@@ -14,12 +15,13 @@ public class Application {
         final Player myLocalPartner = new Player(name, new RandomJassStrategy());
 
         startTournamentGame("ws://gamenighthacked.herokuapp.com", myLocalPlayer, myLocalPartner);
+//        startGame("ws://gamenighthacked.herokuapp.com", myLocalPlayer, SessionType.SINGLE_GAME);
     }
 
     private static void startTournamentGame(String targetUrl, Player myLocalPlayer, Player myLocalPartner) throws Exception {
         Executors.newFixedThreadPool(2)
-                .invokeAll(Arrays.asList(() -> startGame(targetUrl, myLocalPlayer),
-                                         () -> startGame(targetUrl, myLocalPartner)))
+                .invokeAll(Arrays.asList(() -> startGame(targetUrl, myLocalPlayer, SessionType.TOURNAMENT),
+                                         () -> startGame(targetUrl, myLocalPartner, SessionType.TOURNAMENT)))
                 .stream()
                 .forEach(f -> {
                     try {
@@ -30,9 +32,9 @@ public class Application {
                 });
     }
 
-    private static RemoteGame startGame(String targetUrl, Player myLocalPlayer) throws Exception {
+    private static RemoteGame startGame(String targetUrl, Player myLocalPlayer, SessionType sessionType) throws Exception {
 
-        final RemoteGame remoteGame = new RemoteGame(targetUrl, myLocalPlayer);
+        final RemoteGame remoteGame = new RemoteGame(targetUrl, myLocalPlayer, sessionType);
         remoteGame.start();
         return remoteGame;
     }

@@ -24,19 +24,21 @@ import static java.util.stream.Collectors.toSet;
 
 public class RemoteGameHandler {
     private final Player localPlayer;
+    private final SessionType sessionType;
     private GameSession gameSession;
 
     private final PlayerMapper playerMapper;
 
     private final static Logger logger = LoggerFactory.getLogger(RemoteGameHandler.class);
 
-    public RemoteGameHandler(Player localPlayer) {
+    public RemoteGameHandler(Player localPlayer, SessionType sessionType) {
         this.localPlayer = localPlayer;
         this.playerMapper = new PlayerMapper(localPlayer);
+        this.sessionType = sessionType;
     }
 
     RemoteGameHandler(Player localPlayer, GameSession gameSession) {
-        this(localPlayer);
+        this(localPlayer, SessionType.TOURNAMENT);
         this.gameSession = gameSession;
     }
 
@@ -49,7 +51,7 @@ public class RemoteGameHandler {
     }
 
     public ChooseSession onRequestSessionChoice() {
-        return new ChooseSession(AUTOJOIN, "Java Client session", SessionType.TOURNAMENT);
+        return new ChooseSession(AUTOJOIN, "Java Client session", sessionType);
     }
 
     public ChoosePlayerName onRequestPlayerName() {
@@ -61,6 +63,9 @@ public class RemoteGameHandler {
     }
 
     public void onPlayerJoined(PlayerJoinedSession joinedPlayer) {
+        if(localPlayer.getId() == -1) {
+            localPlayer.setId(joinedPlayer.getPlayer().getId());
+        }
     }
 
     public void onBroadCastTeams(List<RemoteTeam> remoteTeams) {
@@ -106,7 +111,7 @@ public class RemoteGameHandler {
     }
 
     public void onBroadCastStich(Stich stich) {
-        final Player winner = playerMapper.findPlayerByName(stich.getName());
+        final Player winner = playerMapper.findPlayerById(stich.getId());
         checkEquals(winner, getCurrentRound().getWinner(), "Local winner differs from remote");
 
         gameSession.startNextRound();
@@ -160,7 +165,7 @@ public class RemoteGameHandler {
         return remoteTeams.stream()
                 .flatMap(remoteTeam -> remoteTeam.getPlayers().stream())
                 .sorted((remotePlayer1, remotePlayer2) -> compare(remotePlayer1.getId(), remotePlayer2.getId()))
-                .map(player -> playerMapper.findPlayerByName(player.getName()))
+                .map(player -> playerMapper.findPlayerById(player.getId()))
                 .collect(toList());
     }
 

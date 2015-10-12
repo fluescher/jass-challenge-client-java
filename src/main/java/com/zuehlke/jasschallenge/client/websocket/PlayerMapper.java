@@ -16,19 +16,19 @@ public class PlayerMapper {
     }
 
     public Player mapPlayer(RemotePlayer remotePlayer) {
-        Player player = tryToFindPlayerByName(remotePlayer.getName()).orElse(new Player(remotePlayer.getName()));
+        Player player = tryToFindPlayerById(remotePlayer.getId()).orElse(new Player(remotePlayer.getId(), remotePlayer.getName()));
         allPlayers.add(player);
         return player;
     }
 
-    public Player findPlayerByName(String name) {
-        return tryToFindPlayerByName(name)
-                .orElseThrow(() -> new RuntimeException("No Player with name " + name + " found"));
+    public Player findPlayerById(int id) {
+        return tryToFindPlayerById(id)
+                .orElseThrow(() -> new RuntimeException("No Player with name " + id + " found"));
     }
 
-    private Optional<Player> tryToFindPlayerByName(String name) {
+    private Optional<Player> tryToFindPlayerById(int id) {
         return allPlayers.stream()
-                .filter(player -> player.getName().equals(name))
+                .filter(player -> player.getId() == id)
                 .findFirst();
     }
 }

@@ -3,6 +3,7 @@ package com.zuehlke.jasschallenge.client;
 import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.websocket.RemoteGameHandler;
 import com.zuehlke.jasschallenge.client.websocket.RemoteGameSocket;
+import com.zuehlke.jasschallenge.client.websocket.messages.type.SessionType;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.slf4j.Logger;
@@ -19,16 +20,18 @@ public class RemoteGame {
     public static final int CLOSE_TIMEOUT_MIN = 5;
     private final Player player;
     private final String targetUrl;
+    private final SessionType sessionType;
 
-    public RemoteGame(String targetUrl, Player player) {
+    public RemoteGame(String targetUrl, Player player, SessionType sessionType) {
         this.targetUrl = targetUrl;
         this.player = player;
+        this.sessionType = sessionType;
     }
 
     public void start() throws Exception {
         final WebSocketClient client = new WebSocketClient(Executors.newFixedThreadPool(MIN_NEEDED_THREAD_COUNT));
         try {
-            RemoteGameSocket socket = new RemoteGameSocket(new RemoteGameHandler(player));
+            RemoteGameSocket socket = new RemoteGameSocket(new RemoteGameHandler(player, sessionType));
             client.start();
 
             URI uri = new URI(targetUrl);

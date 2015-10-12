@@ -20,6 +20,14 @@ public class PlayerJoinedSession {
         this.playersInSession = playersInSession;
     }
 
+    public String getSessionName() {
+        return sessionName;
+    }
+
+    public RemotePlayer getPlayer() {
+        return player;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
