@@ -58,7 +58,10 @@ public class Round {
     }
 
     public Player getWinner() {
-        return mode.determineWinner(this.moves);
+        final Move winningMove = mode.determineWinningMove(this.moves);
+        if(winningMove == null) return null;
+
+        return winningMove.getPlayer();
     }
 
     public List<Move> getMoves() {

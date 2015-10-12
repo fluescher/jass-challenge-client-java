@@ -42,11 +42,11 @@ class TopDownMode implements Mode {
     }
 
     @Override
-    public Player determineWinner(List<Move> moves) {
+    public Move determineWinningMove(List<Move> moves) {
 
         final Comparator<Move> moveComparator = (move, move2) -> move.getPlayedCard().isHigherThan(move2.getPlayedCard()) ? 1 : -1;
 
-        return generalRules.determineWinner(moves, moveComparator);
+        return generalRules.determineWinnerMove(moves, moveComparator);
     }
 
     @Override

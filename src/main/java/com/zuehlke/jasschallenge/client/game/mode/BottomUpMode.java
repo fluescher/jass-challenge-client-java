@@ -2,7 +2,6 @@ package com.zuehlke.jasschallenge.client.game.mode;
 
 import com.zuehlke.jasschallenge.client.game.Game;
 import com.zuehlke.jasschallenge.client.game.Move;
-import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.cards.Color;
 
@@ -42,10 +41,10 @@ class BottomUpMode implements Mode{
     }
 
     @Override
-    public Player determineWinner(List<Move> moves) {
+    public Move determineWinningMove(List<Move> moves) {
         final Comparator<Move> moveComparator = (move, move2) -> !move.getPlayedCard().isHigherThan(move2.getPlayedCard()) ? 1 : -1;
 
-        return generalRules.determineWinner(moves, moveComparator);
+        return generalRules.determineWinnerMove(moves, moveComparator);
     }
 
     @Override

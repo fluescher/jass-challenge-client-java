@@ -24,14 +24,13 @@ class GeneralRules {
                 || !playerCards.stream().anyMatch(playersCard -> playersCard.getColor() == currentRoundColor);
     }
 
-    public Player determineWinner(List<Move> moves, Comparator<Move> moveComparator) {
+    public Move determineWinnerMove(List<Move> moves, Comparator<Move> moveComparator) {
         if (moves == null || moves.isEmpty()) return null;
 
         final Color firstCardColor = moves.get(0).getPlayedCard().getColor();
         return moves.stream()
                 .filter(allCardsWithColor(firstCardColor))
                 .max(moveComparator)
-                .map(Move::getPlayer)
                 .orElse(null);
     }
 

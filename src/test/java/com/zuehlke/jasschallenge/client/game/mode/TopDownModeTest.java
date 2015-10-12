@@ -100,8 +100,8 @@ public class TopDownModeTest {
 
     @Theory
     public void canPlayCard_withPlayedCards_allowsCardsOfSameColor(
-            @ForAll(sampleSize = 10) Card playedCard,
-            @ForAll(sampleSize = 10) Card cardToPlay) {
+            @ForAll(sampleSize = 20) Card playedCard,
+            @ForAll(sampleSize = 20) Card cardToPlay) {
 
         assumeThat(playedCard.getColor(), equalTo(cardToPlay.getColor()));
 
@@ -116,8 +116,8 @@ public class TopDownModeTest {
 
     @Theory
     public void canPlayCard_withPlayedCards_allowsNoCardsOfOtherColor(
-            @ForAll(sampleSize = 10) Card playedCard,
-            @ForAll(sampleSize = 10) Card cardToPlay) {
+            @ForAll(sampleSize = 20) Card playedCard,
+            @ForAll(sampleSize = 20) Card cardToPlay) {
 
         assumeThat(playedCard, not(equalTo(HEART_JACK)));
         assumeThat(playedCard.getColor(), equalTo(HEARTS));
@@ -146,9 +146,7 @@ public class TopDownModeTest {
     @Test
     public void determineWinner_noMovesWereMade_returnsNull() {
 
-        final Player winner = Mode.topDown().determineWinner(emptyList());
-
-        assertNull(winner);
+        assertNull(Mode.topDown().determineWinningMove(emptyList()));
     }
 
     @Test
@@ -163,7 +161,7 @@ public class TopDownModeTest {
                 new Move(playerC, HEART_SEVEN),
                 new Move(playerD, HEART_JACK));
 
-        final Player winner = Mode.topDown().determineWinner(moves);
+        final Player winner = Mode.topDown().determineWinningMove(moves).getPlayer();
 
         assertThat(winner, equalTo(playerB));
     }
@@ -180,7 +178,7 @@ public class TopDownModeTest {
                 new Move(playerC, DIAMOND_EIGHT),
                 new Move(playerD, DIAMOND_NINE));
 
-        final Player winner = Mode.topDown().determineWinner(moves);
+        final Player winner = Mode.topDown().determineWinningMove(moves).getPlayer();
 
         assertThat(winner, equalTo(playerA));
     }

@@ -104,8 +104,8 @@ public class BottomUpModeTest {
 
     @Theory
     public void canPlayCard_withPlayedCards_allowsCardsOfSameColor(
-            @ForAll(sampleSize = 10) Card playedCard,
-            @ForAll(sampleSize = 10) Card cardToPlay) {
+            @ForAll(sampleSize = 20) Card playedCard,
+            @ForAll(sampleSize = 20) Card cardToPlay) {
 
         assumeThat(playedCard.getColor(), CoreMatchers.equalTo(cardToPlay.getColor()));
 
@@ -120,8 +120,8 @@ public class BottomUpModeTest {
 
     @Theory
     public void canPlayCard_withPlayedCards_allowsNoCardsOfOtherColor(
-            @ForAll(sampleSize = 10) Card playedCard,
-            @ForAll(sampleSize = 10) Card cardToPlay) {
+            @ForAll(sampleSize = 20) Card playedCard,
+            @ForAll(sampleSize = 20) Card cardToPlay) {
 
         assumeThat(playedCard, not(CoreMatchers.equalTo(HEART_JACK)));
         assumeThat(playedCard.getColor(), CoreMatchers.equalTo(HEARTS));
@@ -150,9 +150,7 @@ public class BottomUpModeTest {
     @Test
     public void determineWinner_noMovesWereMade_returnsNull() {
 
-        final Player winner = Mode.bottomUp().determineWinner(emptyList());
-
-        assertNull(winner);
+        assertNull(Mode.bottomUp().determineWinningMove(emptyList()));
     }
 
     @Test
@@ -167,7 +165,7 @@ public class BottomUpModeTest {
                 new Move(playerC, HEART_SEVEN),
                 new Move(playerD, HEART_JACK));
 
-        final Player winner = Mode.bottomUp().determineWinner(moves);
+        final Player winner = Mode.bottomUp().determineWinningMove(moves).getPlayer();
 
         assertThat(winner, equalTo(playerC));
     }
@@ -184,7 +182,7 @@ public class BottomUpModeTest {
                 new Move(playerC, DIAMOND_EIGHT),
                 new Move(playerD, DIAMOND_NINE));
 
-        final Player winner = Mode.bottomUp().determineWinner(moves);
+        final Player winner = Mode.bottomUp().determineWinningMove(moves).getPlayer();
 
         assertThat(winner, equalTo(playerB));
     }

@@ -88,9 +88,7 @@ public class TrumpfColorModeTest {
     @Test
     public void determineWinner_noMovesWereMade_returnsNull() {
 
-        final Player winner = Mode.trump(CLUBS).determineWinner(emptyList());
-
-        assertNull(winner);
+        assertNull(Mode.trump(CLUBS).determineWinningMove(emptyList()));
     }
 
     @Test
@@ -120,7 +118,7 @@ public class TrumpfColorModeTest {
                 new Move(playerC, HEART_SEVEN),
                 new Move(playerD, HEART_JACK));
 
-        Player winner = Mode.trump(CLUBS).determineWinner(moves);
+        Player winner = Mode.trump(CLUBS).determineWinningMove(moves).getPlayer();
 
         assertThat(winner, equalTo(playerB));
     }
@@ -137,7 +135,7 @@ public class TrumpfColorModeTest {
                 new Move(playerC, HEART_SEVEN),
                 new Move(playerD, HEART_JACK));
 
-        Player winner = Mode.trump(HEARTS).determineWinner(moves);
+        Player winner = Mode.trump(HEARTS).determineWinningMove(moves).getPlayer();
 
         assertThat(winner, equalTo(playerD));
     }
@@ -154,7 +152,7 @@ public class TrumpfColorModeTest {
                 new Move(playerC, CLUB_ACE),
                 new Move(playerD, HEART_SIX));
 
-        Player winner = Mode.trump(HEARTS).determineWinner(moves);
+        Player winner = Mode.trump(HEARTS).determineWinningMove(moves).getPlayer();
 
         assertThat(winner, equalTo(playerD));
     }
@@ -171,7 +169,7 @@ public class TrumpfColorModeTest {
                 new Move(playerC, CLUB_ACE),
                 new Move(playerD, HEART_ACE));
 
-        Player winner = Mode.trump(HEARTS).determineWinner(moves);
+        Player winner = Mode.trump(HEARTS).determineWinningMove(moves).getPlayer();
 
         assertThat(winner, equalTo(playerB));
     }
@@ -190,8 +188,8 @@ public class TrumpfColorModeTest {
 
     @Theory
     public void canPlayCard_withPlayedCards_allowsCardsOfSameColor(
-            @ForAll(sampleSize = 10) Card playedCard,
-            @ForAll(sampleSize = 10) Card cardToPlay) {
+            @ForAll(sampleSize = 20) Card playedCard,
+            @ForAll(sampleSize = 20) Card cardToPlay) {
 
         assumeThat(playedCard, not(equalTo(cardToPlay)));
         assumeThat(playedCard.getColor(), equalTo(cardToPlay.getColor()));
@@ -251,8 +249,8 @@ public class TrumpfColorModeTest {
 
     @Theory
     public void canPlayCard_withPlayedCards_allowsNoCardsOfOtherColor(
-            @ForAll(sampleSize = 10) Card playedCard,
-            @ForAll(sampleSize = 10) Card cardToPlay) {
+            @ForAll(sampleSize = 20) Card playedCard,
+            @ForAll(sampleSize = 20) Card cardToPlay) {
 
         assumeThat(playedCard.getColor(), equalTo(HEARTS));
         assumeThat(playedCard, not(equalTo(cardToPlay)));
@@ -269,8 +267,8 @@ public class TrumpfColorModeTest {
 
     @Theory
     public void canPlayCard_noTrumpfWasPlayed_trumpfCanAlwaysBePlayed(
-            @ForAll(sampleSize = 10) Card playedCard,
-            @ForAll(sampleSize = 10) Card cardToPlay) {
+            @ForAll(sampleSize = 20) Card playedCard,
+            @ForAll(sampleSize = 20) Card cardToPlay) {
 
         assumeThat(cardToPlay.getColor(), equalTo(CLUBS));
         assumeTrue(cardToPlay.isHigherTrumpfThan(playedCard));

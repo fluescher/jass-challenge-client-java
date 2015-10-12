@@ -22,7 +22,7 @@ public interface Mode {
 
     int calculateScore(Set<Card> playedCards);
 
-    Player determineWinner(List<Move> moves);
+    Move determineWinningMove(List<Move> moves);
 
     boolean canPlayCard(Card card, Set<Card> alreadyPlayedCards, Color currentRoundColor, Set<Card> playerCards);
 
