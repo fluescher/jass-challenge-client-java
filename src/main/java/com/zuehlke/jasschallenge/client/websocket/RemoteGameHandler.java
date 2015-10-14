@@ -26,14 +26,13 @@ public class RemoteGameHandler {
     private final Player localPlayer;
     private final SessionType sessionType;
     private GameSession gameSession;
-
-    private final PlayerMapper playerMapper;
+    private PlayerMapper playerMapper;
 
     private final static Logger logger = LoggerFactory.getLogger(RemoteGameHandler.class);
 
     public RemoteGameHandler(Player localPlayer, SessionType sessionType) {
         this.localPlayer = localPlayer;
-        this.playerMapper = new PlayerMapper(localPlayer);
+        resetPlayerMapper(localPlayer);
         this.sessionType = sessionType;
     }
 
@@ -45,6 +44,7 @@ public class RemoteGameHandler {
     Round getCurrentRound() {
         return gameSession.getCurrentRound();
     }
+
 
     List<Team> getTeams() {
         return gameSession.getTeams();
@@ -73,6 +73,11 @@ public class RemoteGameHandler {
         final List<Player> playersInPlayingOrder = getPlayersInPlayingOrder(remoteTeams);
         gameSession = new GameSession(teams, playersInPlayingOrder);
         localPlayer.onSessionStarted(gameSession);
+    }
+
+    private void resetPlayerMapper(Player localPlayer) {
+        localPlayer.setId(-1);
+        this.playerMapper = new PlayerMapper(localPlayer);
     }
 
     public ChooseTrumpf onRequestTrumpf() {
@@ -136,6 +141,7 @@ public class RemoteGameHandler {
                 winnerTeam.getName(),
                 winnerTeam.getPoints());
         localPlayer.onSessionFinished();
+        resetPlayerMapper(localPlayer);
     }
 
     public void onRejectCard(RemoteCard rejectCard) {

@@ -23,7 +23,7 @@ public class PlayerMapper {
 
     public Player findPlayerById(int id) {
         return tryToFindPlayerById(id)
-                .orElseThrow(() -> new RuntimeException("No Player with name " + id + " found"));
+                .orElseThrow(() -> new RuntimeException("No Player with id " + id + " found"));
     }
 
     private Optional<Player> tryToFindPlayerById(int id) {

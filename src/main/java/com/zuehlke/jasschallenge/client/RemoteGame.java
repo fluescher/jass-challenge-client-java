@@ -17,7 +17,7 @@ public class RemoteGame {
 
     private static final Logger logger = LoggerFactory.getLogger(RemoteGame.class);
     private static final int MIN_NEEDED_THREAD_COUNT = 5;
-    public static final int CLOSE_TIMEOUT_MIN = 5;
+    private static final int CLOSE_TIMEOUT_MIN = 5;
     private final Player player;
     private final String targetUrl;
     private final SessionType sessionType;

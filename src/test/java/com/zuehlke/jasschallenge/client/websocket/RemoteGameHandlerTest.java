@@ -3,6 +3,7 @@ package com.zuehlke.jasschallenge.client.websocket;
 import com.zuehlke.jasschallenge.client.game.*;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.mode.Mode;
+import com.zuehlke.jasschallenge.client.websocket.messages.PlayerJoinedSession;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseCard;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChoosePlayerName;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseSession;
@@ -72,7 +73,7 @@ public class RemoteGameHandlerTest {
     @Test
     public void onRequestSession_returnsSessionChoice() {
 
-        final ChooseSession chooseSession = new RemoteGameHandler(null, SessionType.TOURNAMENT).onRequestSessionChoice();
+        final ChooseSession chooseSession = new RemoteGameHandler(new Player("local"), SessionType.TOURNAMENT).onRequestSessionChoice();
 
         assertThat(chooseSession, sameBeanAs(new ChooseSession(AUTOJOIN, "Java Client session", SessionType.TOURNAMENT)));
     }
@@ -114,6 +115,7 @@ public class RemoteGameHandlerTest {
                 new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo)));
 
         final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer, SessionType.TOURNAMENT);
+        remoteGameHandler.onPlayerJoined(new PlayerJoinedSession("session", remoteLocalPlayer, emptyList()));
         remoteGameHandler.onBroadCastTeams(remoteTeams);
 
         assertThat(remoteGameHandler.getTeams(), contains(
@@ -185,6 +187,7 @@ public class RemoteGameHandlerTest {
                 new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo)));
 
         final RemoteGameHandler handler = new RemoteGameHandler(localPlayer, SessionType.TOURNAMENT);
+        handler.onPlayerJoined(new PlayerJoinedSession("session", remoteLocalPlayer, emptyList()));
         handler.onBroadCastTeams(remoteTeams);
         handler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
         handler.onPlayedCards(asList(new RemoteCard(13, CLUBS)));
@@ -193,7 +196,7 @@ public class RemoteGameHandlerTest {
         final Player playerOne = new Player(0, "remote 1");
         final Player playerTwo = new Player(1, "remote 2");
         final Player playerThree = new Player(3, "remote 3");
-        Round expected = Round.createRound(Mode.topDown(), 0, PlayingOrder.createOrder(asList(playerOne, playerTwo, null, playerThree)));
+        Round expected = Round.createRound(Mode.topDown(), 0, PlayingOrder.createOrder(asList(playerOne, playerTwo, localPlayer, playerThree)));
         expected.makeMove(new Move(playerOne, Card.CLUB_KING));
         expected.makeMove(new Move(playerTwo, Card.DIAMOND_TEN));
         assertThat(handler.getCurrentRound(), sameBeanAs(expected));
