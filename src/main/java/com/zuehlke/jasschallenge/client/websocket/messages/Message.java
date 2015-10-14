@@ -12,7 +12,9 @@ import java.util.Optional;
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
-        property = "type")
+        property = "type",
+        visible = true,
+        defaultImpl = UnknownMessage.class)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = BroadCastGameFinished.class, name = "BROADCAST_GAME_FINISHED"),
         @JsonSubTypes.Type(value = BroadCastStich.class, name = "BROADCAST_STICH"),
