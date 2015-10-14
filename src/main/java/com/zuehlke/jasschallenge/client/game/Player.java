@@ -53,13 +53,22 @@ public class Player {
 
     public Move makeMove(GameSession session) {
         if(cards.size() == 0) throw new RuntimeException("Cannot play a card without cards in deck");
-        final Card cardToPlay = currentJassStrategy.chooseCard(cards, session);
+        final Card cardToPlay = chooseCardWithFallback(session);
         cards.remove(cardToPlay);
         return new Move(this, cardToPlay);
     }
 
-    public Card chooseCard(GameSession session) {
-        return currentJassStrategy.chooseCard(cards, session);
+    private Card chooseCardWithFallback(GameSession session) {
+        final Card cardToPlay = currentJassStrategy.chooseCard(cards, session);
+        final boolean cardIsInvalid = !session.getCurrentRound().getMode().canPlayCard(
+                cardToPlay,
+                session.getCurrentRound().getPlayedCards(),
+                session.getCurrentRound().getRoundColor(),
+                cards);
+        if(cardIsInvalid) {
+            return new RandomJassStrategy().chooseCard(cards, session);
+        }
+        return cardToPlay;
     }
 
     public Mode chooseTrumpf(GameSession session) {

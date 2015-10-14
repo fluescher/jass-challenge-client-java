@@ -1,5 +1,6 @@
 package com.zuehlke.jasschallenge.client.game;
 
+import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.mode.Mode;
 
 import java.util.List;
@@ -17,6 +18,8 @@ public class GameSessionBuilder {
     private List<Team> teams = asList(
             new Team("Team 1", asList(playersInPlayingOrder.get(0), playersInPlayingOrder.get(2))),
             new Team("Team 2", asList(playersInPlayingOrder.get(1), playersInPlayingOrder.get(3))));
+
+    private Card[] playedCards = {};
 
     public static GameSessionBuilder newSession() {
         return new GameSessionBuilder();
@@ -36,12 +39,21 @@ public class GameSessionBuilder {
         final GameSession gameSession = new GameSession(teams, playersInPlayingOrder);
         if(startedGameMode != null) {
             gameSession.startNewGame(startedGameMode);
+            for(Card card : playedCards) {
+                gameSession.makeMove(new Move(gameSession.getCurrentRound().getPlayingOrder().getCurrentPlayer(), card));
+                gameSession.getCurrentRound().getPlayingOrder().moveToNextPlayer();
+            }
         }
         return gameSession;
     }
 
     public GameSessionBuilder withStartedGame(Mode mode) {
         startedGameMode = mode;
+        return this;
+    }
+
+    public GameSessionBuilder withCardsPlayed(Card... cards) {
+        playedCards = cards;
         return this;
     }
 }
