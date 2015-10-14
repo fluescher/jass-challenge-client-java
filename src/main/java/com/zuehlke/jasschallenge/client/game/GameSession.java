@@ -1,6 +1,7 @@
 package com.zuehlke.jasschallenge.client.game;
 
 import com.zuehlke.jasschallenge.client.game.mode.Mode;
+import com.zuehlke.jasschallenge.client.game.mode.TrumpfName;
 
 import java.util.List;
 
@@ -35,14 +36,14 @@ public class GameSession {
         return teams;
     }
 
-    public Game startNewGame(Mode mode) {
+    public Game startNewGame(Mode mode, boolean shifted) {
 
         updateResult();
 
         final PlayingOrder initialOrder = createOrderStartingFromPlayer(playersInPlayingOrder, gameStartingPlayerOrder.getCurrentPlayer());
         gameStartingPlayerOrder.moveToNextPlayer();
 
-        currentGame = Game.startGame(mode, initialOrder, teams);
+        currentGame = Game.startGame(mode, initialOrder, teams, shifted);
         return currentGame;
     }
 

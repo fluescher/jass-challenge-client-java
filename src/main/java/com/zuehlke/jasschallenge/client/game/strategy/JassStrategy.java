@@ -8,7 +8,7 @@ import com.zuehlke.jasschallenge.client.game.mode.Mode;
 import java.util.Set;
 
 public interface JassStrategy {
-    Mode chooseTrumpf(Set<Card> availableCards, GameSession session);
+    Mode chooseTrumpf(Set<Card> availableCards, GameSession session, boolean isGschobe);
     Card chooseCard(Set<Card> availableCards, GameSession session);
 
     default void onSessionStarted(GameSession session) {}

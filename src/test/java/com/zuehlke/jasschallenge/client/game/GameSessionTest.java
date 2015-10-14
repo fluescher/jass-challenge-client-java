@@ -24,7 +24,7 @@ public class GameSessionTest {
 
         final GameSession gameSession = GameSessionBuilder.newSession().createGameSession();
 
-        gameSession.startNewGame(Mode.topDown());
+        gameSession.startNewGame(Mode.topDown(), false);
 
         assertThat(gameSession.getCurrentRound(), is(not(nullValue())));
     }
@@ -37,7 +37,7 @@ public class GameSessionTest {
                 .createGameSession();
         gameSession.makeMove(new Move(new Player("Player 1"), Card.CLUB_TEN));
         gameSession.startNextRound();
-        gameSession.startNewGame(Mode.topDown());
+        gameSession.startNewGame(Mode.topDown(), false);
 
         assertThat(gameSession.getResult().getTeamScore(new Player("Player 1")), equalTo(30));
     }
@@ -48,7 +48,7 @@ public class GameSessionTest {
         final Player playerA = new Player("Player 1");
         final Player playerB = new Player("Player 2");
         final GameSession gameSession = GameSessionBuilder.newSession().createGameSession();
-        gameSession.startNewGame(Mode.bottomUp());
+        gameSession.startNewGame(Mode.bottomUp(), false);
         gameSession.makeMove(new Move(playerA, Card.CLUB_TEN));
         gameSession.makeMove(new Move(playerB, Card.CLUB_SIX));
 
@@ -63,7 +63,7 @@ public class GameSessionTest {
 
         final Player player = new Player("Player 1");
         final GameSession gameSession = GameSessionBuilder.newSession().createGameSession();
-        gameSession.startNewGame(Mode.topDown());
+        gameSession.startNewGame(Mode.topDown(), false);
         gameSession.makeMove(new Move(player, Card.CLUB_TEN));
         gameSession.startNextRound();
         gameSession.makeMove(new Move(player, Card.HEART_ACE));
@@ -78,7 +78,7 @@ public class GameSessionTest {
 
         final Player player = new Player("Player 1");
         final GameSession gameSession = GameSessionBuilder.newSession().createGameSession();
-        gameSession.startNewGame(Mode.topDown());
+        gameSession.startNewGame(Mode.topDown(), false);
         for(int i = 0 ; i <= Game.LAST_ROUND_NUMBER; i++) {
             gameSession.makeMove(new Move(player, Card.CLUB_TEN));
             gameSession.startNextRound();
@@ -93,7 +93,7 @@ public class GameSessionTest {
 
         final GameSession gameSession = GameSessionBuilder.newSession().createGameSession();
 
-        gameSession.startNewGame(Mode.topDown());
+        gameSession.startNewGame(Mode.topDown(), false);
         Round secondRound = gameSession.startNextRound();
 
         assertThat(secondRound.getRoundNumber(), is(1));

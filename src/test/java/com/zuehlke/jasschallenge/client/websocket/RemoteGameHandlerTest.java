@@ -54,7 +54,7 @@ public class RemoteGameHandlerTest {
     public void onRequestTrumpf_asksThePlayerForTrumpf() {
 
         final Player localPlayer = mock(Player.class);
-        when(localPlayer.chooseTrumpf(any(GameSession.class))).thenReturn(Mode.topDown());
+        when(localPlayer.chooseTrumpf(any(GameSession.class), eq(false))).thenReturn(Mode.topDown());
         when(localPlayer.getName()).thenReturn("local");
         final RemotePlayer remoteLocalPlayer = new RemotePlayer(2, "local");
         final List<RemoteTeam> remoteTeams = asList(
@@ -254,4 +254,33 @@ public class RemoteGameHandlerTest {
         assertThat(remoteGameHandler.getCurrentRound().getMoves().get(2).getPlayer().getName(), equalTo("remote 1"));
         assertThat(remoteGameHandler.getCurrentRound().getMoves().get(3).getPlayer().getName(), equalTo("remote 2"));
     }
+
+
+    @Test
+    public void broadcastGschobe_does_not_start_game() {
+        Player localPlayer = mock(Player.class);
+        GameSession gameSession = mock(GameSession.class);
+        final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer, gameSession);
+
+        remoteGameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.SCHIEBE, null));
+
+        verify(localPlayer, times(1)).setId(-1);
+        verifyNoMoreInteractions(localPlayer);
+        verifyZeroInteractions(gameSession);
+    }
+
+
+    @Test
+    public void broadcastTrumpf_does_start_game_with_shifted() {
+        Player localPlayer = mock(Player.class);
+        GameSession gameSession = mock(GameSession.class);
+        final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer, gameSession);
+
+        remoteGameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.SCHIEBE, null));
+        remoteGameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
+
+        verify(localPlayer, times(1)).onGameStarted(gameSession);
+        verify(gameSession, times(1)).startNewGame(anyObject(), eq(true));
+    }
+
 }

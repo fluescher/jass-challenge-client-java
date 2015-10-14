@@ -27,6 +27,8 @@ public class RemoteGameHandler {
     private final SessionType sessionType;
     private GameSession gameSession;
     private PlayerMapper playerMapper;
+    private boolean shifted = false;
+
 
     private final static Logger logger = LoggerFactory.getLogger(RemoteGameHandler.class);
 
@@ -81,17 +83,21 @@ public class RemoteGameHandler {
     }
 
     public ChooseTrumpf onRequestTrumpf() {
-        final Mode mode = localPlayer.chooseTrumpf(gameSession);
+        final Mode mode = localPlayer.chooseTrumpf(gameSession, shifted);
         return new ChooseTrumpf(Trumpf.valueOf(mode.getTrumpfName().toString()), mapColor(mode.getTrumpfColor()));
     }
 
     public void onBroadCastTrumpf(TrumpfChoice trumpfChoice) {
-
         final Mode nextGameMode = mapMode(trumpfChoice);
-        logger.info("Game started: {}", nextGameMode);
 
-        gameSession.startNewGame(nextGameMode);
-        localPlayer.onGameStarted(gameSession);
+        if (trumpfChoice.getMode() != Trumpf.SCHIEBE) {
+            logger.info("Game started: {}", nextGameMode);
+            gameSession.startNewGame(nextGameMode, shifted);
+            localPlayer.onGameStarted(gameSession);
+            shifted = false;
+        } else {
+            shifted = true;
+        }
     }
 
     public ChooseCard onRequestCard() {
@@ -156,6 +162,8 @@ public class RemoteGameHandler {
                 return Mode.topDown();
             case TRUMPF:
                 return Mode.trump(trumpf.getTrumpfColor().getMappedColor());
+            case SCHIEBE:
+                return Mode.shift();
             default:
                 throw new RuntimeException("Unknown trumpf received: " + trumpf);
         }
@@ -201,9 +209,9 @@ public class RemoteGameHandler {
         if(localColor == null) return null;
 
         return stream(RemoteColor.values())
-                    .filter(color -> color.getMappedColor() == localColor)
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Could not map color"));
+                .filter(color -> color.getMappedColor() == localColor)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Could not map color"));
     }
 
     private static void checkEquals(Object a, Object b, String errorMessage) {

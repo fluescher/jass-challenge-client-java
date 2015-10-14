@@ -38,7 +38,7 @@ public class GameSessionBuilder {
     public GameSession createGameSession() {
         final GameSession gameSession = new GameSession(teams, playersInPlayingOrder);
         if(startedGameMode != null) {
-            gameSession.startNewGame(startedGameMode);
+            gameSession.startNewGame(startedGameMode, false);
             for(Card card : playedCards) {
                 gameSession.makeMove(new Move(gameSession.getCurrentRound().getPlayingOrder().getCurrentPlayer(), card));
                 gameSession.getCurrentRound().getPlayingOrder().moveToNextPlayer();

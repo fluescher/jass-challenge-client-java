@@ -7,19 +7,14 @@ import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.cards.Color;
 import com.zuehlke.jasschallenge.client.game.mode.Mode;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class RandomJassStrategy implements JassStrategy {
     @Override
-    public Mode chooseTrumpf(Set<Card> availableCards, GameSession session) {
-        final List<Mode> allPossibleModes = new ArrayList<>();
-        allPossibleModes.add(Mode.bottomUp());
-        allPossibleModes.add(Mode.topDown());
-        for(Color color : Color.values()) {
-            allPossibleModes.add(Mode.trump(color));
+    public Mode chooseTrumpf(Set<Card> availableCards, GameSession session, boolean isGschobe) {
+        final List<Mode> allPossibleModes = Mode.standardModes();
+        if (!isGschobe) {
+            allPossibleModes.add(Mode.shift());
         }
         return allPossibleModes.get(new Random().nextInt(allPossibleModes.size()));
     }

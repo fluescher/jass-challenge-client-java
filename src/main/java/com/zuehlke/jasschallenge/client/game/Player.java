@@ -71,8 +71,8 @@ public class Player {
         return cardToPlay;
     }
 
-    public Mode chooseTrumpf(GameSession session) {
-        return currentJassStrategy.chooseTrumpf(cards, session);
+    public Mode chooseTrumpf(GameSession session, boolean shifted) {
+        return currentJassStrategy.chooseTrumpf(cards, session, shifted);
     }
 
     public void onMoveMade(Move move, GameSession session) {

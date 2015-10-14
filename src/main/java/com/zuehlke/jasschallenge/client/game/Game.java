@@ -12,18 +12,20 @@ public class Game {
     private final PlayingOrder order;
     private Round currentRound;
     private Result result;
+    private boolean shifted;
 
-    public Game(Mode mode, PlayingOrder order, List<Team> teams) {
+    public Game(Mode mode, PlayingOrder order, List<Team> teams, boolean shifted) {
         this.mode = mode;
         this.order = order;
 
         this.currentRound = Round.createRound(mode, 0, order);
         this.result = new Result(teams.get(0), teams.get(1));
+        this.shifted = shifted;
     }
 
-    public static Game startGame(Mode mode, PlayingOrder order, List<Team> teams) {
+    public static Game startGame(Mode mode, PlayingOrder order, List<Team> teams, boolean shifted) {
 
-        return new Game(mode, order, teams);
+        return new Game(mode, order, teams, shifted);
     }
 
     public Round getCurrentRound() {
@@ -62,5 +64,9 @@ public class Game {
         final PlayingOrder nextPlayingOrder = createOrderStartingFromPlayer(order.getPlayerInOrder(), currentRound.getWinner());
         final int nextRoundNumber = currentRound.getRoundNumber() + 1;
         return Round.createRound(mode, nextRoundNumber, nextPlayingOrder);
+    }
+
+    public boolean isShifted() {
+        return shifted;
     }
 }
