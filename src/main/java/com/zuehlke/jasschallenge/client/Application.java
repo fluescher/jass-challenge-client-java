@@ -6,7 +6,9 @@ import com.zuehlke.jasschallenge.client.websocket.messages.type.SessionType;
 
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class Application {
     public static void main(String[] args) throws Exception {
@@ -14,22 +16,26 @@ public class Application {
         final Player myLocalPlayer = new Player(name, new RandomJassStrategy());
         final Player myLocalPartner = new Player(name, new RandomJassStrategy());
 
-        startTournamentGame("ws://gamenighthacked.herokuapp.com", myLocalPlayer, myLocalPartner);
-//        startGame("ws://gamenighthacked.herokuapp.com", myLocalPlayer, SessionType.SINGLE_GAME);
+//        startTournamentGame("ws://localhost:3000", myLocalPlayer, myLocalPartner);
+        startGame("ws://jasschallenge.herokuapp.com", myLocalPlayer, SessionType.SINGLE_GAME);
     }
 
     private static void startTournamentGame(String targetUrl, Player myLocalPlayer, Player myLocalPartner) throws Exception {
-        Executors.newFixedThreadPool(2)
+        final ExecutorService executorService = Executors.newFixedThreadPool(2);
+        executorService
                 .invokeAll(Arrays.asList(() -> startGame(targetUrl, myLocalPlayer, SessionType.TOURNAMENT),
                                          () -> startGame(targetUrl, myLocalPartner, SessionType.TOURNAMENT)))
                 .stream()
-                .forEach(f -> {
-                    try {
-                        f.get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                });
+                .forEach(Application::awaitFuture);
+        executorService.shutdown();
+    }
+
+    private static void awaitFuture(Future<Object> future) {
+        try {
+            future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     private static RemoteGame startGame(String targetUrl, Player myLocalPlayer, SessionType sessionType) throws Exception {

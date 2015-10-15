@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 public class RemoteGame {
 
     private static final Logger logger = LoggerFactory.getLogger(RemoteGame.class);
-    private static final int MIN_NEEDED_THREAD_COUNT = 5;
     private static final int CLOSE_TIMEOUT_MIN = 5;
     private final Player player;
     private final String targetUrl;
@@ -29,7 +28,7 @@ public class RemoteGame {
     }
 
     public void start() throws Exception {
-        final WebSocketClient client = new WebSocketClient(Executors.newFixedThreadPool(MIN_NEEDED_THREAD_COUNT));
+        final WebSocketClient client = new WebSocketClient();
         try {
             RemoteGameSocket socket = new RemoteGameSocket(new RemoteGameHandler(player, sessionType));
             client.start();
