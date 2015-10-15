@@ -4,11 +4,15 @@ import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.mode.Mode;
 import com.zuehlke.jasschallenge.client.game.strategy.JassStrategy;
 import com.zuehlke.jasschallenge.client.game.strategy.RandomJassStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.EnumSet;
 import java.util.Set;
 
 public class Player {
+
+    private static final Logger logger = LoggerFactory.getLogger(Player.class);
 
     private int id = -1;
     private final String name;
@@ -66,6 +70,7 @@ public class Player {
                 session.getCurrentRound().getRoundColor(),
                 cards);
         if(cardIsInvalid) {
+            logger.error("Your strategy tried to play an invalid card. Playing random card instead!");
             return new RandomJassStrategy().chooseCard(cards, session);
         }
         return cardToPlay;
