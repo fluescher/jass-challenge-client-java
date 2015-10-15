@@ -30,7 +30,7 @@ public class Application {
         executorService.shutdown();
     }
 
-    private static void awaitFuture(Future<Object> future) {
+    private static <T> void awaitFuture(Future<T> future) {
         try {
             future.get();
         } catch (InterruptedException | ExecutionException e) {
