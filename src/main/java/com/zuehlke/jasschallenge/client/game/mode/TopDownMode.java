@@ -13,7 +13,7 @@ import java.util.Set;
 import static java.lang.String.valueOf;
 
 class TopDownMode implements Mode {
-    private static final int FACTOR = 3;
+    private static final int FACTOR = 1;
     private final GeneralRules generalRules = new GeneralRules();
 
     @Override
