@@ -3,7 +3,7 @@ package com.zuehlke.jasschallenge.client.websocket.messages;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.zuehlke.jasschallenge.client.websocket.RemoteGameHandler;
+import com.zuehlke.jasschallenge.client.websocket.GameHandler;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.Response;
 
 import java.util.Optional;
@@ -32,5 +32,5 @@ import java.util.Optional;
         @JsonSubTypes.Type(value = BroadCastTournamentRanking.class, name = "BROADCAST_TOURNAMENT_RANKING_TABLE")
 })
 public interface Message {
-    Optional<Response> dispatch(RemoteGameHandler handler);
+    Optional<Response> dispatch(GameHandler handler);
 }

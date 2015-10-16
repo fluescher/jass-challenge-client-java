@@ -1,7 +1,7 @@
 package com.zuehlke.jasschallenge.client.websocket.messages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.zuehlke.jasschallenge.client.websocket.RemoteGameHandler;
+import com.zuehlke.jasschallenge.client.websocket.GameHandler;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.Response;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteTeam;
 
@@ -18,7 +18,7 @@ public class BroadCastGameFinished implements Message {
     }
 
     @Override
-    public Optional<Response> dispatch(RemoteGameHandler handler) {
+    public Optional<Response> dispatch(GameHandler handler) {
         handler.onBroadGameFinished(remoteTeams);
         return Optional.empty();
     }

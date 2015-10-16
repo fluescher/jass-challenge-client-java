@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-public class RemoteGameHandlerTest {
+public class GameHandlerTest {
 
     @Test
     public void onRequestCard_returnsTheCardPlayedFromTheLocalPlayer() {
@@ -41,11 +41,11 @@ public class RemoteGameHandlerTest {
                 new RemoteTeam("team a", asList(remoteOne, remoteThree)),
                 new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo)));
 
-        final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer, SessionType.TOURNAMENT);
-        remoteGameHandler.onBroadCastTeams(remoteTeams);
-        remoteGameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
+        final GameHandler gameHandler = new GameHandler(localPlayer, SessionType.TOURNAMENT);
+        gameHandler.onBroadCastTeams(remoteTeams);
+        gameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
 
-        final ChooseCard chooseCard = remoteGameHandler.onRequestCard();
+        final ChooseCard chooseCard = gameHandler.onRequestCard();
 
         assertThat(chooseCard.getData(), equalTo(new RemoteCard(14, DIAMONDS)));
     }
@@ -61,11 +61,11 @@ public class RemoteGameHandlerTest {
                 new RemoteTeam("team a", asList(remoteLocalPlayer)),
                 new RemoteTeam("team b", asList(remoteLocalPlayer)));
 
-        final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer, SessionType.TOURNAMENT);
-        remoteGameHandler.onBroadCastTeams(remoteTeams);
-        remoteGameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
+        final GameHandler gameHandler = new GameHandler(localPlayer, SessionType.TOURNAMENT);
+        gameHandler.onBroadCastTeams(remoteTeams);
+        gameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
 
-        final ChooseTrumpf chooseTrumpf = remoteGameHandler.onRequestTrumpf();
+        final ChooseTrumpf chooseTrumpf = gameHandler.onRequestTrumpf();
 
         assertThat(chooseTrumpf, equalTo(new ChooseTrumpf(Trumpf.OBEABE)));
     }
@@ -73,7 +73,7 @@ public class RemoteGameHandlerTest {
     @Test
     public void onRequestSession_returnsSessionChoice() {
 
-        final ChooseSession chooseSession = new RemoteGameHandler(new Player("local"), SessionType.TOURNAMENT).onRequestSessionChoice();
+        final ChooseSession chooseSession = new GameHandler(new Player("local"), SessionType.TOURNAMENT).onRequestSessionChoice();
 
         assertThat(chooseSession, sameBeanAs(new ChooseSession(AUTOJOIN, "Java Client session", SessionType.TOURNAMENT)));
     }
@@ -87,7 +87,7 @@ public class RemoteGameHandlerTest {
                 new RemoteCard(8, RemoteColor.SPADES),
                 new RemoteCard(6, CLUBS));
 
-        new RemoteGameHandler(localPlayer, SessionType.TOURNAMENT).onDealCards(dealCard);
+        new GameHandler(localPlayer, SessionType.TOURNAMENT).onDealCards(dealCard);
 
         assertThat(localPlayer.getCards(), containsInAnyOrder(Card.DIAMOND_ACE, Card.SPADE_EIGHT, Card.CLUB_SIX));
     }
@@ -97,7 +97,7 @@ public class RemoteGameHandlerTest {
 
         final Player localPlayer = new Player("test");
 
-        final ChoosePlayerName choosePlayerName = new RemoteGameHandler(localPlayer, SessionType.TOURNAMENT).onRequestPlayerName();
+        final ChoosePlayerName choosePlayerName = new GameHandler(localPlayer, SessionType.TOURNAMENT).onRequestPlayerName();
 
         assertThat(choosePlayerName, sameBeanAs(new ChoosePlayerName("test")));
     }
@@ -114,17 +114,17 @@ public class RemoteGameHandlerTest {
                 new RemoteTeam("team a", asList(remoteOne, remoteThree)),
                 new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo)));
 
-        final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer, SessionType.TOURNAMENT);
-        remoteGameHandler.onPlayerJoined(new PlayerJoinedSession("session", remoteLocalPlayer, emptyList()));
-        remoteGameHandler.onBroadCastTeams(remoteTeams);
+        final GameHandler gameHandler = new GameHandler(localPlayer, SessionType.TOURNAMENT);
+        gameHandler.onPlayerJoined(new PlayerJoinedSession("session", remoteLocalPlayer, emptyList()));
+        gameHandler.onBroadCastTeams(remoteTeams);
 
-        assertThat(remoteGameHandler.getTeams(), contains(
+        assertThat(gameHandler.getTeams(), contains(
                 match(team -> "team a".equals(team.getTeamName()), "team a"),
                 match(team -> "team b".equals(team.getTeamName()), "team b")));
-        assertThat(remoteGameHandler.getTeams(), contains(
+        assertThat(gameHandler.getTeams(), contains(
                 match(team -> team.getPlayers().size() == 2, "two members in team a"),
                 match(team -> team.getPlayers().size() == 2, "two members in team b")));
-        assertThat(remoteGameHandler.getTeams().get(1).getPlayers().toArray(), hasItemInArray(equalTo(localPlayer)));
+        assertThat(gameHandler.getTeams().get(1).getPlayers().toArray(), hasItemInArray(equalTo(localPlayer)));
     }
 
     @Test
@@ -140,16 +140,16 @@ public class RemoteGameHandlerTest {
         final List<RemoteTeam> remoteTeams = asList(
                 remoteTeam1,
                 remoteTeam2);
-        final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer, SessionType.TOURNAMENT);
+        final GameHandler gameHandler = new GameHandler(localPlayer, SessionType.TOURNAMENT);
 
-        remoteGameHandler.onBroadCastTeams(remoteTeams);
-        remoteGameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
-        remoteGameHandler.onPlayedCards(asList(new RemoteCard(13, CLUBS)));
-        remoteGameHandler.onPlayedCards(asList(new RemoteCard(13, CLUBS), new RemoteCard(14, CLUBS)));
-        remoteGameHandler.onBroadCastStich(new Stich("remote 2", 1, emptyList(), asList(remoteTeam1, remoteTeam2)));
+        gameHandler.onBroadCastTeams(remoteTeams);
+        gameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
+        gameHandler.onPlayedCards(asList(new RemoteCard(13, CLUBS)));
+        gameHandler.onPlayedCards(asList(new RemoteCard(13, CLUBS), new RemoteCard(14, CLUBS)));
+        gameHandler.onBroadCastStich(new Stich("remote 2", 1, emptyList(), asList(remoteTeam1, remoteTeam2)));
 
-        assertThat(remoteGameHandler.getCurrentRound().getMoves(), empty());
-        assertThat(remoteGameHandler.getCurrentRound().getRoundNumber(), equalTo(1));
+        assertThat(gameHandler.getCurrentRound().getMoves(), empty());
+        assertThat(gameHandler.getCurrentRound().getRoundNumber(), equalTo(1));
     }
 
     @Test
@@ -161,7 +161,7 @@ public class RemoteGameHandlerTest {
                 .newSession()
                 .withStartedGame(Mode.topDown())
                 .createGameSession());
-        final RemoteGameHandler handler = new RemoteGameHandler(localPlayer, session);
+        final GameHandler handler = new GameHandler(localPlayer, session);
 
         handler.onPlayedCards(asList(new RemoteCard(13, CLUBS)));
 
@@ -186,7 +186,7 @@ public class RemoteGameHandlerTest {
                 new RemoteTeam("team a", asList(remoteOne, remoteThree)),
                 new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo)));
 
-        final RemoteGameHandler handler = new RemoteGameHandler(localPlayer, SessionType.TOURNAMENT);
+        final GameHandler handler = new GameHandler(localPlayer, SessionType.TOURNAMENT);
         handler.onPlayerJoined(new PlayerJoinedSession("session", remoteLocalPlayer, emptyList()));
         handler.onBroadCastTeams(remoteTeams);
         handler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
@@ -212,13 +212,13 @@ public class RemoteGameHandlerTest {
         final List<RemoteTeam> remoteTeams = asList(
                 new RemoteTeam("team a", asList(remoteOne, remoteThree)),
                 new RemoteTeam("team b", asList(remoteLocalPlayer, remoteTwo)));
-        final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer, SessionType.TOURNAMENT);
-        remoteGameHandler.onBroadCastTeams(remoteTeams);
-        remoteGameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
+        final GameHandler gameHandler = new GameHandler(localPlayer, SessionType.TOURNAMENT);
+        gameHandler.onBroadCastTeams(remoteTeams);
+        gameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
 
-        remoteGameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS)));
+        gameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS)));
 
-        assertThat(remoteGameHandler.getCurrentRound().getMoves().get(0).getPlayer().getName(), equalTo(remoteOne.getName()));
+        assertThat(gameHandler.getCurrentRound().getMoves().get(0).getPlayer().getName(), equalTo(remoteOne.getName()));
     }
 
     @Test
@@ -234,25 +234,25 @@ public class RemoteGameHandlerTest {
         final List<RemoteTeam> remoteTeams = asList(
                 remoteTeamA,
                 remoteTeamB);
-        final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer, SessionType.TOURNAMENT);
+        final GameHandler gameHandler = new GameHandler(localPlayer, SessionType.TOURNAMENT);
 
-        remoteGameHandler.onBroadCastTeams(remoteTeams);
-        remoteGameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
-        remoteGameHandler.onPlayedCards(asList(new RemoteCard(6, DIAMONDS)));
-        remoteGameHandler.onPlayedCards(asList(new RemoteCard(6, DIAMONDS), new RemoteCard(13, CLUBS)));
-        remoteGameHandler.onPlayedCards(asList(new RemoteCard(6, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(14, DIAMONDS)));
-        remoteGameHandler.onPlayedCards(asList(new RemoteCard(6, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(14, DIAMONDS), new RemoteCard(11, DIAMONDS)));
-        remoteGameHandler.onBroadCastStich(new Stich("local", 2, emptyList(), asList(remoteTeamA, remoteTeamB)));
-        remoteGameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS)));
-        remoteGameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(13, CLUBS)));
-        remoteGameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(6, HEARTS)));
-        remoteGameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(6, HEARTS), new RemoteCard(11, DIAMONDS)));
+        gameHandler.onBroadCastTeams(remoteTeams);
+        gameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
+        gameHandler.onPlayedCards(asList(new RemoteCard(6, DIAMONDS)));
+        gameHandler.onPlayedCards(asList(new RemoteCard(6, DIAMONDS), new RemoteCard(13, CLUBS)));
+        gameHandler.onPlayedCards(asList(new RemoteCard(6, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(14, DIAMONDS)));
+        gameHandler.onPlayedCards(asList(new RemoteCard(6, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(14, DIAMONDS), new RemoteCard(11, DIAMONDS)));
+        gameHandler.onBroadCastStich(new Stich("local", 2, emptyList(), asList(remoteTeamA, remoteTeamB)));
+        gameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS)));
+        gameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(13, CLUBS)));
+        gameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(6, HEARTS)));
+        gameHandler.onPlayedCards(asList(new RemoteCard(14, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(6, HEARTS), new RemoteCard(11, DIAMONDS)));
 
-        assertThat(remoteGameHandler.getCurrentRound().getMoves(), hasSize(4));
-        assertThat(remoteGameHandler.getCurrentRound().getMoves().get(0).getPlayer().getName(), equalTo("local"));
-        assertThat(remoteGameHandler.getCurrentRound().getMoves().get(1).getPlayer().getName(), equalTo("remote 3"));
-        assertThat(remoteGameHandler.getCurrentRound().getMoves().get(2).getPlayer().getName(), equalTo("remote 1"));
-        assertThat(remoteGameHandler.getCurrentRound().getMoves().get(3).getPlayer().getName(), equalTo("remote 2"));
+        assertThat(gameHandler.getCurrentRound().getMoves(), hasSize(4));
+        assertThat(gameHandler.getCurrentRound().getMoves().get(0).getPlayer().getName(), equalTo("local"));
+        assertThat(gameHandler.getCurrentRound().getMoves().get(1).getPlayer().getName(), equalTo("remote 3"));
+        assertThat(gameHandler.getCurrentRound().getMoves().get(2).getPlayer().getName(), equalTo("remote 1"));
+        assertThat(gameHandler.getCurrentRound().getMoves().get(3).getPlayer().getName(), equalTo("remote 2"));
     }
 
 
@@ -260,9 +260,9 @@ public class RemoteGameHandlerTest {
     public void broadcastGschobe_does_not_start_game() {
         Player localPlayer = mock(Player.class);
         GameSession gameSession = mock(GameSession.class);
-        final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer, gameSession);
+        final GameHandler gameHandler = new GameHandler(localPlayer, gameSession);
 
-        remoteGameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.SCHIEBE, null));
+        gameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.SCHIEBE, null));
 
         verify(localPlayer, times(1)).setId(-1);
         verifyNoMoreInteractions(localPlayer);
@@ -274,10 +274,10 @@ public class RemoteGameHandlerTest {
     public void broadcastTrumpf_does_start_game_with_shifted() {
         Player localPlayer = mock(Player.class);
         GameSession gameSession = mock(GameSession.class);
-        final RemoteGameHandler remoteGameHandler = new RemoteGameHandler(localPlayer, gameSession);
+        final GameHandler gameHandler = new GameHandler(localPlayer, gameSession);
 
-        remoteGameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.SCHIEBE, null));
-        remoteGameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
+        gameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.SCHIEBE, null));
+        gameHandler.onBroadCastTrumpf(new TrumpfChoice(Trumpf.OBEABE, null));
 
         verify(localPlayer, times(1)).onGameStarted(gameSession);
         verify(gameSession, times(1)).startNewGame(anyObject(), eq(true));

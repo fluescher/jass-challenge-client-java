@@ -24,7 +24,7 @@ public class RemoteGameSocketTest {
     public void onMessage_repliesWithChoosePlayerName_onRequestPlayerName() throws IOException {
 
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
-        final RemoteGameHandler handler = mock(RemoteGameHandler.class);
+        final GameHandler handler = mock(GameHandler.class);
         when(handler.onRequestPlayerName()).thenReturn(new ChoosePlayerName("name"));
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
         remoteGameSocket.onConnect(session);
@@ -41,7 +41,7 @@ public class RemoteGameSocketTest {
 
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
 
-        final RemoteGameHandler handler = mock(RemoteGameHandler.class);
+        final GameHandler handler = mock(GameHandler.class);
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
         remoteGameSocket.onConnect(session);
 
@@ -57,7 +57,7 @@ public class RemoteGameSocketTest {
     public void onMessage_repliesWitchSessionType_onChooseSession() throws IOException {
 
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
-        final RemoteGameHandler handler = mock(RemoteGameHandler.class);
+        final GameHandler handler = mock(GameHandler.class);
         when(handler.onRequestSessionChoice()).thenReturn(new ChooseSession(AUTOJOIN));
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
         remoteGameSocket.onConnect(session);
@@ -74,7 +74,7 @@ public class RemoteGameSocketTest {
     public void onMessage_sendsTrupf() throws IOException {
 
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
-        final RemoteGameHandler handler = mock(RemoteGameHandler.class);
+        final GameHandler handler = mock(GameHandler.class);
         when(handler.onRequestTrumpf()).thenReturn(new ChooseTrumpf(OBEABE));
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
         remoteGameSocket.onConnect(session);
@@ -90,7 +90,7 @@ public class RemoteGameSocketTest {
     public void onMessage_callsOnPlayedCards_onPlayedCardsMessage() throws IOException {
 
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
-        final RemoteGameHandler handler = mock(RemoteGameHandler.class);
+        final GameHandler handler = mock(GameHandler.class);
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
         remoteGameSocket.onConnect(session);
 
@@ -105,7 +105,7 @@ public class RemoteGameSocketTest {
     public void onMessage_sendsCardToPlay_onRequestCard() throws IOException {
 
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
-        final RemoteGameHandler handler = mock(RemoteGameHandler.class);
+        final GameHandler handler = mock(GameHandler.class);
         when(handler.onRequestCard()).thenReturn(new ChooseCard(new RemoteCard(14, DIAMONDS)));
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
         remoteGameSocket.onConnect(session);
@@ -121,7 +121,7 @@ public class RemoteGameSocketTest {
     public void onMessage_canHandleBroadCastStich() throws IOException {
 
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
-        final RemoteGameHandler handler = mock(RemoteGameHandler.class);
+        final GameHandler handler = mock(GameHandler.class);
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
         remoteGameSocket.onConnect(session);
 
@@ -137,7 +137,7 @@ public class RemoteGameSocketTest {
     @Test
     public void onMessage_canHandleSessionJoined() throws IOException {
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
-        final RemoteGameHandler handler = mock(RemoteGameHandler.class);
+        final GameHandler handler = mock(GameHandler.class);
         when(handler.onRequestCard()).thenReturn(new ChooseCard(new RemoteCard(14, DIAMONDS)));
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
         remoteGameSocket.onConnect(session);
@@ -151,7 +151,7 @@ public class RemoteGameSocketTest {
     @Test
     public void onMessage_canHandleBroadcastTeams() throws IOException {
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
-        final RemoteGameHandler handler = mock(RemoteGameHandler.class);
+        final GameHandler handler = mock(GameHandler.class);
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
         remoteGameSocket.onConnect(session);
 
@@ -166,7 +166,7 @@ public class RemoteGameSocketTest {
     @Test
     public void onMessage_canHandleBroadcastTrumpf() throws IOException {
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
-        final RemoteGameHandler handler = mock(RemoteGameHandler.class);
+        final GameHandler handler = mock(GameHandler.class);
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
         remoteGameSocket.onConnect(session);
 
@@ -179,7 +179,7 @@ public class RemoteGameSocketTest {
     @Test
     public void onMessage_canHandleBroadcastGameFinished() throws IOException {
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
-        final RemoteGameHandler handler = mock(RemoteGameHandler.class);
+        final GameHandler handler = mock(GameHandler.class);
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
         remoteGameSocket.onConnect(session);
 
@@ -192,7 +192,7 @@ public class RemoteGameSocketTest {
     @Test
     public void onMessage_canHandleBroadcastWinnerTeam() throws IOException {
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
-        final RemoteGameHandler handler = mock(RemoteGameHandler.class);
+        final GameHandler handler = mock(GameHandler.class);
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
         remoteGameSocket.onConnect(session);
 
@@ -205,7 +205,7 @@ public class RemoteGameSocketTest {
     @Test
     public void onMessage_canHandleRejectCard() throws IOException {
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
-        final RemoteGameHandler handler = mock(RemoteGameHandler.class);
+        final GameHandler handler = mock(GameHandler.class);
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
         remoteGameSocket.onConnect(session);
 

@@ -1,7 +1,7 @@
 package com.zuehlke.jasschallenge.client.websocket.messages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.zuehlke.jasschallenge.client.websocket.RemoteGameHandler;
+import com.zuehlke.jasschallenge.client.websocket.GameHandler;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ public class UnknownMessage implements Message {
     }
 
     @Override
-    public Optional<Response> dispatch(RemoteGameHandler handler) {
+    public Optional<Response> dispatch(GameHandler handler) {
 
         logger.warn("Unknown message: {}", unkownMessageType);
 

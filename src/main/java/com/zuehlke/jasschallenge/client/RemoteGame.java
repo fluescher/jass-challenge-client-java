@@ -1,7 +1,7 @@
 package com.zuehlke.jasschallenge.client;
 
 import com.zuehlke.jasschallenge.client.game.Player;
-import com.zuehlke.jasschallenge.client.websocket.RemoteGameHandler;
+import com.zuehlke.jasschallenge.client.websocket.GameHandler;
 import com.zuehlke.jasschallenge.client.websocket.RemoteGameSocket;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.SessionType;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class RemoteGame {
@@ -30,7 +29,7 @@ public class RemoteGame {
     public void start() throws Exception {
         final WebSocketClient client = new WebSocketClient();
         try {
-            RemoteGameSocket socket = new RemoteGameSocket(new RemoteGameHandler(player, sessionType));
+            RemoteGameSocket socket = new RemoteGameSocket(new GameHandler(player, sessionType));
             client.start();
 
             URI uri = new URI(targetUrl);

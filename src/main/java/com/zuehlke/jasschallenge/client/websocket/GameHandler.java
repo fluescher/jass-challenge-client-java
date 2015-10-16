@@ -22,7 +22,7 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
-public class RemoteGameHandler {
+public class GameHandler {
     private final Player localPlayer;
     private final SessionType sessionType;
     private GameSession gameSession;
@@ -30,15 +30,15 @@ public class RemoteGameHandler {
     private boolean shifted = false;
 
 
-    private final static Logger logger = LoggerFactory.getLogger(RemoteGameHandler.class);
+    private final static Logger logger = LoggerFactory.getLogger(GameHandler.class);
 
-    public RemoteGameHandler(Player localPlayer, SessionType sessionType) {
+    public GameHandler(Player localPlayer, SessionType sessionType) {
         this.localPlayer = localPlayer;
         resetPlayerMapper(localPlayer);
         this.sessionType = sessionType;
     }
 
-    RemoteGameHandler(Player localPlayer, GameSession gameSession) {
+    GameHandler(Player localPlayer, GameSession gameSession) {
         this(localPlayer, SessionType.TOURNAMENT);
         this.gameSession = gameSession;
     }
@@ -197,7 +197,7 @@ public class RemoteGameHandler {
     }
 
     private static Set<Card> mapAllToCards(List<RemoteCard> remoteCards) {
-        return remoteCards.stream().map(RemoteGameHandler::mapToCard).collect(toSet());
+        return remoteCards.stream().map(GameHandler::mapToCard).collect(toSet());
     }
 
     private static RemoteCard mapToRemoteCard(Card card) {

@@ -22,10 +22,10 @@ public class RemoteGameSocket {
 
     private final static Logger logger = LoggerFactory.getLogger(RemoteGameSocket.class);
     private final CountDownLatch closeLatch = new CountDownLatch(1);
-    private final RemoteGameHandler handler;
+    private final GameHandler handler;
     private Session session;
 
-    public RemoteGameSocket(RemoteGameHandler handler) {
+    public RemoteGameSocket(GameHandler handler) {
         this.handler = handler;
     }
 

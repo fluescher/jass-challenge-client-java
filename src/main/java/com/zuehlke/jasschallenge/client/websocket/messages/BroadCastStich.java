@@ -1,7 +1,7 @@
 package com.zuehlke.jasschallenge.client.websocket.messages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.zuehlke.jasschallenge.client.websocket.RemoteGameHandler;
+import com.zuehlke.jasschallenge.client.websocket.GameHandler;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.Response;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.Stich;
 
@@ -17,7 +17,7 @@ public class BroadCastStich implements Message {
     }
 
     @Override
-    public Optional<Response> dispatch(RemoteGameHandler handler) {
+    public Optional<Response> dispatch(GameHandler handler) {
         handler.onBroadCastStich(stich);
         return Optional.empty();
     }
