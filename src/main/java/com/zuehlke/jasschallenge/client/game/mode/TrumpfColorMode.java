@@ -16,7 +16,6 @@ import static java.lang.String.valueOf;
 
 class TrumpfColorMode implements Mode {
 
-    private static final int BLACK_TRUMPF_COLOR_FACTOR = 1;
     private final Color trumpfColor;
     private final GeneralRules generalRules = new GeneralRules();
 
@@ -82,7 +81,7 @@ class TrumpfColorMode implements Mode {
 
     @Override
     public int getFactor() {
-        if(trumpfColor == Color.SPADES || trumpfColor == Color.CLUBS) return BLACK_TRUMPF_COLOR_FACTOR;
+        if(trumpfColor == Color.SPADES || trumpfColor == Color.CLUBS) return 2;
         return 1;
     }
 

@@ -35,7 +35,7 @@ public class TopDownModeTest {
 
         final int score = Mode.topDown().calculateScore(playedCards);
 
-        assertThat(score, equalTo(24/3));
+        assertThat(score, equalTo(24));
     }
 
     @Test
@@ -55,7 +55,7 @@ public class TopDownModeTest {
 
         final int score = Mode.topDown().calculateScore(playedCards);
 
-        assertThat(score, equalTo(33/3));
+        assertThat(score, equalTo(33));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class TopDownModeTest {
 
         final int score = Mode.topDown().calculateScore(cards);
 
-        assertThat(score, equalTo((11+10)*3/3));
+        assertThat(score, equalTo((11+10)*3));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class TopDownModeTest {
 
         final int score = Mode.topDown().calculateRoundScore(Game.LAST_ROUND_NUMBER, cards);
 
-        assertThat(score, equalTo(((11+10)*3 + 15) / 3));
+        assertThat(score, equalTo((11+10)*3 + 15));
     }
 
     @Theory
