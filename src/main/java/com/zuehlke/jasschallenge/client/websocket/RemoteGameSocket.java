@@ -18,15 +18,12 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 @WebSocket
-public class RemoteGameSocket {
+public class RemoteGameSocket extends GameSocket {
 
-    private final static Logger logger = LoggerFactory.getLogger(RemoteGameSocket.class);
     private final CountDownLatch closeLatch = new CountDownLatch(1);
-    private final GameHandler handler;
-    private Session session;
 
     public RemoteGameSocket(GameHandler handler) {
-        this.handler = handler;
+        super(handler);
     }
 
     public boolean awaitClose(int duration, TimeUnit unit) throws InterruptedException {
@@ -34,46 +31,26 @@ public class RemoteGameSocket {
     }
 
     @OnWebSocketConnect
-    public void onConnect(Session session) {
+    public void onWebSocketConnect(Session session) {
         logger.trace("Got connect: {}", session);
-        this.session = session;
-    }
-
-    @OnWebSocketMessage
-    public void onMessage(String msg) throws IOException {
-        logger.trace("Received message: {}", msg);
-
-        final Message message = read(msg, Message.class);
-        Optional<Response> response = message.dispatch(handler);
-        response.ifPresent(this::send);
+        super.onConnect(new WebSocketResponseChannel(session));
     }
 
     @OnWebSocketClose
-    public void onClose(int statusCode, String reason) {
-        logger.trace("Connection closed: {} - {}", statusCode, reason);
+    public void onWebSocketClose(int statusCode, String reason) {
+        super.onClose(statusCode, reason);
         closeLatch.countDown();
     }
 
-    private void send(Response message) {
-        try {
-            final String messageString = toJson(message);
-            logger.trace("Sending message: {}", messageString);
-            session.getRemote().sendString(messageString);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    @OnWebSocketMessage
+    public void onWebSocketMessage(String msg) throws IOException {
+        logger.trace("Received message: {}", msg);
+        final Message message = read(msg, Message.class);
+        super.onMessage(message);
     }
 
     private static <T> T read(String msg, Class<T> valueType) throws IOException {
         return new ObjectMapper().readValue(msg, valueType);
-    }
-
-    private static String toJson(Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

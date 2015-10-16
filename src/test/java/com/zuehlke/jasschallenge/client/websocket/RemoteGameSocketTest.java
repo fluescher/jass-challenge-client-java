@@ -27,9 +27,9 @@ public class RemoteGameSocketTest {
         final GameHandler handler = mock(GameHandler.class);
         when(handler.onRequestPlayerName()).thenReturn(new ChoosePlayerName("name"));
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
-        remoteGameSocket.onConnect(session);
+        remoteGameSocket.onConnect(new WebSocketResponseChannel(session));
 
-        remoteGameSocket.onMessage("{\"type\":\"REQUEST_PLAYER_NAME\"}");
+        remoteGameSocket.onWebSocketMessage("{\"type\":\"REQUEST_PLAYER_NAME\"}");
 
         verify(session.getRemote()).sendString("{\"type\":\"CHOOSE_PLAYER_NAME\",\"data\":\"name\"}");
         verify(handler).onRequestPlayerName();
@@ -43,9 +43,9 @@ public class RemoteGameSocketTest {
 
         final GameHandler handler = mock(GameHandler.class);
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
-        remoteGameSocket.onConnect(session);
+        remoteGameSocket.onConnect(new WebSocketResponseChannel(session));
 
-        remoteGameSocket.onMessage("{\"type\":\"DEAL_CARDS\",\"data\":[{\"number\":14,\"color\":\"DIAMONDS\"}," +
+        remoteGameSocket.onWebSocketMessage("{\"type\":\"DEAL_CARDS\",\"data\":[{\"number\":14,\"color\":\"DIAMONDS\"}," +
                 "{\"number\":8,\"color\":\"SPADES\"}," +
                 "{\"number\":6,\"color\":\"CLUBS\"}]}");
 
@@ -60,9 +60,9 @@ public class RemoteGameSocketTest {
         final GameHandler handler = mock(GameHandler.class);
         when(handler.onRequestSessionChoice()).thenReturn(new ChooseSession(AUTOJOIN));
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
-        remoteGameSocket.onConnect(session);
+        remoteGameSocket.onConnect(new WebSocketResponseChannel(session));
 
-        remoteGameSocket.onMessage("{\"type\":\"REQUEST_SESSION_CHOICE\"}");
+        remoteGameSocket.onWebSocketMessage("{\"type\":\"REQUEST_SESSION_CHOICE\"}");
 
         verify(session.getRemote()).sendString("{\"type\":\"CHOOSE_SESSION\"," +
                 "\"data\":{\"sessionChoice\":\"AUTOJOIN\",\"sessionName\":\"Java Client Session\",\"sessionType\":\"TOURNAMENT\"}}");
@@ -77,9 +77,9 @@ public class RemoteGameSocketTest {
         final GameHandler handler = mock(GameHandler.class);
         when(handler.onRequestTrumpf()).thenReturn(new ChooseTrumpf(OBEABE));
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
-        remoteGameSocket.onConnect(session);
+        remoteGameSocket.onConnect(new WebSocketResponseChannel(session));
 
-        remoteGameSocket.onMessage("{\"type\":\"REQUEST_TRUMPF\"}");
+        remoteGameSocket.onWebSocketMessage("{\"type\":\"REQUEST_TRUMPF\"}");
 
         verify(session.getRemote()).sendString("{\"type\":\"CHOOSE_TRUMPF\",\"data\":{\"mode\":\"OBEABE\",\"trumpfColor\":null}}");
         verify(handler).onRequestTrumpf();
@@ -92,9 +92,9 @@ public class RemoteGameSocketTest {
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
         final GameHandler handler = mock(GameHandler.class);
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
-        remoteGameSocket.onConnect(session);
+        remoteGameSocket.onConnect(new WebSocketResponseChannel(session));
 
-        remoteGameSocket.onMessage("{\"type\":\"PLAYED_CARDS\",\"data\":[{\"number\":13,\"color\":\"CLUBS\"}," +
+        remoteGameSocket.onWebSocketMessage("{\"type\":\"PLAYED_CARDS\",\"data\":[{\"number\":13,\"color\":\"CLUBS\"}," +
                 "{\"number\":10,\"color\":\"DIAMONDS\"}]}");
 
         verify(handler).onPlayedCards(eq(asList(new RemoteCard(13, CLUBS), new RemoteCard(10, DIAMONDS))));
@@ -108,9 +108,9 @@ public class RemoteGameSocketTest {
         final GameHandler handler = mock(GameHandler.class);
         when(handler.onRequestCard()).thenReturn(new ChooseCard(new RemoteCard(14, DIAMONDS)));
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
-        remoteGameSocket.onConnect(session);
+        remoteGameSocket.onConnect(new WebSocketResponseChannel(session));
 
-        remoteGameSocket.onMessage("{\"type\":\"REQUEST_CARD\"}");
+        remoteGameSocket.onWebSocketMessage("{\"type\":\"REQUEST_CARD\"}");
 
         verify(session.getRemote()).sendString("{\"type\":\"CHOOSE_CARD\",\"data\":{\"number\":14,\"color\":\"DIAMONDS\"}}");
         verify(handler).onRequestCard();
@@ -123,9 +123,9 @@ public class RemoteGameSocketTest {
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
         final GameHandler handler = mock(GameHandler.class);
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
-        remoteGameSocket.onConnect(session);
+        remoteGameSocket.onConnect(new WebSocketResponseChannel(session));
 
-        remoteGameSocket.onMessage("{\"type\":\"BROADCAST_STICH\",\"data\":{\"name\":\"1437909005411\",\"id\":2,\"playedCards\":[{\"number\":13,\"color\":\"DIAMONDS\"},{\"number\":13,\"color\":\"CLUBS\"},{\"number\":12,\"color\":\"CLUBS\"},{\"number\":12,\"color\":\"SPADES\"}],\"teams\":[{\"name\":\"Team 1\",\"points\":2148,\"currentRoundPoints\":348},{\"name\":\"Team 2\",\"points\":2547,\"currentRoundPoints\":108}]}}");
+        remoteGameSocket.onWebSocketMessage("{\"type\":\"BROADCAST_STICH\",\"data\":{\"name\":\"1437909005411\",\"id\":2,\"playedCards\":[{\"number\":13,\"color\":\"DIAMONDS\"},{\"number\":13,\"color\":\"CLUBS\"},{\"number\":12,\"color\":\"CLUBS\"},{\"number\":12,\"color\":\"SPADES\"}],\"teams\":[{\"name\":\"Team 1\",\"points\":2148,\"currentRoundPoints\":348},{\"name\":\"Team 2\",\"points\":2547,\"currentRoundPoints\":108}]}}");
 
         final List<RemoteCard> playedCards = asList(new RemoteCard(13, DIAMONDS), new RemoteCard(13, CLUBS), new RemoteCard(12, CLUBS), new RemoteCard(12, SPADES));
         final List<RemoteTeam> remoteTeams = asList(new RemoteTeam("Team 1", 2148, 348), new RemoteTeam("Team 2", 2547, 108));
@@ -140,9 +140,9 @@ public class RemoteGameSocketTest {
         final GameHandler handler = mock(GameHandler.class);
         when(handler.onRequestCard()).thenReturn(new ChooseCard(new RemoteCard(14, DIAMONDS)));
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
-        remoteGameSocket.onConnect(session);
+        remoteGameSocket.onConnect(new WebSocketResponseChannel(session));
 
-        remoteGameSocket.onMessage("{\"type\":\"BROADCAST_SESSION_JOINED\",\"data\":{\"sessionName\":\"32a340ae-5fcf-4086-84a8-9dc871a960cb\",\"player\":{\"id\":0,\"name\":\"1439103645725\"},\"playersInSession\":[{\"id\":0,\"name\":\"1439103645725\"}]}}");
+        remoteGameSocket.onWebSocketMessage("{\"type\":\"BROADCAST_SESSION_JOINED\",\"data\":{\"sessionName\":\"32a340ae-5fcf-4086-84a8-9dc871a960cb\",\"player\":{\"id\":0,\"name\":\"1439103645725\"},\"playersInSession\":[{\"id\":0,\"name\":\"1439103645725\"}]}}");
 
         verify(handler).onPlayerJoined(eq(new PlayerJoinedSession("32a340ae-5fcf-4086-84a8-9dc871a960cb", new RemotePlayer(0, "1439103645725"), asList(new RemotePlayer(0, "1439103645725")))));
         verifyNoMoreInteractions(handler);
@@ -153,9 +153,9 @@ public class RemoteGameSocketTest {
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
         final GameHandler handler = mock(GameHandler.class);
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
-        remoteGameSocket.onConnect(session);
+        remoteGameSocket.onConnect(new WebSocketResponseChannel(session));
 
-        remoteGameSocket.onMessage("{\"type\":\"BROADCAST_TEAMS\",\"data\":[{\"name\":\"Team 1\",\"players\":[{\"name\":\"1437917428074\",\"id\":0},{\"name\":\"1437917436253\",\"id\":2}]},{\"name\":\"Team 2\",\"players\":[{\"name\":\"1437917434340\",\"id\":1},{\"name\":\"1437917437853\",\"id\":3}]}]}");
+        remoteGameSocket.onWebSocketMessage("{\"type\":\"BROADCAST_TEAMS\",\"data\":[{\"name\":\"Team 1\",\"players\":[{\"name\":\"1437917428074\",\"id\":0},{\"name\":\"1437917436253\",\"id\":2}]},{\"name\":\"Team 2\",\"players\":[{\"name\":\"1437917434340\",\"id\":1},{\"name\":\"1437917437853\",\"id\":3}]}]}");
 
         verify(handler).onBroadCastTeams(eq(asList(
                 new RemoteTeam("Team 1", asList(new RemotePlayer(0, "1437917428074"), new RemotePlayer(2, "1437917436253"))),
@@ -168,9 +168,9 @@ public class RemoteGameSocketTest {
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
         final GameHandler handler = mock(GameHandler.class);
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
-        remoteGameSocket.onConnect(session);
+        remoteGameSocket.onConnect(new WebSocketResponseChannel(session));
 
-        remoteGameSocket.onMessage("{\"type\":\"BROADCAST_TRUMPF\",\"data\":{\"mode\":\"OBEABE\",\"trumpfColor\":null}}");
+        remoteGameSocket.onWebSocketMessage("{\"type\":\"BROADCAST_TRUMPF\",\"data\":{\"mode\":\"OBEABE\",\"trumpfColor\":null}}");
 
         verify(handler).onBroadCastTrumpf(eq(new TrumpfChoice(Trumpf.OBEABE, null)));
         verifyNoMoreInteractions(handler);
@@ -181,9 +181,9 @@ public class RemoteGameSocketTest {
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
         final GameHandler handler = mock(GameHandler.class);
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
-        remoteGameSocket.onConnect(session);
+        remoteGameSocket.onConnect(new WebSocketResponseChannel(session));
 
-        remoteGameSocket.onMessage("{\"type\":\"BROADCAST_GAME_FINISHED\",\"data\":[{\"name\":\"Team 2\",\"points\":1029,\"currentRoundPoints\":318},{\"name\":\"Team 1\",\"points\":2568,\"currentRoundPoints\":153}]}");
+        remoteGameSocket.onWebSocketMessage("{\"type\":\"BROADCAST_GAME_FINISHED\",\"data\":[{\"name\":\"Team 2\",\"points\":1029,\"currentRoundPoints\":318},{\"name\":\"Team 1\",\"points\":2568,\"currentRoundPoints\":153}]}");
 
         verify(handler).onBroadGameFinished(eq(asList(new RemoteTeam("Team 2", 1029, 318), new RemoteTeam("Team 1", 2568, 153))));
         verifyNoMoreInteractions(handler);
@@ -194,9 +194,9 @@ public class RemoteGameSocketTest {
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
         final GameHandler handler = mock(GameHandler.class);
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
-        remoteGameSocket.onConnect(session);
+        remoteGameSocket.onConnect(new WebSocketResponseChannel(session));
 
-        remoteGameSocket.onMessage("{\"type\":\"BROADCAST_WINNER_TEAM\",\"data\":{\"name\":\"Team 1\",\"points\":2568,\"currentRoundPoints\":0}}");
+        remoteGameSocket.onWebSocketMessage("{\"type\":\"BROADCAST_WINNER_TEAM\",\"data\":{\"name\":\"Team 1\",\"points\":2568,\"currentRoundPoints\":0}}");
 
         verify(handler).onBroadCastWinnerTeam(eq(new RemoteTeam("Team 1", 2568, 0)));
         verifyNoMoreInteractions(handler);
@@ -207,9 +207,9 @@ public class RemoteGameSocketTest {
         final Session session = mock(Session.class, RETURNS_DEEP_STUBS);
         final GameHandler handler = mock(GameHandler.class);
         RemoteGameSocket remoteGameSocket = new RemoteGameSocket(handler);
-        remoteGameSocket.onConnect(session);
+        remoteGameSocket.onConnect(new WebSocketResponseChannel(session));
 
-        remoteGameSocket.onMessage("{\"type\":\"REJECT_CARD\",\"data\":{\"number\":13,\"color\":\"DIAMONDS\"}}");
+        remoteGameSocket.onWebSocketMessage("{\"type\":\"REJECT_CARD\",\"data\":{\"number\":13,\"color\":\"DIAMONDS\"}}");
 
         verify(handler).onRejectCard(eq(new RemoteCard(13, DIAMONDS)));
         verifyNoMoreInteractions(handler);
