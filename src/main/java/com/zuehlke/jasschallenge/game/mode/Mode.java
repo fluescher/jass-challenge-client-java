@@ -1,21 +1,32 @@
 package com.zuehlke.jasschallenge.game.mode;
 
 import com.zuehlke.jasschallenge.client.game.Move;
+import com.zuehlke.jasschallenge.game.Trumpf;
 import com.zuehlke.jasschallenge.game.cards.Card;
 import com.zuehlke.jasschallenge.game.cards.Color;
-import com.zuehlke.jasschallenge.game.Trumpf;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public interface Mode {
+public abstract class Mode {
 
-    static Mode topDown() { return new TopDownMode(); }
-    static Mode bottomUp() { return new BottomUpMode(); }
+    public static Mode topDown() { return new TopDownMode(); }
+    public static Mode bottomUp() { return new BottomUpMode(); }
     static Mode trump(Color color) { return new TrumpfColorMode(color); }
-    static Mode shift() { return new ShiftMode(); }
-    static List<Mode> standardModes() {
+    public static Mode shift() { return new ShiftMode(); }
+    public static Mode from(Trumpf trumpf, Color trumpfColor) {
+        switch (trumpf) {
+            case UNDEUFE:
+                return bottomUp();
+            case OBEABE:
+                return topDown();
+            case SCHIEBE:
+                return shift();
+            default:
+                return trump(trumpfColor);
+        }
+    }
+
+    public static List<Mode> standardModes() {
         List<Mode> modes = new LinkedList<>();
         modes.add(topDown());
         modes.add(bottomUp());
@@ -26,17 +37,25 @@ public interface Mode {
         return modes;
     }
 
-    int calculateRoundScore(int roundNumber, Set<Card> playedCards);
+    public abstract int calculateRoundScore(int roundNumber, Set<Card> playedCards);
 
-    Trumpf getTrumpfName();
+    public abstract Trumpf getTrumpfName();
 
-    Color getTrumpfColor();
+    public abstract Color getTrumpfColor();
 
-    int calculateScore(Set<Card> playedCards);
+    public abstract int calculateScore(Set<Card> playedCards);
 
-    Move determineWinningMove(List<Move> moves);
+    public Move determineWinningMove(List<Move> moves) {
+        Comparator<Card> rankComparator = createRankComparator();
 
-    boolean canPlayCard(Card card, Set<Card> alreadyPlayedCards, Color currentRoundColor, Set<Card> playerCards);
+        final Comparator<Move> moveComparator = (move, move2) -> rankComparator.compare(move.getPlayedCard(), move2.getPlayedCard());
 
-    int getFactor();
+        return GeneralRules.determineWinnerMove(moves, moveComparator, Optional.<Color> ofNullable(getTrumpfColor()));
+    }
+
+    public abstract boolean canPlayCard(Card card, Set<Card> alreadyPlayedCards, Color currentRoundColor, Set<Card> playerCards);
+
+    public abstract int getFactor();
+
+    public abstract Comparator<Card> createRankComparator();
 }

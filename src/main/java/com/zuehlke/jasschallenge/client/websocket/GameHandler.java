@@ -85,11 +85,13 @@ public class GameHandler {
 
     public ChooseTrumpf onRequestTrumpf() {
         final Mode mode = localPlayer.chooseTrumpf(gameSession, shifted);
-        return new ChooseTrumpf(Trumpf.valueOf(mode.getTrumpfName().toString()), mapColor(mode.getTrumpfColor()));
+        return new ChooseTrumpf(mode.getTrumpfName(), mapColor(mode.getTrumpfColor()));
     }
 
     public void onBroadCastTrumpf(TrumpfChoice trumpfChoice) {
-        final Mode nextGameMode = mapMode(trumpfChoice);
+        RemoteColor trumpfColor = trumpfChoice.getTrumpfColor();
+        Color mappedColor = trumpfColor == null ? null : trumpfColor.getMappedColor();
+        final Mode nextGameMode = Mode.from(trumpfChoice.getMode(), mappedColor);
 
         if (trumpfChoice.getMode() != Trumpf.SCHIEBE) {
             logger.info("Game started: {}", nextGameMode);
@@ -153,21 +155,6 @@ public class GameHandler {
 
     public void onRejectCard(RemoteCard rejectCard) {
         throw new RuntimeException("Card was rejected");
-    }
-
-    private static Mode mapMode(TrumpfChoice trumpf) {
-        switch(trumpf.getMode()) {
-            case UNDEUFE:
-                return Mode.bottomUp();
-            case OBEABE:
-                return Mode.topDown();
-            case TRUMPF:
-                return Mode.trump(trumpf.getTrumpfColor().getMappedColor());
-            case SCHIEBE:
-                return Mode.shift();
-            default:
-                throw new RuntimeException("Unknown trumpf received: " + trumpf);
-        }
     }
 
     private List<Team> mapTeams(List<RemoteTeam> remoteTeams) {

@@ -1,20 +1,18 @@
 package com.zuehlke.jasschallenge.game.mode;
 
 import com.zuehlke.jasschallenge.client.game.Game;
-import com.zuehlke.jasschallenge.client.game.Move;
+import com.zuehlke.jasschallenge.game.Trumpf;
 import com.zuehlke.jasschallenge.game.cards.Card;
 import com.zuehlke.jasschallenge.game.cards.Color;
-import com.zuehlke.jasschallenge.game.Trumpf;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Set;
 
+import static com.zuehlke.jasschallenge.game.mode.GeneralRules.calculateLastRoundBonus;
 import static java.lang.String.valueOf;
 
-class BottomUpMode implements Mode{
+class BottomUpMode extends Mode{
     private static final int FACTOR = 3;
-    private final GeneralRules generalRules = new GeneralRules();
 
     @Override
     public Trumpf getTrumpfName() {
@@ -29,7 +27,7 @@ class BottomUpMode implements Mode{
     @Override
     public int calculateRoundScore(int roundNumber, Set<Card> playedCards) {
         if(roundNumber == Game.LAST_ROUND_NUMBER) {
-            return generalRules.calculateLastRoundBonus(FACTOR) + calculateScore(playedCards);
+            return calculateLastRoundBonus(FACTOR) + calculateScore(playedCards);
         }
         return calculateScore(playedCards);
     }
@@ -41,21 +39,21 @@ class BottomUpMode implements Mode{
                 .sum();
     }
 
-    @Override
-    public Move determineWinningMove(List<Move> moves) {
-        final Comparator<Move> moveComparator = (move, move2) -> !move.getPlayedCard().isHigherThan(move2.getPlayedCard()) ? 1 : -1;
 
-        return generalRules.determineWinnerMove(moves, moveComparator);
-    }
 
     @Override
     public boolean canPlayCard(Card card, Set<Card> alreadyPlayedCards, Color currentRoundColor, Set<Card> playerCards) {
-        return generalRules.canPlayCard(card, alreadyPlayedCards, currentRoundColor, playerCards);
+        return GeneralRules.canPlayCard(card, alreadyPlayedCards, currentRoundColor, playerCards);
     }
 
     @Override
     public int getFactor() {
         return FACTOR;
+    }
+
+    @Override
+    public Comparator<Card> createRankComparator() {
+        return (card, card2) -> !card.isHigherThan(card2) ? 1 : -1;
     }
 
     @Override

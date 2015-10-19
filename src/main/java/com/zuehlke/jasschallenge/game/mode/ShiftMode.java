@@ -5,10 +5,11 @@ import com.zuehlke.jasschallenge.game.cards.Card;
 import com.zuehlke.jasschallenge.game.cards.Color;
 import com.zuehlke.jasschallenge.game.Trumpf;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-public class ShiftMode implements Mode {
+public class ShiftMode extends Mode {
 
     @Override
     public int calculateRoundScore(int roundNumber, Set<Card> playedCards) {
@@ -43,5 +44,10 @@ public class ShiftMode implements Mode {
     @Override
     public int getFactor() {
         return 0;
+    }
+
+    @Override
+    public Comparator<Card> createRankComparator() {
+        return null;
     }
 }

@@ -1,20 +1,18 @@
 package com.zuehlke.jasschallenge.game.mode;
 
 import com.zuehlke.jasschallenge.client.game.Game;
-import com.zuehlke.jasschallenge.client.game.Move;
+import com.zuehlke.jasschallenge.game.Trumpf;
 import com.zuehlke.jasschallenge.game.cards.Card;
 import com.zuehlke.jasschallenge.game.cards.CardValue;
 import com.zuehlke.jasschallenge.game.cards.Color;
-import com.zuehlke.jasschallenge.game.Trumpf;
 
-import java.util.List;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import static java.lang.String.valueOf;
 
-class TrumpfColorMode implements Mode {
+class TrumpfColorMode extends Mode {
 
     private final Color trumpfColor;
     private final GeneralRules generalRules = new GeneralRules();
@@ -37,7 +35,7 @@ class TrumpfColorMode implements Mode {
     @Override
     public int calculateRoundScore(int roundNumber, Set<Card> playedCards) {
         if(roundNumber == Game.LAST_ROUND_NUMBER) {
-            return generalRules.calculateLastRoundBonus(getFactor()) + calculateScore(playedCards);
+            return GeneralRules.calculateLastRoundBonus(getFactor()) + calculateScore(playedCards);
         }
         return calculateScore(playedCards);
     }
@@ -55,16 +53,6 @@ class TrumpfColorMode implements Mode {
                 }).sum();
     }
 
-    @Override
-    public Move determineWinningMove(List<Move> moves) {
-        if (moves == null || moves.isEmpty()) return null;
-
-        final Color firstCardColor = moves.get(0).getPlayedCard().getColor();
-        return moves.stream()
-                .filter(allCardsWithColorOrTrumpf(firstCardColor))
-                .max(this::compareWithTrumpf)
-                .orElse(null);
-    }
 
     @Override
     public boolean canPlayCard(Card card, Set<Card> alreadyPlayedCards, Color currentRoundColor, Set<Card> playerCards) {
@@ -83,6 +71,12 @@ class TrumpfColorMode implements Mode {
     public int getFactor() {
         if(trumpfColor == Color.SPADES || trumpfColor == Color.CLUBS) return 2;
         return 1;
+    }
+
+    @Override
+    public Comparator<Card> createRankComparator() {
+        return this::compareWithTrumpf;
+
     }
 
     @Override
@@ -116,15 +110,15 @@ class TrumpfColorMode implements Mode {
         return card.getColor() == trumpfColor;
     }
 
-    private int compareWithTrumpf(Move move1, Move move2) {
-        if (isTrumpf(move1.getPlayedCard()) && isTrumpf(move2.getPlayedCard())) {
-            return compareTrumpf(move1.getPlayedCard(), move2.getPlayedCard());
-        } else if (isTrumpf(move1.getPlayedCard())) {
+    private int compareWithTrumpf(Card card1, Card card2) {
+        if (isTrumpf(card1) && isTrumpf(card2)) {
+            return compareTrumpf(card1, card2);
+        } else if (isTrumpf(card1)) {
             return 1;
-        } else if (isTrumpf(move2.getPlayedCard())) {
+        } else if (isTrumpf(card2)) {
             return -1;
         } else {
-            return compareMoves(move1, move2);
+            return compareMoves(card1, card2);
         }
     }
 
@@ -132,13 +126,8 @@ class TrumpfColorMode implements Mode {
         return first.isHigherTrumpfThan(second) ? 1 : -1;
     }
 
-    private int compareMoves(Move move1, Move move2) {
-        return move1.getPlayedCard().isHigherThan(move2.getPlayedCard()) ? 1 : -1;
+    private int compareMoves(Card card1, Card card2) {
+        return card1.isHigherThan(card2) ? 1 : -1;
     }
 
-    private Predicate<Move> allCardsWithColorOrTrumpf(Color firstCardColor) {
-        return move ->
-                move.getPlayedCard().getColor() == firstCardColor
-                        || isTrumpf(move.getPlayedCard());
-    }
 }
