@@ -1,11 +1,11 @@
-package com.zuehlke.jasschallenge.client.game.mode;
+package com.zuehlke.jasschallenge.game.mode;
 
 import com.pholser.junit.quickcheck.ForAll;
 import com.zuehlke.jasschallenge.client.game.Game;
 import com.zuehlke.jasschallenge.client.game.Move;
 import com.zuehlke.jasschallenge.client.game.Player;
-import com.zuehlke.jasschallenge.client.game.cards.Card;
-import com.zuehlke.jasschallenge.client.game.cards.Color;
+import com.zuehlke.jasschallenge.game.cards.Card;
+import com.zuehlke.jasschallenge.game.cards.Color;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.contrib.theories.Theories;
@@ -16,9 +16,9 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.zuehlke.jasschallenge.client.game.cards.Card.*;
-import static com.zuehlke.jasschallenge.client.game.cards.Color.CLUBS;
-import static com.zuehlke.jasschallenge.client.game.cards.Color.HEARTS;
+import static com.zuehlke.jasschallenge.game.cards.Card.*;
+import static com.zuehlke.jasschallenge.game.cards.Color.CLUBS;
+import static com.zuehlke.jasschallenge.game.cards.Color.HEARTS;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.hamcrest.CoreMatchers.not;

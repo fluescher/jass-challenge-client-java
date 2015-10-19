@@ -1,6 +1,6 @@
 package com.zuehlke.jasschallenge.client.game;
 
-import com.zuehlke.jasschallenge.client.game.cards.Card;
+import com.zuehlke.jasschallenge.game.cards.Card;
 
 public class Move {
     private final Player player;

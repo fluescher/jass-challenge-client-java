@@ -1,6 +1,6 @@
 package com.zuehlke.jasschallenge.client.websocket.messages.type;
 
-import com.zuehlke.jasschallenge.client.game.cards.Color;
+import com.zuehlke.jasschallenge.game.cards.Color;
 
 public enum RemoteColor {
     HEARTS(Color.HEARTS),

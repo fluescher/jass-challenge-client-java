@@ -1,5 +1,6 @@
-package com.zuehlke.jasschallenge.client.game.cards;
+package com.zuehlke.jasschallenge.game.cards;
 
+import com.zuehlke.jasschallenge.game.cards.Card;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

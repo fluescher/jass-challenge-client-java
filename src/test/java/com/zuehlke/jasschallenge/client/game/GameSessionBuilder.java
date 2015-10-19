@@ -1,7 +1,7 @@
 package com.zuehlke.jasschallenge.client.game;
 
-import com.zuehlke.jasschallenge.client.game.cards.Card;
-import com.zuehlke.jasschallenge.client.game.mode.Mode;
+import com.zuehlke.jasschallenge.game.cards.Card;
+import com.zuehlke.jasschallenge.game.mode.Mode;
 
 import java.util.List;
 

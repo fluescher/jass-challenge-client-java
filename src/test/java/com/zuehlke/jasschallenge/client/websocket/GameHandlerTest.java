@@ -1,8 +1,9 @@
 package com.zuehlke.jasschallenge.client.websocket;
 
 import com.zuehlke.jasschallenge.client.game.*;
-import com.zuehlke.jasschallenge.client.game.cards.Card;
-import com.zuehlke.jasschallenge.client.game.mode.Mode;
+import com.zuehlke.jasschallenge.game.Trumpf;
+import com.zuehlke.jasschallenge.game.cards.Card;
+import com.zuehlke.jasschallenge.game.mode.Mode;
 import com.zuehlke.jasschallenge.client.websocket.messages.PlayerJoinedSession;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseCard;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChoosePlayerName;

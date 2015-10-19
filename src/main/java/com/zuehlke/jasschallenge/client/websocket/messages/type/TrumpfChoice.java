@@ -1,6 +1,7 @@
 package com.zuehlke.jasschallenge.client.websocket.messages.type;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.zuehlke.jasschallenge.game.Trumpf;
 
 public class TrumpfChoice {
     private final Trumpf mode;

@@ -1,4 +1,4 @@
-package com.zuehlke.jasschallenge.client.websocket.messages.type;
+package com.zuehlke.jasschallenge.game;
 
 public enum Trumpf {
     OBEABE,

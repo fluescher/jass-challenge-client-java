@@ -2,8 +2,8 @@ package com.zuehlke.jasschallenge.client.game.strategy;
 
 import com.zuehlke.jasschallenge.client.game.GameSession;
 import com.zuehlke.jasschallenge.client.game.Move;
-import com.zuehlke.jasschallenge.client.game.cards.Card;
-import com.zuehlke.jasschallenge.client.game.mode.Mode;
+import com.zuehlke.jasschallenge.game.cards.Card;
+import com.zuehlke.jasschallenge.game.mode.Mode;
 
 import java.util.Set;
 

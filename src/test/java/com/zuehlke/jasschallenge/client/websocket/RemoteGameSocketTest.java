@@ -6,6 +6,7 @@ import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChoosePlaye
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseSession;
 import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseTrumpf;
 import com.zuehlke.jasschallenge.client.websocket.messages.type.*;
+import com.zuehlke.jasschallenge.game.Trumpf;
 import org.eclipse.jetty.websocket.api.Session;
 import org.junit.Test;
 
@@ -14,7 +15,7 @@ import java.util.List;
 
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor.*;
 import static com.zuehlke.jasschallenge.client.websocket.messages.type.SessionChoice.AUTOJOIN;
-import static com.zuehlke.jasschallenge.client.websocket.messages.type.Trumpf.OBEABE;
+import static com.zuehlke.jasschallenge.game.Trumpf.OBEABE;
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.*;
 

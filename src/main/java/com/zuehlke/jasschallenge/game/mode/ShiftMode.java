@@ -1,9 +1,9 @@
-package com.zuehlke.jasschallenge.client.game.mode;
+package com.zuehlke.jasschallenge.game.mode;
 
 import com.zuehlke.jasschallenge.client.game.Move;
-import com.zuehlke.jasschallenge.client.game.cards.Card;
-import com.zuehlke.jasschallenge.client.game.cards.Color;
-import com.zuehlke.jasschallenge.client.websocket.messages.type.Trumpf;
+import com.zuehlke.jasschallenge.game.cards.Card;
+import com.zuehlke.jasschallenge.game.cards.Color;
+import com.zuehlke.jasschallenge.game.Trumpf;
 
 import java.util.List;
 import java.util.Set;

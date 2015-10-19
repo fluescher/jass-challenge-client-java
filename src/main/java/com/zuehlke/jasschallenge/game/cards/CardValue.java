@@ -1,4 +1,4 @@
-package com.zuehlke.jasschallenge.client.game.cards;
+package com.zuehlke.jasschallenge.game.cards;
 
 public enum CardValue {
     SIX(1,1,0,0,11),

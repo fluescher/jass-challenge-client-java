@@ -1,15 +1,15 @@
 package com.zuehlke.jasschallenge.client.game;
 
-import com.zuehlke.jasschallenge.client.game.cards.Card;
-import com.zuehlke.jasschallenge.client.game.mode.Mode;
+import com.zuehlke.jasschallenge.game.cards.Card;
+import com.zuehlke.jasschallenge.game.mode.Mode;
 import org.junit.Test;
 
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.zuehlke.jasschallenge.client.game.cards.Card.*;
-import static com.zuehlke.jasschallenge.client.game.cards.Color.DIAMONDS;
+import static com.zuehlke.jasschallenge.game.cards.Card.*;
+import static com.zuehlke.jasschallenge.game.cards.Color.DIAMONDS;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
