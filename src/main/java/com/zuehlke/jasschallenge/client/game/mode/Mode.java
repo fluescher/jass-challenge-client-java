@@ -3,6 +3,7 @@ package com.zuehlke.jasschallenge.client.game.mode;
 import com.zuehlke.jasschallenge.client.game.Move;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.cards.Color;
+import com.zuehlke.jasschallenge.client.websocket.messages.type.Trumpf;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,7 +28,7 @@ public interface Mode {
 
     int calculateRoundScore(int roundNumber, Set<Card> playedCards);
 
-    TrumpfName getTrumpfName();
+    Trumpf getTrumpfName();
 
     Color getTrumpfColor();
 

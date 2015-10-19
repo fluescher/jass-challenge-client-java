@@ -1,7 +1,6 @@
 package com.zuehlke.jasschallenge.client.game;
 
 import com.zuehlke.jasschallenge.client.game.mode.Mode;
-import com.zuehlke.jasschallenge.client.game.mode.TrumpfName;
 
 import java.util.List;
 

@@ -2,10 +2,10 @@ package com.zuehlke.jasschallenge.client.game.mode;
 
 import com.zuehlke.jasschallenge.client.game.Game;
 import com.zuehlke.jasschallenge.client.game.Move;
-import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.cards.CardValue;
 import com.zuehlke.jasschallenge.client.game.cards.Color;
+import com.zuehlke.jasschallenge.client.websocket.messages.type.Trumpf;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,8 +25,8 @@ class TrumpfColorMode implements Mode {
     }
 
     @Override
-    public TrumpfName getTrumpfName() {
-        return TrumpfName.TRUMPF;
+    public Trumpf getTrumpfName() {
+        return Trumpf.TRUMPF;
     }
 
     @Override

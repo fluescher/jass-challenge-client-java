@@ -4,6 +4,7 @@ import com.zuehlke.jasschallenge.client.game.Game;
 import com.zuehlke.jasschallenge.client.game.Move;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.cards.Color;
+import com.zuehlke.jasschallenge.client.websocket.messages.type.Trumpf;
 
 import java.util.Comparator;
 import java.util.List;
@@ -16,8 +17,8 @@ class BottomUpMode implements Mode{
     private final GeneralRules generalRules = new GeneralRules();
 
     @Override
-    public TrumpfName getTrumpfName() {
-        return TrumpfName.UNDEUFE;
+    public Trumpf getTrumpfName() {
+        return Trumpf.UNDEUFE;
     }
 
     @Override

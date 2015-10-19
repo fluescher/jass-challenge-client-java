@@ -3,6 +3,7 @@ package com.zuehlke.jasschallenge.client.game.mode;
 import com.zuehlke.jasschallenge.client.game.Move;
 import com.zuehlke.jasschallenge.client.game.cards.Card;
 import com.zuehlke.jasschallenge.client.game.cards.Color;
+import com.zuehlke.jasschallenge.client.websocket.messages.type.Trumpf;
 
 import java.util.List;
 import java.util.Set;
@@ -15,8 +16,8 @@ public class ShiftMode implements Mode {
     }
 
     @Override
-    public TrumpfName getTrumpfName() {
-        return TrumpfName.SCHIEBE;
+    public Trumpf getTrumpfName() {
+        return Trumpf.SCHIEBE;
     }
 
     @Override
