@@ -6,6 +6,7 @@ import com.zuehlke.jasschallenge.game.cards.Card;
 import com.zuehlke.jasschallenge.game.cards.Color;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class Mode {
 
@@ -45,12 +46,15 @@ public abstract class Mode {
 
     public abstract int calculateScore(Set<Card> playedCards);
 
+
+    public Card determineWinningCard(List<Card> cards) {
+        return GeneralRules.determineWinnerCard(cards, createRankComparator(), Optional.<Color> ofNullable(getTrumpfColor())).orElse(null);
+    }
+
     public Move determineWinningMove(List<Move> moves) {
-        Comparator<Card> rankComparator = createRankComparator();
-
-        final Comparator<Move> moveComparator = (move, move2) -> rankComparator.compare(move.getPlayedCard(), move2.getPlayedCard());
-
-        return GeneralRules.determineWinnerMove(moves, moveComparator, Optional.<Color> ofNullable(getTrumpfColor()));
+        List<Card> cards = moves.stream().map(Move::getPlayedCard).collect(Collectors.toList());
+        Card winningCard = determineWinningCard(cards);
+        return moves.stream().filter(move -> winningCard == move.getPlayedCard()).findFirst().orElse(null);
     }
 
     public abstract boolean canPlayCard(Card card, Set<Card> alreadyPlayedCards, Color currentRoundColor, Set<Card> playerCards);

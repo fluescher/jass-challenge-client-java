@@ -1,6 +1,5 @@
 package com.zuehlke.jasschallenge.game.mode;
 
-import com.zuehlke.jasschallenge.client.game.Move;
 import com.zuehlke.jasschallenge.game.cards.Card;
 import com.zuehlke.jasschallenge.game.cards.Color;
 
@@ -24,18 +23,21 @@ class GeneralRules {
                 || !playerCards.stream().anyMatch(playersCard -> playersCard.getColor() == currentRoundColor);
     }
 
-    public static Move determineWinnerMove(List<Move> moves, Comparator<Move> moveComparator, Optional<Color> trumpfColor) {
-        if (moves == null || moves.isEmpty()) return null;
 
-        final Color firstCardColor = moves.get(0).getPlayedCard().getColor();
-        return moves.stream()
+    public static Optional<Card> determineWinnerCard(List<Card> cards, Comparator<Card> cardRankComparator, Optional<Color> trumpfColor) {
+        if (cards == null || cards.isEmpty()) {
+            return Optional.empty();
+        }
+        final Color firstCardColor = cards.get(0).getColor();
+        return cards.stream()
                 .filter(allCardsWithColorOrTrumpfColor(firstCardColor, trumpfColor))
-                .max(moveComparator)
-                .orElse(null);
+                .max(cardRankComparator);
     }
 
-    private static Predicate<Move> allCardsWithColorOrTrumpfColor(Color firstCardColor, Optional<Color> trumpfColor) {
-        return move -> move.getPlayedCard().getColor() == trumpfColor.orElse(firstCardColor) || move.getPlayedCard().getColor() == firstCardColor;
+
+
+    private static Predicate<Card> allCardsWithColorOrTrumpfColor(Color firstCardColor, Optional<Color> trumpfColor) {
+        return card -> card.getColor() == trumpfColor.orElse(firstCardColor) || card.getColor() == firstCardColor;
     }
 
 }
