@@ -7,6 +7,7 @@ import com.zuehlke.jasschallenge.game.cards.Color;
 import com.zuehlke.jasschallenge.game.mode.Mode;
 import com.zuehlke.jasschallenge.messages.Mapping;
 import com.zuehlke.jasschallenge.messages.PlayedCards;
+import com.zuehlke.jasschallenge.messages.RejectCard;
 import com.zuehlke.jasschallenge.messages.RequestCard;
 import com.zuehlke.jasschallenge.messages.responses.ChooseCard;
 import com.zuehlke.jasschallenge.messages.type.RemoteCard;
@@ -64,16 +65,21 @@ class Round {
         int cards = 0;
         while (++cards <= 4) {
             Player nextToPlay = players.getNextToPlay();
+            List<Card> playerCards = cardsMap.get(nextToPlay);
             ChooseCard chooseCard = nextToPlay.ask(new RequestCard(), ChooseCard.class);
-            // TODO check if played card is valid
             RemoteCard data = chooseCard.getData();
-            RemoteCard card = new RemoteCard(data.getNumber(), data.getColor());
-            Card playedCard = Mapping.mapToCard(card);
+            Card playedCard = Mapping.mapToCard(data);
             playedCardsInOrder.add(playedCard);
+
+            if ( ! getMode().canPlayCard(playedCard, playedCards.keySet(), playedCardsInOrder.isEmpty() ? null : playedCardsInOrder.get(0).getColor(), playerCards.stream().collect(Collectors.toSet()))) {
+                nextToPlay.notify(new RejectCard(data));
+                throw new RuntimeException("Illegal card by player " + nextToPlay);
+            }
+
             playedCards.put(playedCard, nextToPlay);
             Function<Card, RemoteCard> cardToRemoteCardFunction = c -> new RemoteCard(c.getValue().getRank() + 5, RemoteColor.from(c.getColor()));
             cardsMap.keySet().forEach(player -> player.notify(new PlayedCards(playedCardsInOrder.stream().map(cardToRemoteCardFunction).collect(Collectors.toList()))));
-            cardsMap.get(nextToPlay).remove(playedCard);
+            playerCards.remove(playedCard);
         }
         return new StichResult(playedCardsInOrder, playedCards, trumpf, trumpfColor, numberOfPlayedStiche++);
     }
