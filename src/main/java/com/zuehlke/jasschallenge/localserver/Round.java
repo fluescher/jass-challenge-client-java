@@ -4,6 +4,7 @@ package com.zuehlke.jasschallenge.localserver;
 import com.zuehlke.jasschallenge.game.Trumpf;
 import com.zuehlke.jasschallenge.game.cards.Card;
 import com.zuehlke.jasschallenge.game.cards.Color;
+import com.zuehlke.jasschallenge.game.mode.Mode;
 import com.zuehlke.jasschallenge.messages.Mapping;
 import com.zuehlke.jasschallenge.messages.PlayedCards;
 import com.zuehlke.jasschallenge.messages.RequestCard;
@@ -27,7 +28,7 @@ class Round {
     private Color trumpfColor;
     private Trumpf trumpf;
     private Map<Card, Player> playedCards;
-    private int numberOfPlayedRounds;
+    private int numberOfPlayedStiche = 0;
 
 
     public Round(Player player1Team1, Player player1Team2, Player player2Team1, Player player2Team2) {
@@ -57,14 +58,11 @@ class Round {
         this.trumpfColor = color;
     }
 
-    private boolean isFinished() {
-        return playedCards.size() == 4;
-    }
-
     public StichResult playStich(Players players) {
         List<Card> playedCardsInOrder = new LinkedList<>();
         playedCards = new HashMap<>();
-        while (!isFinished()) {
+        int cards = 0;
+        while (++cards <= 4) {
             Player nextToPlay = players.getNextToPlay();
             ChooseCard chooseCard = nextToPlay.ask(new RequestCard(), ChooseCard.class);
             // TODO check if played card is valid
@@ -77,12 +75,16 @@ class Round {
             cardsMap.keySet().forEach(player -> player.notify(new PlayedCards(playedCardsInOrder.stream().map(cardToRemoteCardFunction).collect(Collectors.toList()))));
             cardsMap.get(nextToPlay).remove(playedCard);
         }
-        return new StichResult(playedCardsInOrder, playedCards, trumpf, trumpfColor, ++numberOfPlayedRounds);
+        return new StichResult(playedCardsInOrder, playedCards, trumpf, trumpfColor, numberOfPlayedStiche++);
     }
-
 
 
     public boolean hasCardsToPlay() {
-        return  playedCards != null && playedCards.size() < 4;
+        return cardsMap.values().stream().flatMap(Collection::stream).findAny().isPresent();
     }
+
+    public Mode getMode() {
+        return Mode.from(trumpf, trumpfColor);
+    }
+
 }

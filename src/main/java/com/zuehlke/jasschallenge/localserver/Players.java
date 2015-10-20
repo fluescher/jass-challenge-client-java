@@ -167,4 +167,8 @@ class Players {
             player.notify(message);
         });
     }
+
+    public void stichMade(Player stichPlayer) {
+        playerOrder.stichMade(stichPlayer);
+    }
 }

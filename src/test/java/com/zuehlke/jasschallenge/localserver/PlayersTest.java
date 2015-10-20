@@ -36,6 +36,7 @@ public class PlayersTest {
         Player player1Team2 = new Player(null);
         players.playerJoined(player1Team2);
         Player player2Team2 = new Player(null);
+
         players.playerJoined(player2Team2);
 
         assertEquals(0, player1Team1.getId());

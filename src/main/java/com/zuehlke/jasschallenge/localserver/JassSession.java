@@ -61,14 +61,28 @@ class JassSession {
             while (currentRound.hasCardsToPlay() && !sessionScore.winnerExists()) {
                 stichResult = currentRound.playStich(players);
                 Player stichPlayer = stichResult.getStichPlayer();
-                RemoteTeam teamOf = players.getTeamOf(stichPlayer);
-                sessionScore.appendScore(stichResult.getPoints(), teamOf);
+                players.stichMade(stichPlayer);
+                RemoteTeam winningTeam = players.getTeamOf(stichPlayer);
+
+                sessionScore.appendScore(stichResult.getPoints(), winningTeam);
+                addMatchScoreIfMatch(sessionScore, winningTeam);
+
                 players.broadcastStich(stichResult, sessionScore.getTeams());
                 logger.debug("Stich finished: {}", stichResult);
             }
             prepareNextRound();
         }
 
+    }
+
+    private void addMatchScoreIfMatch(SessionScore sessionScore, RemoteTeam winningTeam) {
+        if (isMatch(sessionScore)) {
+            sessionScore.appendScore(currentRound.getMode().getFactor() * 100, winningTeam);
+        }
+    }
+
+    private boolean isMatch(SessionScore sessionScore) {
+        return !currentRound.hasCardsToPlay() && sessionScore.getTeams().stream().filter(team -> team.getCurrentRoundPoints() == 0).findAny().isPresent();
     }
 
     private void prepareNextRound() {

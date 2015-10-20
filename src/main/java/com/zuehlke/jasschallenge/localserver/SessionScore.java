@@ -12,7 +12,6 @@ class SessionScore {
     private final RemoteTeam team2;
 
     private final int scoreLimit;
-    private RemoteTeam winnerTeam;
 
     public SessionScore(RemoteTeam team1, RemoteTeam team2, int scoreLimit) {
         this.team1 = team1;

@@ -26,6 +26,11 @@ class PlayerOrder {
 
     }
 
+
+    public void stichMade(Player player) {
+        nextToPlay = player;
+    }
+
     public void newRound() {
         List<Player> newOrder = new ArrayList<>();
         int index = 1;
