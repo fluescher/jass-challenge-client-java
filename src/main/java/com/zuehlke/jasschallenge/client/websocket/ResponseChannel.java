@@ -1,6 +1,6 @@
 package com.zuehlke.jasschallenge.client.websocket;
 
-import com.zuehlke.jasschallenge.client.websocket.messages.responses.Response;
+import com.zuehlke.jasschallenge.messages.responses.Response;
 
 public interface ResponseChannel {
 

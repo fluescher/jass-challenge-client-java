@@ -2,7 +2,7 @@ package com.zuehlke.jasschallenge.client;
 
 import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.game.strategy.RandomJassStrategy;
-import com.zuehlke.jasschallenge.client.websocket.messages.type.SessionType;
+import com.zuehlke.jasschallenge.messages.type.SessionType;
 
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;

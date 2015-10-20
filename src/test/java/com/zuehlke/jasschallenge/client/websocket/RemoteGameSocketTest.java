@@ -1,11 +1,11 @@
 package com.zuehlke.jasschallenge.client.websocket;
 
-import com.zuehlke.jasschallenge.client.websocket.messages.*;
-import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseCard;
-import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChoosePlayerName;
-import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseSession;
-import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseTrumpf;
-import com.zuehlke.jasschallenge.client.websocket.messages.type.*;
+import com.zuehlke.jasschallenge.messages.*;
+import com.zuehlke.jasschallenge.messages.responses.ChooseCard;
+import com.zuehlke.jasschallenge.messages.responses.ChoosePlayerName;
+import com.zuehlke.jasschallenge.messages.responses.ChooseSession;
+import com.zuehlke.jasschallenge.messages.responses.ChooseTrumpf;
+import com.zuehlke.jasschallenge.messages.type.*;
 import com.zuehlke.jasschallenge.game.Trumpf;
 import org.eclipse.jetty.websocket.api.Session;
 import org.junit.Test;
@@ -13,8 +13,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.List;
 
-import static com.zuehlke.jasschallenge.client.websocket.messages.type.RemoteColor.*;
-import static com.zuehlke.jasschallenge.client.websocket.messages.type.SessionChoice.AUTOJOIN;
+import static com.zuehlke.jasschallenge.messages.type.RemoteColor.*;
+import static com.zuehlke.jasschallenge.messages.type.SessionChoice.AUTOJOIN;
 import static com.zuehlke.jasschallenge.game.Trumpf.OBEABE;
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.*;

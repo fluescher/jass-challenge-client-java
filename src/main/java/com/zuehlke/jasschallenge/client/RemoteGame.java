@@ -3,7 +3,7 @@ package com.zuehlke.jasschallenge.client;
 import com.zuehlke.jasschallenge.client.game.Player;
 import com.zuehlke.jasschallenge.client.websocket.GameHandler;
 import com.zuehlke.jasschallenge.client.websocket.RemoteGameSocket;
-import com.zuehlke.jasschallenge.client.websocket.messages.type.SessionType;
+import com.zuehlke.jasschallenge.messages.type.SessionType;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.slf4j.Logger;

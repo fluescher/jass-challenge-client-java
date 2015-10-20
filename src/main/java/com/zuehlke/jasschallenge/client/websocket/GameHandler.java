@@ -5,19 +5,19 @@ import com.zuehlke.jasschallenge.game.Trumpf;
 import com.zuehlke.jasschallenge.game.cards.Card;
 import com.zuehlke.jasschallenge.game.cards.Color;
 import com.zuehlke.jasschallenge.game.mode.Mode;
-import com.zuehlke.jasschallenge.client.websocket.messages.PlayerJoinedSession;
-import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseCard;
-import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChoosePlayerName;
-import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseSession;
-import com.zuehlke.jasschallenge.client.websocket.messages.responses.ChooseTrumpf;
-import com.zuehlke.jasschallenge.client.websocket.messages.type.*;
+import com.zuehlke.jasschallenge.messages.PlayerJoinedSession;
+import com.zuehlke.jasschallenge.messages.responses.ChooseCard;
+import com.zuehlke.jasschallenge.messages.responses.ChoosePlayerName;
+import com.zuehlke.jasschallenge.messages.responses.ChooseSession;
+import com.zuehlke.jasschallenge.messages.responses.ChooseTrumpf;
+import com.zuehlke.jasschallenge.messages.type.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Set;
 
-import static com.zuehlke.jasschallenge.client.websocket.messages.type.SessionChoice.AUTOJOIN;
+import static com.zuehlke.jasschallenge.messages.type.SessionChoice.AUTOJOIN;
 import static java.lang.Integer.compare;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;

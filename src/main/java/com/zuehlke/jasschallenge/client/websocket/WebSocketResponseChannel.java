@@ -2,7 +2,7 @@ package com.zuehlke.jasschallenge.client.websocket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zuehlke.jasschallenge.client.websocket.messages.responses.Response;
+import com.zuehlke.jasschallenge.messages.responses.Response;
 import org.eclipse.jetty.websocket.api.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

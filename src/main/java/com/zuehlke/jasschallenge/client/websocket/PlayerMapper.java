@@ -1,7 +1,7 @@
 package com.zuehlke.jasschallenge.client.websocket;
 
 import com.zuehlke.jasschallenge.client.game.Player;
-import com.zuehlke.jasschallenge.client.websocket.messages.type.RemotePlayer;
+import com.zuehlke.jasschallenge.messages.type.RemotePlayer;
 
 import java.util.HashSet;
 import java.util.Optional;
