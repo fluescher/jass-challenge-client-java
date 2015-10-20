@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
-public class RemoteGame {
+public class RemoteGame implements Game {
 
     private static final Logger logger = LoggerFactory.getLogger(RemoteGame.class);
     private static final int CLOSE_TIMEOUT_MIN = 5;
@@ -26,6 +26,7 @@ public class RemoteGame {
         this.sessionType = sessionType;
     }
 
+    @Override
     public void start() throws Exception {
         final WebSocketClient client = new WebSocketClient();
         try {
