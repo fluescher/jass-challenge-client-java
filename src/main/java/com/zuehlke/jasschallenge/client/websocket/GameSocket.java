@@ -20,8 +20,12 @@ public class GameSocket {
     }
 
     public void onMessage(Message msg) throws IOException {
-        Optional<Response> response = msg.dispatch(handler);
+        Optional<Response> response = dispatchMessage(msg);
         response.ifPresent(responseChannel::respond);
+    }
+
+    public Optional<Response> dispatchMessage(Message msg) {
+        return msg.dispatch(handler);
     }
 
     public void onClose(int statusCode, String reason) {
