@@ -23,7 +23,6 @@ public class LocalServer {
     }
 
     public void onResponse(Response response, Player player) {
-        System.out.println("response = " + response);
         if (response instanceof ChoosePlayerName) {
             onChoosePlayerName((ChoosePlayerName) response, player);
         } else if (response instanceof ChooseSession) {
