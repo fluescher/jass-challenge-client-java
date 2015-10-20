@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 
 class GeneralRules {
 
-    public static final int LAST_ROUND_BONUS = 5;
+    private static final int LAST_ROUND_BONUS = 5;
 
     public static int calculateLastRoundBonus(int factor) {
         return factor * LAST_ROUND_BONUS;

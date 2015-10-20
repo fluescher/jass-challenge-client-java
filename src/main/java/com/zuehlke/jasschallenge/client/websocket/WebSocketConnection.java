@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class WebSocketConnection implements IConnection<String> {
 
-    private Session session;
+    private final Session session;
 
     public WebSocketConnection(Session session) {
         this.session = session;

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 class StichResult {
 
-    private List<Card> playedCardsInOrder;
+    private final List<Card> playedCardsInOrder;
     private final Map<Card, Player> playedCards;
     private final Trumpf trumpf;
     private final Color trumpfColor;

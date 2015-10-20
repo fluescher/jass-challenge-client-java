@@ -3,19 +3,21 @@ package com.zuehlke.jasschallenge.localserver;
 import com.zuehlke.jasschallenge.client.websocket.GameSocket;
 import com.zuehlke.jasschallenge.messages.RequestPlayerName;
 import com.zuehlke.jasschallenge.messages.RequestSessionChoice;
-import com.zuehlke.jasschallenge.messages.responses.*;
+import com.zuehlke.jasschallenge.messages.responses.ChoosePlayerName;
+import com.zuehlke.jasschallenge.messages.responses.ChooseSession;
+import com.zuehlke.jasschallenge.messages.responses.ChooseTrumpf;
+import com.zuehlke.jasschallenge.messages.responses.Response;
 import com.zuehlke.jasschallenge.messages.type.ChooseSessionData;
 import com.zuehlke.jasschallenge.messages.type.SessionType;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class LocalServer {
 
-    private Map<String, JassSession> sessions = new HashMap<>();
+    private final Map<String, JassSession> sessions = new HashMap<>();
 
-    public void connect(GameSocket gameSocket) throws IOException {
+    public void connect(GameSocket gameSocket) {
         ConnectionHandle connectionHandle = new ConnectionHandle(gameSocket);
         Player player = new Player(connectionHandle);
         gameSocket.onConnect(new PlayerToLocalServerResponseChannel(player, this));
@@ -30,10 +32,6 @@ public class LocalServer {
         } else if (response instanceof ChooseTrumpf) {
             ChooseTrumpf chooseTrumpf = (ChooseTrumpf) response;
             getSessionForPlayer(player).onTrumpfChosen(chooseTrumpf, player);
-        } else if (response instanceof ChooseCard) {
-            ChooseCard chooseCard = (ChooseCard) response;
-
-            getSessionForPlayer(player).onCardChosen(chooseCard, player);
         }
     }
 

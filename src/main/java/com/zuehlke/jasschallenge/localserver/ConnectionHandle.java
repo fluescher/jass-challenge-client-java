@@ -5,7 +5,6 @@ import com.zuehlke.jasschallenge.client.websocket.ResponseChannel;
 import com.zuehlke.jasschallenge.messages.Message;
 import com.zuehlke.jasschallenge.messages.responses.Response;
 
-import java.io.IOException;
 import java.util.Optional;
 
 class ConnectionHandle {
@@ -17,21 +16,13 @@ class ConnectionHandle {
     }
 
     public void send(Message message) {
-        try {
-            gameSocket.onMessage(message);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        gameSocket.onMessage(message);
     }
 
     public <T extends Response> T ask(Message message, Class<T> responseClass) {
         DirectResponseChannel responseChannel = new DirectResponseChannel();
         GameSocket socket = new GameSocketWrapper(gameSocket, responseChannel);
-        try {
-            socket.onMessage(message);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        socket.onMessage(message);
         //noinspection unchecked
         return (T)responseChannel.getRespose();
     }
@@ -53,7 +44,7 @@ class ConnectionHandle {
 
     private class GameSocketWrapper extends GameSocket {
 
-        private GameSocket gameSocket;
+        private final GameSocket gameSocket;
 
         public GameSocketWrapper(GameSocket gameSocket, ResponseChannel responseChannel) {
             super(null);
@@ -62,7 +53,7 @@ class ConnectionHandle {
         }
 
         @Override
-        public void onMessage(Message msg) throws IOException {
+        public void onMessage(Message msg) {
             Optional<Response> response = gameSocket.dispatchMessage(msg);
             response.ifPresent(responseChannel::respond);
         }

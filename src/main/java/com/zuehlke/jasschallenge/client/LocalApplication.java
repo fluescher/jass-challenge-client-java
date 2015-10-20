@@ -5,7 +5,7 @@ import com.zuehlke.jasschallenge.client.game.strategy.AlwaysShiftRandomJassStrat
 import com.zuehlke.jasschallenge.client.game.strategy.RandomJassStrategy;
 import com.zuehlke.jasschallenge.messages.type.SessionType;
 
-public class LocalApplication {
+class LocalApplication {
     public static void main(String[] args) throws Exception {
         final Player myLocalPlayer = new Player("Me", new AlwaysShiftRandomJassStrategy());
         final Player myLocalPartner = new Player("My Partner", new AlwaysShiftRandomJassStrategy());

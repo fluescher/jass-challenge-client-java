@@ -11,10 +11,10 @@ public class Game {
     private final Mode mode;
     private final PlayingOrder order;
     private Round currentRound;
-    private Result result;
-    private boolean shifted;
+    private final Result result;
+    private final boolean shifted;
 
-    public Game(Mode mode, PlayingOrder order, List<Team> teams, boolean shifted) {
+    private Game(Mode mode, PlayingOrder order, List<Team> teams, boolean shifted) {
         this.mode = mode;
         this.order = order;
 

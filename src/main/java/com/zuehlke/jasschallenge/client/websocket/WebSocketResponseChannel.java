@@ -11,8 +11,8 @@ import java.io.IOException;
 
 public class WebSocketResponseChannel implements ResponseChannel {
 
-    private Session session;
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Session session;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public WebSocketResponseChannel(Session session) {
         this.session = session;

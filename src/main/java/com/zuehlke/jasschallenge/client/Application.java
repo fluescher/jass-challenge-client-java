@@ -10,11 +10,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class Application {
+class Application {
     public static void main(String[] args) throws Exception {
         final String name = System.getProperty("name", String.valueOf(System.currentTimeMillis()));
         final Player myLocalPlayer = new Player(name, new RandomJassStrategy());
-        final Player myLocalPartner = new Player(name, new RandomJassStrategy());
 
 //        startTournamentGame("ws://localhost:3000", myLocalPlayer, myLocalPartner);
         startGame("ws://jasschallenge.herokuapp.com", myLocalPlayer, SessionType.SINGLE_GAME);

@@ -6,7 +6,7 @@ import com.zuehlke.jasschallenge.messages.responses.Response;
 
 class Player {
 
-    private ConnectionHandle connectionHandle;
+    private final ConnectionHandle connectionHandle;
     private String playerName;
     private int id;
 

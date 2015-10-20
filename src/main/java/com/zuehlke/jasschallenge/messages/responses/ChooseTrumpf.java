@@ -27,12 +27,12 @@ public class ChooseTrumpf implements Response {
 
         ChooseTrumpf that = (ChooseTrumpf) o;
 
-        return !(data != null ? !data.equals(that.data) : that.data != null);
+        return data.equals(that.data);
 
     }
 
     @Override
     public int hashCode() {
-        return data != null ? data.hashCode() : 0;
+        return data.hashCode();
     }
 }

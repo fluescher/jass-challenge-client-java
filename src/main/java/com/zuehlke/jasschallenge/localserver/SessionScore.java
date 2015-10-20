@@ -11,7 +11,8 @@ class SessionScore {
     private final RemoteTeam team1;
     private final RemoteTeam team2;
 
-    private int scoreLimit;
+    private final int scoreLimit;
+    private RemoteTeam winnerTeam;
 
     public SessionScore(RemoteTeam team1, RemoteTeam team2, int scoreLimit) {
         this.team1 = team1;
@@ -37,5 +38,13 @@ class SessionScore {
         team2.setPoints(team2.getPoints() + team2.getCurrentRoundPoints());
         team1.setCurrentRoundPoints(0);
         team2.setCurrentRoundPoints(0);
+    }
+
+    public RemoteTeam getWinnerTeam() {
+        return getTotalScore(team1) > getTotalScore(team2) ? team1 : team2;
+    }
+
+    private int getTotalScore(RemoteTeam team1) {
+        return team1.getPoints() + team1.getCurrentRoundPoints();
     }
 }

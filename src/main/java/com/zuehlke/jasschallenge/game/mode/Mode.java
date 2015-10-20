@@ -61,5 +61,5 @@ public abstract class Mode {
 
     public abstract int getFactor();
 
-    public abstract Comparator<Card> createRankComparator();
+    protected abstract Comparator<Card> createRankComparator();
 }

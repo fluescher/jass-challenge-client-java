@@ -4,5 +4,5 @@ public enum Trumpf {
     OBEABE,
     UNDEUFE,
     TRUMPF,
-    SCHIEBE;
+    SCHIEBE
 }

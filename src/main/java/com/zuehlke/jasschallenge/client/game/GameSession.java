@@ -13,7 +13,7 @@ public class GameSession {
     private final List<Player> playersInPlayingOrder;
     private final PlayingOrder gameStartingPlayerOrder;
     private Game currentGame;
-    private Result result;
+    private final Result result;
 
     public GameSession(List<Team> teams, List<Player> playersInPlayingOrder) {
         this.teams = teams;
@@ -35,7 +35,7 @@ public class GameSession {
         return teams;
     }
 
-    public Game startNewGame(Mode mode, boolean shifted) {
+    public void startNewGame(Mode mode, boolean shifted) {
 
         updateResult();
 
@@ -43,7 +43,6 @@ public class GameSession {
         gameStartingPlayerOrder.moveToNextPlayer();
 
         currentGame = Game.startGame(mode, initialOrder, teams, shifted);
-        return currentGame;
     }
 
     public Round startNextRound() {

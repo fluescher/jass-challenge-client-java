@@ -10,7 +10,7 @@ public class LambdaMatcher<T> extends BaseMatcher<T>
     private final Function<T, Boolean> matcher;
     private final String description;
 
-    public LambdaMatcher(Function<T, Boolean> matcher, String description)
+    private LambdaMatcher(Function<T, Boolean> matcher, String description)
     {
         this.matcher = matcher;
         this.description = description;

@@ -1,9 +1,6 @@
 package com.zuehlke.jasschallenge.localserver;
 
-import com.zuehlke.jasschallenge.messages.BroadCastGameFinished;
-import com.zuehlke.jasschallenge.messages.BroadCastStich;
-import com.zuehlke.jasschallenge.messages.BroadCastTeams;
-import com.zuehlke.jasschallenge.messages.BroadCastTrumpf;
+import com.zuehlke.jasschallenge.messages.*;
 import com.zuehlke.jasschallenge.messages.type.RemotePlayer;
 import com.zuehlke.jasschallenge.messages.type.RemoteTeam;
 import com.zuehlke.jasschallenge.messages.type.Stich;
@@ -17,8 +14,8 @@ import static java.util.Arrays.asList;
 
 class Players {
 
-    public static final int NUMBER_OF_PLAYERS = 4;
-    private List<Player> players = new LinkedList<>();
+    private static final int NUMBER_OF_PLAYERS = 4;
+    private final List<Player> players = new LinkedList<>();
     private PlayerOrder playerOrder;
 
 
@@ -162,5 +159,12 @@ class Players {
 
     public void broadcastNewGame(List<RemoteTeam> teams) {
         players.forEach(player -> player.notify(new BroadCastGameFinished(teams)));
+    }
+
+    public void broadcastWinner(SessionScore sessionScore) {
+        BroadCastWinnerTeam message = new BroadCastWinnerTeam(sessionScore.getWinnerTeam());
+        players.forEach(player -> {
+            player.notify(message);
+        });
     }
 }

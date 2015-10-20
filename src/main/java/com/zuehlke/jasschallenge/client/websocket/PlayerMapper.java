@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-public class PlayerMapper {
+class PlayerMapper {
 
     private final Set<Player> allPlayers = new HashSet<>();
 

@@ -72,7 +72,7 @@ public class RoundTest {
 
     private static Round createRoundWithMoves(int roundNumber, PlayingOrder playingOrder, List<Move> moves) {
         final Round round = Round.createRound(Mode.topDown(), roundNumber, playingOrder);
-        for (Move move : moves) round.makeMove(move);
+        moves.forEach(round::makeMove);
         return round;
     }
 

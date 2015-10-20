@@ -22,7 +22,7 @@ class Round {
 
     private static final Random SHUFFLER = new SecureRandom();
 
-    private Map<Player, List<Card>> cardsMap;
+    private final Map<Player, List<Card>> cardsMap;
     private boolean shifted = false;
     private Color trumpfColor;
     private Trumpf trumpf;
@@ -47,7 +47,7 @@ class Round {
 
     public void setShifted() {
         if (shifted) {
-            throw new AlreadyGschobeException("Already gschobe");
+            throw new AlreadyGschobeException();
         }
         shifted = true;
     }

@@ -4,7 +4,6 @@ import com.zuehlke.jasschallenge.game.Trumpf;
 import com.zuehlke.jasschallenge.game.cards.Card;
 import com.zuehlke.jasschallenge.game.cards.Color;
 import com.zuehlke.jasschallenge.messages.*;
-import com.zuehlke.jasschallenge.messages.responses.ChooseCard;
 import com.zuehlke.jasschallenge.messages.responses.ChooseTrumpf;
 import com.zuehlke.jasschallenge.messages.type.*;
 import org.slf4j.Logger;
@@ -20,9 +19,8 @@ class JassSession {
 
     private static final int SCORE_LIMIT = 2500;
     private final String sessionName;
-    private int playerId = 0;
 
-    private Players players = new Players();
+    private final Players players = new Players();
 
     private SessionScore sessionScore;
     private Round currentRound;
@@ -47,7 +45,7 @@ class JassSession {
 
 
     private void notifyWinnerTeam() {
-
+        players.broadcastWinner(sessionScore);
     }
 
     private void playNextRound() {
@@ -59,7 +57,7 @@ class JassSession {
         nextToPlay.notify(new RequestTrumpf());
 
         while (!sessionScore.winnerExists()) {
-            StichResult stichResult = null;
+            StichResult stichResult;
             while (currentRound.hasCardsToPlay() && !sessionScore.winnerExists()) {
                 stichResult = currentRound.playStich(players);
                 Player stichPlayer = stichResult.getStichPlayer();
@@ -116,10 +114,6 @@ class JassSession {
             currentRound.setTrumpf(data.getMode(), color);
             players.broadcastTrumpf(data);
         }
-    }
-
-    public void onCardChosen(ChooseCard chooseCard, Player connectionHandle) {
-
     }
 
     public boolean hasJoinedPlayer(Player player) {
