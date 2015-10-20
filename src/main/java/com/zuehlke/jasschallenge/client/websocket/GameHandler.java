@@ -2,9 +2,9 @@ package com.zuehlke.jasschallenge.client.websocket;
 
 import com.zuehlke.jasschallenge.client.game.*;
 import com.zuehlke.jasschallenge.game.Trumpf;
-import com.zuehlke.jasschallenge.game.cards.Card;
 import com.zuehlke.jasschallenge.game.cards.Color;
 import com.zuehlke.jasschallenge.game.mode.Mode;
+import com.zuehlke.jasschallenge.messages.Mapping;
 import com.zuehlke.jasschallenge.messages.PlayerJoinedSession;
 import com.zuehlke.jasschallenge.messages.responses.ChooseCard;
 import com.zuehlke.jasschallenge.messages.responses.ChoosePlayerName;
@@ -15,13 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Set;
 
 import static com.zuehlke.jasschallenge.messages.type.SessionChoice.AUTOJOIN;
 import static java.lang.Integer.compare;
-import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 public class GameHandler {
     private final Player localPlayer;
@@ -62,7 +59,7 @@ public class GameHandler {
     }
 
     public void onDealCards(List<RemoteCard> dealCard) {
-        localPlayer.setCards(mapAllToCards(dealCard));
+        localPlayer.setCards(Mapping.mapAllToCards(dealCard));
     }
 
     public void onPlayerJoined(PlayerJoinedSession joinedPlayer) {
@@ -85,7 +82,7 @@ public class GameHandler {
 
     public ChooseTrumpf onRequestTrumpf() {
         final Mode mode = localPlayer.chooseTrumpf(gameSession, shifted);
-        return new ChooseTrumpf(mode.getTrumpfName(), mapColor(mode.getTrumpfColor()));
+        return new ChooseTrumpf(mode.getTrumpfName(), Mapping.mapColor(mode.getTrumpfColor()));
     }
 
     public void onBroadCastTrumpf(TrumpfChoice trumpfChoice) {
@@ -107,7 +104,7 @@ public class GameHandler {
         checkEquals(getCurrentRound().getPlayingOrder().getCurrentPlayer(), localPlayer, "Order differed between remote and local state");
 
         final Move move = localPlayer.makeMove(gameSession);
-        final RemoteCard cardToPlay = mapToRemoteCard(move.getPlayedCard());
+        final RemoteCard cardToPlay = Mapping.mapToRemoteCard(move.getPlayedCard());
 
         return new ChooseCard(cardToPlay);
     }
@@ -119,7 +116,7 @@ public class GameHandler {
 
         final Player player = getCurrentRound().getPlayingOrder().getCurrentPlayer();
 
-        final Move move = new Move(player, mapToCard(remoteCard));
+        final Move move = new Move(player, Mapping.mapToCard(remoteCard));
         gameSession.makeMove(move);
         localPlayer.onMoveMade(move, gameSession);
     }
@@ -174,32 +171,6 @@ public class GameHandler {
     private Team toTeam(RemoteTeam remoteTeam) {
         final List<Player> players = remoteTeam.getPlayers().stream().map(playerMapper::mapPlayer).collect(toList());
         return new Team(remoteTeam.getName(), players);
-    }
-
-    private static Card mapToCard(RemoteCard remoteCard) {
-        return stream(Card.values())
-                .filter(card -> card.getColor() == remoteCard.getColor().getMappedColor())
-                .filter(card -> card.getValue().getRank() == remoteCard.getNumber() - 5)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Unable to map card"));
-    }
-
-    private static Set<Card> mapAllToCards(List<RemoteCard> remoteCards) {
-        return remoteCards.stream().map(GameHandler::mapToCard).collect(toSet());
-    }
-
-    private static RemoteCard mapToRemoteCard(Card card) {
-        final RemoteColor remoteColor = mapColor(card.getColor());
-        return new RemoteCard(card.getValue().getRank() + 5, remoteColor);
-    }
-
-    private static RemoteColor mapColor(Color localColor) {
-        if(localColor == null) return null;
-
-        return stream(RemoteColor.values())
-                .filter(color -> color.getMappedColor() == localColor)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Could not map color"));
     }
 
     private static void checkEquals(Object a, Object b, String errorMessage) {
