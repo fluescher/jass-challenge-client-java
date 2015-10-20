@@ -65,9 +65,6 @@ public enum Card {
 
     @Override
     public String toString() {
-        return "Card{" +
-                "value=" + value +
-                ", color=" + color +
-                '}';
+        return value.toString() + color.toString();
     }
 }

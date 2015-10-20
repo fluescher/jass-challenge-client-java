@@ -1,6 +1,8 @@
 package com.zuehlke.jasschallenge.game.cards;
 
 public enum CardValue {
+
+
     SIX(1,1,0,0,11),
     SEVEN(2,0),
     EIGHT(3,8),
@@ -10,6 +12,8 @@ public enum CardValue {
     QUEEN(7,3),
     KING(8,4),
     ACE(9,9,11,11,0);
+
+    private static final String[] NAMES = {"6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 
     private final int rank;
     private final int trumpfRank;
@@ -47,5 +51,10 @@ public enum CardValue {
 
     public int getBottomUpScore() {
         return bottomUpScore;
+    }
+
+    @Override
+    public String toString() {
+        return NAMES[ordinal()];
     }
 }
